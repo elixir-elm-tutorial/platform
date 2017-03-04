@@ -1,1 +1,1 @@
-<a href="/players">List of Players</a>
+<%= link("List of Players", to: "/players", class: "btn btn-primary") %>
