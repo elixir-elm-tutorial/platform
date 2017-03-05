@@ -105,6 +105,6 @@ defmodule Platform.Players do
   defp player_changeset(%Player{} = player, attrs) do
     player
     |> cast(attrs, [:username, :score])
-    |> validate_required([:username, :score])
+    |> validate_required([:username])
   end
 end
