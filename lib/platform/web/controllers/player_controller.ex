@@ -3,6 +3,8 @@ defmodule Platform.Web.PlayerController do
 
   alias Platform.Players
 
+  plug :authenticate when action in [:index]
+
   def index(conn, _params) do
     players = Players.list_players()
     render(conn, "index.html", players: players)
@@ -55,5 +57,16 @@ defmodule Platform.Web.PlayerController do
     conn
     |> put_flash(:info, "Player deleted successfully.")
     |> redirect(to: player_path(conn, :index))
+  end
+
+  defp authenticate(conn, _opts) do
+    if conn.assigns.current_user() do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You must be logged in to access that page.")
+      |> redirect(to: page_path(conn, :index))
+      |> halt()
+    end
   end
 end
