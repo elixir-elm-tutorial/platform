@@ -12,9 +12,9 @@ defmodule Platform.Web.PlayerControllerTest do
     player
   end
 
-  test "lists all entries on index", %{conn: conn} do
+  test "redirects unauthenticated users for index page", %{conn: conn} do
     conn = get conn, player_path(conn, :index)
-    assert html_response(conn, 200) =~ "Listing Players"
+    assert html_response(conn, 302) =~ "redirect"
   end
 
   test "renders form for new players", %{conn: conn} do
