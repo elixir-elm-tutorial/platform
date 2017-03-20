@@ -11,7 +11,12 @@ exports.config = {
   },
   plugins: {
     babel: { ignore: [/vendor/] },
-    elmBrunch: { elmFolder: "../lib/platform/web/elm", mainModules: ["Main.elm"], outputFolder: "../../../../assets/vendor" }
+    elmBrunch: {
+      elmFolder: "../lib/platform/web/elm",
+      mainModules: ["Main.elm"],
+      outputFolder: "../../../../assets/vendor",
+      makeParameters: ["--debug"]
+    }
   },
   modules: { autoRequire: { "js/app.js": ["js/app"] } },
   npm: { enabled: true }
