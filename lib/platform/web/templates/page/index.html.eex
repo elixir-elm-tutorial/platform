@@ -1,1 +1,3 @@
 <%= link("List of Players", to: "/players", class: "btn btn-primary") %>
+
+<div id="elm-container"></div>
