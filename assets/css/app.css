@@ -1,4 +1,14 @@
 /* This file is for your main application css. */
+
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: bold;
+}
+
+.alert:empty {
+  display: none;
+}
+
 .navbar {
   height: 75px;
 }
