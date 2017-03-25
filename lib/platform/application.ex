@@ -1,8 +1,10 @@
 defmodule Platform.Application do
+  @moduledoc """
+  See http://elixir-lang.org/docs/stable/elixir/Application.html
+  for more information on OTP Applications
+  """
   use Application
 
-  # See http://elixir-lang.org/docs/stable/elixir/Application.html
-  # for more information on OTP Applications
   def start(_type, _args) do
     import Supervisor.Spec
 
@@ -12,7 +14,8 @@ defmodule Platform.Application do
       supervisor(Platform.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Platform.Web.Endpoint, []),
-      # Start your own worker by calling: Platform.Worker.start_link(arg1, arg2, arg3)
+      # Start your own worker by calling:
+      # Platform.Worker.start_link(arg1, arg2, arg3)
       # worker(Platform.Worker, [arg1, arg2, arg3]),
     ]
 

@@ -8,7 +8,8 @@ defmodule Platform.Web.PlayerSessionController do
   end
 
   def create(conn, %{"session" => %{"username" => user, "password" => pass}}) do
-    case PlayerAuthController.login_by_username_and_pass(conn, user, pass, repo: Platform.Repo) do
+    case PlayerAuthController.login_by_username_and_pass(
+      conn, user, pass, repo: Platform.Repo) do
       {:ok, conn} ->
         conn
         |> put_flash(:info, "Welcome back!")
