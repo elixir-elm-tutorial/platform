@@ -10,7 +10,12 @@ defmodule Platform.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
-     deps: deps()]
+     deps: deps(),
+     # ExDoc
+     name: "Platform",
+     source_url: "https://github.com/elixir-elm-tutorial/platform",
+     homepage_url: "https://elixir-elm-tutorial.herokuapp.com",
+     docs: [main: "Platform", extras: ["README.md"]]]
   end
 
   # Configuration for the OTP application.
@@ -38,7 +43,8 @@ defmodule Platform.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:comeonin, "~> 3.0"},
-     {:credo, "~> 0.7", only: [:dev, :test]}
+     {:credo, "~> 0.7", only: [:dev, :test]},
+     {:ex_doc, "~> 0.14", only: :dev, runtime: false}
   ]
   end
 
