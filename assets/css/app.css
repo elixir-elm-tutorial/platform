@@ -1,1 +1,18 @@
 /* This file is for your main application css. */
+.navbar {
+  height: 75px;
+}
+
+.splash {
+  background-color: black;
+  color: white;
+  height: 400px;
+}
+
+.splash-image {
+  padding-top: 60px;
+}
+
+.content {
+  margin-top: 20px;
+}
