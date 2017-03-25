@@ -1,12 +1,14 @@
 defmodule Platform.Web.PlayerSessionController do
   use Platform.Web, :controller
 
+  alias Platform.Web.PlayerAuthController
+
   def new(conn, _) do
     render conn, "new.html"
   end
 
   def create(conn, %{"session" => %{"username" => user, "password" => pass}}) do
-    case Platform.Web.PlayerAuthController.login_by_username_and_pass(conn, user, pass, repo: Platform.Repo) do
+    case PlayerAuthController.login_by_username_and_pass(conn, user, pass, repo: Platform.Repo) do
       {:ok, conn} ->
         conn
         |> put_flash(:info, "Welcome back!")
@@ -20,7 +22,7 @@ defmodule Platform.Web.PlayerSessionController do
 
   def delete(conn, _) do
     conn
-    |> Platform.Web.PlayerAuthController.logout()
+    |> PlayerAuthController.logout()
     |> redirect(to: page_path(conn, :index))
   end
 end

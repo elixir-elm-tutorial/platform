@@ -2,6 +2,7 @@ defmodule Platform.Web.PlayerController do
   use Platform.Web, :controller
 
   alias Platform.Players
+  alias Platform.Web.PlayerAuthController
 
   plug :authenticate when action in [:index]
 
@@ -19,7 +20,7 @@ defmodule Platform.Web.PlayerController do
     case Players.create_player(player_params) do
       {:ok, player} ->
         conn
-        |> Platform.Web.PlayerAuthController.login(player)
+        |> PlayerAuthController.login(player)
         |> put_flash(:info, "Player created successfully.")
         |> redirect(to: player_path(conn, :show, player))
       {:error, %Ecto.Changeset{} = changeset} ->
