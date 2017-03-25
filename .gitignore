@@ -28,3 +28,6 @@ npm-debug.log
 
 # Elm
 /lib/platform/web/elm/elm-stuff
+
+# ExDoc
+/doc

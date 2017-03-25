@@ -15,7 +15,7 @@ defmodule Platform.Mixfile do
      name: "Platform",
      source_url: "https://github.com/elixir-elm-tutorial/platform",
      homepage_url: "https://elixir-elm-tutorial.herokuapp.com",
-     docs: [main: "Platform", extras: ["README.md"]]]
+     docs: [extras: ["README.md"]]]
   end
 
   # Configuration for the OTP application.

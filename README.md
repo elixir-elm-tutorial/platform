@@ -27,6 +27,7 @@ which is the demo application from the
 - Run the test suite with `mix test`. The CI build is also available on
 [TravisCI](https://travis-ci.org/elixir-elm-tutorial/platform).
 - Run a static analysis check with `mix credo --strict`.
+- Generate documentation with `mix docs`.
 
 ## Deployment
 
