@@ -22,10 +22,11 @@ which is the demo application from the
 6. `mix phx.server` to start Phoenix server.
 7. `localhost:4000` to see application!
 
-## Tests
+## Tests and Tooling
 
-Run the test suite with `mix test`. The CI build is also available on
+- Run the test suite with `mix test`. The CI build is also available on
 [TravisCI](https://travis-ci.org/elixir-elm-tutorial/platform).
+- Run a static analysis check with `mix credo --strict`.
 
 ## Deployment
 
