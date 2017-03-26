@@ -7,33 +7,44 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Hello Platform!</title>
+    <title>Elixir and Elm Tutorial</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i,700,700i,900,900i">
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
   <body>
-    <div class="container">
-      <div class="header">
-        <ol class="breadcrumb text-right">
-        <%= if @current_user do %>
-          <li>Logged in as <strong><%= @current_user.username %></strong></li>
-          <li><%= link "Log Out", to: player_session_path(@conn, :delete, @current_user), method: "delete" %></li>
-        <% else %>
-          <li><%= link "Sign Up", to: player_path(@conn, :new) %></li>
-          <li><%= link "Log In", to: player_session_path(@conn, :new) %></li>
-        <% end %>
-        </ol>
-        <span class="logo"></span>
-      </div>
+    <div class="header">
+      <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/">Elixir and Elm Tutorial</a>
+          </div>
+          <div class="collapse navbar-collapse navbar-right">
+            <ul class="nav navbar-nav">
+              <li><a href="https://leanpub.com/elixir-elm-tutorial">Book</a></li>
+              <li><a href="/api/games">Games API</a></li>
+              <li><a href="/players">Players</a></li>
+              <%= if @current_user do %>
+                <li class="navbar-text">Logged in as <strong><%= @current_user.username %></strong></li>
+                <li><%= link "Log Out", to: player_session_path(@conn, :delete, @current_user), method: "delete", class: "navbar-link" %></li>
+              <% else %>
+                <li><%= link "Sign Up", to: player_path(@conn, :new) %></li>
+                <li><%= link "Sign In", to: player_session_path(@conn, :new) %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
 
+    <div class="container">
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+    </div>
 
-      <main role="main">
-        <%= render @view_module, @view_template, assigns %>
-      </main>
-
-    </div> <!-- /container -->
+    <div>
+      <%= render @view_module, @view_template, assigns %>
+    </div>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

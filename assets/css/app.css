@@ -1,1 +1,46 @@
-/* This file is for your main application css. */
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: bold;
+}
+
+.alert:empty {
+  display: none;
+}
+
+.alert {
+  margin-top: 20px;
+}
+
+.navbar {
+  height: 75px;
+  margin-bottom: 0 !important;
+}
+
+.splash {
+  background-color: black;
+  color: white;
+  height: 400px;
+}
+
+.splash-image {
+  padding-top: 60px;
+  height: 340px;
+}
+
+.splash-header {
+  padding-top: 60px;
+}
+
+.twitter-hashtag-button {
+  margin-top: 5px;
+}
+
+.content {
+  height: 300px;
+  margin: 20px 0;
+}
+
+.content-image {
+  border-radius: 10px;
+  width: 400px;
+}
