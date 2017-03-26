@@ -13890,11 +13890,11 @@ var _user$project$Main$viewHomeContent = A2(
 			_1: {ctor: '[]'}
 		}
 	});
-var _user$project$Main$viewHomeSplash = A2(
+var _user$project$Main$viewHomeHero = A2(
 	_elm_lang$html$Html$div,
 	{
 		ctor: '::',
-		_0: _elm_lang$html$Html_Attributes$class('container-fluid splash'),
+		_0: _elm_lang$html$Html_Attributes$class('container-fluid hero'),
 		_1: {ctor: '[]'}
 	},
 	{
@@ -13930,7 +13930,7 @@ var _user$project$Main$viewHomeSplash = A2(
 									_elm_lang$html$Html$img,
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$class('splash-image'),
+										_0: _elm_lang$html$Html_Attributes$class('hero-image'),
 										_1: {
 											ctor: '::',
 											_0: _elm_lang$html$Html_Attributes$src('images/book_cover.png'),
@@ -13957,7 +13957,7 @@ var _user$project$Main$viewHomeSplash = A2(
 								_elm_lang$html$Html$h1,
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('splash-header'),
+									_0: _elm_lang$html$Html_Attributes$class('hero-header'),
 									_1: {ctor: '[]'}
 								},
 								{
@@ -14058,7 +14058,7 @@ var _user$project$Main$viewHome = A2(
 	{ctor: '[]'},
 	{
 		ctor: '::',
-		_0: _user$project$Main$viewHomeSplash,
+		_0: _user$project$Main$viewHomeHero,
 		_1: {
 			ctor: '::',
 			_0: _user$project$Main$viewHomeContent,

@@ -324,20 +324,20 @@ viewNavbarNavLinks =
 viewHome : Html Msg
 viewHome =
     div []
-        [ viewHomeSplash
+        [ viewHomeHero
         , viewHomeContent
         ]
 
 
-viewHomeSplash : Html Msg
-viewHomeSplash =
-    div [ class "container-fluid splash" ]
+viewHomeHero : Html Msg
+viewHomeHero =
+    div [ class "container-fluid hero" ]
         [ div [ class "container" ]
             [ div [ class "col-xs-6" ]
-                [ a [ href "https://leanpub.com/elixir-elm-tutorial" ] [ img [ class "splash-image", src "images/book_cover.png" ] [] ]
+                [ a [ href "https://leanpub.com/elixir-elm-tutorial" ] [ img [ class "hero-image", src "images/book_cover.png" ] [] ]
                 ]
             , div [ class "col-xs-6" ]
-                [ h1 [ class "splash-header" ]
+                [ h1 [ class "hero-header" ]
                     [ text "Want to learn how to create a site like this?" ]
                 , a [ href "https://leanpub.com/elixir-elm-tutorial", target "_blank" ] [ button [ class "btn btn-lg btn-success" ] [ text "Buy the Book!" ] ]
                 , a [ class "twitter-hashtag-button", attribute "data-show-count" "false", attribute "data-text" "I'm learning functional programming with Elixir and Elm!", attribute "data-url" "https://leanpub.com/elixir-elm-tutorial", href "https://twitter.com/intent/tweet?button_hashtag=ElixirElmTutorial" ] [ text "Tweet #ElixirElmTutorial" ]
