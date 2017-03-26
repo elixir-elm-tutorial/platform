@@ -27,10 +27,20 @@ body {
   height: 340px;
 }
 
-.splash-text {
+.splash-header {
   padding-top: 60px;
 }
 
+.twitter-hashtag-button {
+  margin-top: 5px;
+}
+
 .content {
-  margin-top: 20px;
+  height: 300px;
+  margin: 20px 0;
+}
+
+.content-image {
+  border-radius: 10px;
+  width: 400px;
 }
