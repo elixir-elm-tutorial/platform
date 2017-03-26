@@ -260,7 +260,6 @@ viewHeader : Html Msg
 viewHeader =
     div [ class "header" ]
         [ viewNavbar
-          -- , navLinksList
         ]
 
 
