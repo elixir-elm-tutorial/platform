@@ -399,11 +399,31 @@ viewPlayer player =
 
 
 viewGamesPage : Model -> Html Msg
-viewGamesPage { games } =
-    div [ class "games" ]
-        [ h2 [] [ text "Games" ]
-        , ul [] (games |> List.map viewGame)
+viewGamesPage model =
+    div [ class "games-page" ]
+        [ viewGamesHero
+        , viewGamesContent model
         ]
+
+
+viewGamesHero : Html Msg
+viewGamesHero =
+    div [ class "container-fluid hero" ]
+        [ div [ class "container" ]
+            [ div [ class "col-xs-6" ]
+                [ a [ href "/" ] [ img [ class "hero-image", src "images/games_sample.png" ] [] ]
+                ]
+            , div [ class "col-xs-6" ]
+                [ h1 [ class "hero-header" ] [ text "Featured" ]
+                , a [ href "/" ] [ button [ class "btn btn-lg btn-success" ] [ text "Play Now!" ] ]
+                ]
+            ]
+        ]
+
+
+viewGamesContent : Model -> Html Msg
+viewGamesContent { games } =
+    ul [] (games |> List.map viewGame)
 
 
 viewGame : Game -> Html Msg
