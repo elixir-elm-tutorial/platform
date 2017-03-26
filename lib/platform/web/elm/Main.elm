@@ -181,8 +181,8 @@ pageView model =
 fetchAll : Cmd Msg
 fetchAll =
     Cmd.batch
-        [ fetchPlayers
-        , fetchGames
+        [ -- fetchPlayers
+          fetchGames
         ]
 
 
@@ -258,9 +258,47 @@ view model =
 
 viewHeader : Html Msg
 viewHeader =
-    Html.header [ class "header" ]
-        [ homeLink
-        , navLinksList
+    div [ class "header" ]
+        [ viewNavbar
+          -- , homeLink
+          -- , navLinksList
+        ]
+
+
+viewNavbar : Html Msg
+viewNavbar =
+    div [ class "navbar navbar-default navbar-static-top" ]
+        [ div [ class "container" ]
+            [ viewNavbarHeader
+            , viewNavbarNav
+            ]
+        ]
+
+
+viewNavbarHeader : Html Msg
+viewNavbarHeader =
+    div [ class "navbar-header" ]
+        [ a [ class "navbar-brand", href "/" ] [ text "Elixir and Elm Tutorial" ]
+        ]
+
+
+viewNavbarNav : Html Msg
+viewNavbarNav =
+    div [ class "collapse navbar-collapse navbar-right" ]
+        [ ul [ class "nav navbar-nav" ]
+            [ li [] [ a [ href "https://leanpub.com/elixir-elm-tutorial" ] [ text "Book" ] ]
+            , li [] [ a [ href "/api/games" ] [ text "Games" ] ]
+            , li [] [ a [ href "/players" ] [ text "Players" ] ]
+              --   <%= if @current_user do %>
+              --     <li class="navbar-text">Logged in as <strong><%= @current_user.username %></strong></li>
+              --     <li><%= link "Log Out", to: player_session_path(@conn, :delete, @current_user), method: "delete", class: "navbar-link" %></li>
+              --   <% else %>
+              --     <li><%= link "Sign Up", to: player_path(@conn, :new) %></li>
+              --     <li><%= link "Sign In", to: player_session_path(@conn, :new) %></li>
+              --   <% end %>
+            , li [] [ a [ href "/players/new" ] [ text "Sign Up" ] ]
+            , li [] [ a [ href "/sessions/new" ] [ text "Sign In" ] ]
+            ]
         ]
 
 

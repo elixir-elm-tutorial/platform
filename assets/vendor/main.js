@@ -13683,6 +13683,215 @@ var _user$project$Main$viewPage = function (model) {
 			return _user$project$Main$viewHome;
 	}
 };
+var _user$project$Main$viewNavbarNav = A2(
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('collapse navbar-collapse navbar-right'),
+		_1: {ctor: '[]'}
+	},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$ul,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('nav navbar-nav'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$li,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$a,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$href('https://leanpub.com/elixir-elm-tutorial'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Book'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$li,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$a,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$href('/api/games'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Games'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$li,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$a,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$href('/players'),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Players'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$li,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$a,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$href('/players/new'),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Sign Up'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$li,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$a,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$href('/sessions/new'),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Sign In'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}),
+		_1: {ctor: '[]'}
+	});
+var _user$project$Main$viewNavbarHeader = A2(
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('navbar-header'),
+		_1: {ctor: '[]'}
+	},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$a,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('navbar-brand'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$href('/'),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('Elixir and Elm Tutorial'),
+				_1: {ctor: '[]'}
+			}),
+		_1: {ctor: '[]'}
+	});
+var _user$project$Main$viewNavbar = A2(
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('navbar navbar-default navbar-static-top'),
+		_1: {ctor: '[]'}
+	},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('container'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: _user$project$Main$viewNavbarHeader,
+				_1: {
+					ctor: '::',
+					_0: _user$project$Main$viewNavbarNav,
+					_1: {ctor: '[]'}
+				}
+			}),
+		_1: {ctor: '[]'}
+	});
+var _user$project$Main$viewHeader = A2(
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('header'),
+		_1: {ctor: '[]'}
+	},
+	{
+		ctor: '::',
+		_0: _user$project$Main$viewNavbar,
+		_1: {ctor: '[]'}
+	});
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _user$project$Main$viewHeader,
+			_1: {
+				ctor: '::',
+				_0: _user$project$Main$viewPage(model),
+				_1: {ctor: '[]'}
+			}
+		});
+};
 var _user$project$Main$subscriptions = function (_p5) {
 	return _elm_lang$core$Platform_Sub$none;
 };
@@ -13837,22 +14046,11 @@ var _user$project$Main$fetchGames = A2(
 	_elm_lang$http$Http$send,
 	_user$project$Main$FetchGames,
 	A2(_elm_lang$http$Http$get, '/api/games', _user$project$Main$decodeGameFetch));
-var _user$project$Main$FetchPlayers = function (a) {
-	return {ctor: 'FetchPlayers', _0: a};
-};
-var _user$project$Main$fetchPlayers = A2(
-	_elm_lang$http$Http$send,
-	_user$project$Main$FetchPlayers,
-	A2(_elm_lang$http$Http$get, '/api/players', _user$project$Main$decodePlayerFetch));
 var _user$project$Main$fetchAll = _elm_lang$core$Platform_Cmd$batch(
 	{
 		ctor: '::',
-		_0: _user$project$Main$fetchPlayers,
-		_1: {
-			ctor: '::',
-			_0: _user$project$Main$fetchGames,
-			_1: {ctor: '[]'}
-		}
+		_0: _user$project$Main$fetchGames,
+		_1: {ctor: '[]'}
 	});
 var _user$project$Main$init = function (location) {
 	return {
@@ -13862,6 +14060,13 @@ var _user$project$Main$init = function (location) {
 		_1: _user$project$Main$fetchAll
 	};
 };
+var _user$project$Main$FetchPlayers = function (a) {
+	return {ctor: 'FetchPlayers', _0: a};
+};
+var _user$project$Main$fetchPlayers = A2(
+	_elm_lang$http$Http$send,
+	_user$project$Main$FetchPlayers,
+	A2(_elm_lang$http$Http$get, '/api/players', _user$project$Main$decodePlayerFetch));
 var _user$project$Main$ChangePage = function (a) {
 	return {ctor: 'ChangePage', _0: a};
 };
@@ -13869,6 +14074,10 @@ var _user$project$Main$locationToMessage = function (location) {
 	return _user$project$Main$ChangePage(
 		_user$project$Main$hashToPage(location.hash));
 };
+var _user$project$Main$main = A2(
+	_elm_lang$navigation$Navigation$program,
+	_user$project$Main$locationToMessage,
+	{init: _user$project$Main$init, update: _user$project$Main$update, view: _user$project$Main$view, subscriptions: _user$project$Main$subscriptions})();
 var _user$project$Main$Navigate = function (a) {
 	return {ctor: 'Navigate', _0: a};
 };
@@ -13958,40 +14167,6 @@ var _user$project$Main$navLinksList = A2(
 			_user$project$Main$navLinks),
 		_1: {ctor: '[]'}
 	});
-var _user$project$Main$viewHeader = A2(
-	_elm_lang$html$Html$header,
-	{
-		ctor: '::',
-		_0: _elm_lang$html$Html_Attributes$class('header'),
-		_1: {ctor: '[]'}
-	},
-	{
-		ctor: '::',
-		_0: _user$project$Main$homeLink,
-		_1: {
-			ctor: '::',
-			_0: _user$project$Main$navLinksList,
-			_1: {ctor: '[]'}
-		}
-	});
-var _user$project$Main$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: _user$project$Main$viewHeader,
-			_1: {
-				ctor: '::',
-				_0: _user$project$Main$viewPage(model),
-				_1: {ctor: '[]'}
-			}
-		});
-};
-var _user$project$Main$main = A2(
-	_elm_lang$navigation$Navigation$program,
-	_user$project$Main$locationToMessage,
-	{init: _user$project$Main$init, update: _user$project$Main$update, view: _user$project$Main$view, subscriptions: _user$project$Main$subscriptions})();
 var _user$project$Main$NoOp = {ctor: 'NoOp'};
 
 var Elm = {};
