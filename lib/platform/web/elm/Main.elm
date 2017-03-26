@@ -256,11 +256,26 @@ view model =
         ]
 
 
+viewPage : Model -> Html Msg
+viewPage model =
+    case model.currentPage of
+        Home ->
+            viewHome
+
+        Players ->
+            viewPlayers model
+
+        Games ->
+            viewGames model
+
+        _ ->
+            viewHome
+
+
 viewHeader : Html Msg
 viewHeader =
     div [ class "header" ]
         [ viewNavbar
-          -- , homeLink
           -- , navLinksList
         ]
 
@@ -278,60 +293,31 @@ viewNavbar =
 viewNavbarHeader : Html Msg
 viewNavbarHeader =
     div [ class "navbar-header" ]
-        [ a [ class "navbar-brand", href "/" ] [ text "Elixir and Elm Tutorial" ]
+        [ a [ class "navbar-brand", onClick <| Navigate Home ] [ text "Elixir and Elm Tutorial" ]
         ]
 
 
 viewNavbarNav : Html Msg
 viewNavbarNav =
     div [ class "collapse navbar-collapse navbar-right" ]
-        [ ul [ class "nav navbar-nav" ]
-            [ li [] [ a [ href "https://leanpub.com/elixir-elm-tutorial" ] [ text "Book" ] ]
-            , li [] [ a [ href "/api/games" ] [ text "Games" ] ]
-            , li [] [ a [ href "/players" ] [ text "Players" ] ]
-              --   <%= if @current_user do %>
-              --     <li class="navbar-text">Logged in as <strong><%= @current_user.username %></strong></li>
-              --     <li><%= link "Log Out", to: player_session_path(@conn, :delete, @current_user), method: "delete", class: "navbar-link" %></li>
-              --   <% else %>
-              --     <li><%= link "Sign Up", to: player_path(@conn, :new) %></li>
-              --     <li><%= link "Sign In", to: player_session_path(@conn, :new) %></li>
-              --   <% end %>
-            , li [] [ a [ href "/players/new" ] [ text "Sign Up" ] ]
-            , li [] [ a [ href "/sessions/new" ] [ text "Sign In" ] ]
-            ]
+        [ ul [ class "nav navbar-nav" ] viewNavbarNavLinks
         ]
 
 
-viewPage : Model -> Html Msg
-viewPage model =
-    case model.currentPage of
-        Home ->
-            viewHome
-
-        Players ->
-            viewPlayers model
-
-        Games ->
-            viewGames model
-
-        _ ->
-            viewHome
-
-
-homeLink : Html Msg
-homeLink =
-    a [ onClick <| Navigate Home ] [ h1 [ class "header-text" ] [ text "Elixir and Elm Tutorial" ] ]
-
-
-navLinksList : Html Msg
-navLinksList =
-    nav [] [ ul [ class "nav-list" ] navLinks ]
-
-
-navLinks : List (Html Msg)
-navLinks =
-    [ li [] [ a [ onClick <| Navigate Players ] [ text "Players" ] ]
+viewNavbarNavLinks : List (Html Msg)
+viewNavbarNavLinks =
+    [ li [] [ a [ href "https://leanpub.com/elixir-elm-tutorial" ] [ text "Book" ] ]
     , li [] [ a [ onClick <| Navigate Games ] [ text "Games" ] ]
+    , li [] [ a [ onClick <| Navigate Players ] [ text "Players" ] ]
+      --   <%= if @current_user do %>
+      --     <li class="navbar-text">Logged in as <strong><%= @current_user.username %></strong></li>
+      --     <li><%= link "Log Out", to: player_session_path(@conn, :delete, @current_user), method: "delete", class: "navbar-link" %></li>
+      --   <% else %>
+      --     <li><%= link "Sign Up", to: player_path(@conn, :new) %></li>
+      --     <li><%= link "Sign In", to: player_session_path(@conn, :new) %></li>
+      --   <% end %>
+    , li [] [ a [ href "/players/new" ] [ text "Sign Up" ] ]
+    , li [] [ a [ href "/sessions/new" ] [ text "Sign In" ] ]
     ]
 
 
