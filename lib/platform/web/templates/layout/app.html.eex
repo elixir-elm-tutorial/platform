@@ -20,9 +20,7 @@
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
     </div>
 
-    <div>
-      <%= render @view_module, @view_template, assigns %>
-    </div>
+    <%= render @view_module, @view_template, assigns %>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

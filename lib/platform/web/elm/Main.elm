@@ -306,7 +306,7 @@ viewNavbarNav =
 
 viewNavbarNavLinks : List (Html Msg)
 viewNavbarNavLinks =
-    [ li [] [ a [ href "https://leanpub.com/elixir-elm-tutorial" ] [ text "Book" ] ]
+    [ li [] [ a [ href "https://leanpub.com/elixir-elm-tutorial", target "_blank" ] [ text "Book" ] ]
     , li [] [ a [ onClick <| Navigate Games ] [ text "Games" ] ]
     , li [] [ a [ onClick <| Navigate Players ] [ text "Players" ] ]
       --   <%= if @current_user do %>
@@ -323,7 +323,66 @@ viewNavbarNavLinks =
 
 viewHome : Html Msg
 viewHome =
-    div [] []
+    div []
+        [ viewHomeSplash
+        , viewHomeContent
+        ]
+
+
+viewHomeSplash : Html Msg
+viewHomeSplash =
+    div [ class "container-fluid splash" ]
+        [ div [ class "container" ]
+            [ div [ class "col-xs-6" ]
+                [ a [ href "https://leanpub.com/elixir-elm-tutorial" ] [ img [ class "splash-image", src "images/book_cover.png" ] [] ]
+                ]
+            , div [ class "col-xs-6" ]
+                [ h1 [ class "splash-header" ]
+                    [ text "Want to learn how to create a site like this?" ]
+                , a [ href "https://leanpub.com/elixir-elm-tutorial", target "_blank" ] [ button [ class "btn btn-lg btn-success" ] [ text "Buy the Book!" ] ]
+                , a [ class "twitter-hashtag-button", attribute "data-show-count" "false", attribute "data-text" "I'm learning functional programming with Elixir and Elm!", attribute "data-url" "https://leanpub.com/elixir-elm-tutorial", href "https://twitter.com/intent/tweet?button_hashtag=ElixirElmTutorial" ] [ text "Tweet #ElixirElmTutorial" ]
+                , node "script" [ attribute "async" "", charset "utf-8", src "//platform.twitter.com/widgets.js" ] []
+                ]
+            ]
+        ]
+
+
+viewHomeContent : Html Msg
+viewHomeContent =
+    div [ class "container" ]
+        [ div [ class "content" ]
+            [ div [ class "col-xs-8" ]
+                [ a [ href "/api/games" ] [ img [ class "content-image games-image", src "images/games_sample.png" ] [] ]
+                ]
+            , div [ class "col-xs-4" ]
+                [ h2 [ class "games-header" ] [ text "Create Minigames with Elm" ]
+                , p [ class "games-text" ]
+                    [ text "Learn to create fun "
+                    , a [ href "/api/games" ]
+                        [ text "interactive minigames" ]
+                    , text " with the Elm programming language."
+                    ]
+                ]
+            ]
+        , div [ class "content" ]
+            [ div [ class "col-xs-8" ]
+                [ a [ href "/players" ]
+                    [ img [ class "content-image platform-image", src "images/platform_sample.png" ]
+                        []
+                    ]
+                ]
+            , div [ class "col-xs-4" ]
+                [ h2 [ class "platform-header" ]
+                    [ text "Create a Player Platform with Elixir and Phoenix" ]
+                , p [ class "platform-text" ]
+                    [ text "Create a "
+                    , a [ href "/players" ]
+                        [ text "player platform" ]
+                    , text " to track scores and manage player accounts."
+                    ]
+                ]
+            ]
+        ]
 
 
 viewPlayers : Model -> Html Msg
