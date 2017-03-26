@@ -1,3 +1,15 @@
+<div class="container-fluid splash">
+  <div class="container">
+    <div class="col-xs-6">
+      <a href="https://leanpub.com/elixir-elm-tutorial"><img class="splash-image" src="images/book_cover.png"></a>
+    </div>
+    <div class="col-xs-6">
+      <h1 class="splash-text">Want to learn how to create a site like this?</h1>
+      <a href="https://leanpub.com/elixir-elm-tutorial"><button class="btn btn-lg btn-success">Buy the Book!</button></a>
+    </div>
+  </div>
+</div>
+
 <%= link("List of Players", to: "/players", class: "btn btn-primary") %>
 
 <div id="elm-container"></div>

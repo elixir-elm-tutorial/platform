@@ -19,11 +19,11 @@
           <div class="navbar-header">
             <a class="navbar-brand" href="/">Elixir and Elm Tutorial</a>
           </div>
-
           <div class="collapse navbar-collapse navbar-right">
             <ul class="nav navbar-nav">
               <li><a href="https://leanpub.com/elixir-elm-tutorial">Book</a></li>
               <li><a href="/api/games">Games API</a></li>
+              <li><a href="/players">Players</a></li>
               <%= if @current_user do %>
                 <li class="navbar-text">Logged in as <strong><%= @current_user.username %></strong></li>
                 <li><%= link "Log Out", to: player_session_path(@conn, :delete, @current_user), method: "delete", class: "navbar-link" %></li>
@@ -37,22 +37,14 @@
       </nav>
     </div>
 
-    <div class="container-fluid splash">
-      <div class="container">
-        <img class="splash-image" src="http://placehold.it/280x280">
-      </div>
-    </div>
-
-    <div class="container content">
-
+    <div class="container">
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+    </div>
 
-      <main role="main">
-        <%= render @view_module, @view_template, assigns %>
-      </main>
-
-    </div> <!-- /container -->
+    <div>
+      <%= render @view_module, @view_template, assigns %>
+    </div>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

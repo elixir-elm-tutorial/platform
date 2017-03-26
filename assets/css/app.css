@@ -1,5 +1,3 @@
-/* This file is for your main application css. */
-
 body {
   font-family: 'Source Sans Pro', sans-serif;
   font-weight: bold;
@@ -9,8 +7,13 @@ body {
   display: none;
 }
 
+.alert {
+  margin-top: 20px;
+}
+
 .navbar {
   height: 75px;
+  margin-bottom: 0 !important;
 }
 
 .splash {
@@ -20,6 +23,11 @@ body {
 }
 
 .splash-image {
+  padding-top: 60px;
+  height: 340px;
+}
+
+.splash-text {
   padding-top: 60px;
 }
 
