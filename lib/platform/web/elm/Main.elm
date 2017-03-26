@@ -256,22 +256,6 @@ view model =
         ]
 
 
-viewPage : Model -> Html Msg
-viewPage model =
-    case model.currentPage of
-        Home ->
-            viewHome
-
-        Players ->
-            viewPlayers model
-
-        Games ->
-            viewGames model
-
-        _ ->
-            viewHome
-
-
 viewHeader : Html Msg
 viewHeader =
     div [ class "header" ]
@@ -308,7 +292,7 @@ viewNavbarNavLinks : List (Html Msg)
 viewNavbarNavLinks =
     [ li [] [ a [ href "https://leanpub.com/elixir-elm-tutorial", target "_blank" ] [ text "Book" ] ]
     , li [] [ a [ onClick <| Navigate Games ] [ text "Games" ] ]
-    , li [] [ a [ onClick <| Navigate Players ] [ text "Players" ] ]
+    , li [] [ a [ href "/players" ] [ text "Players" ] ]
       --   <%= if @current_user do %>
       --     <li class="navbar-text">Logged in as <strong><%= @current_user.username %></strong></li>
       --     <li><%= link "Log Out", to: player_session_path(@conn, :delete, @current_user), method: "delete", class: "navbar-link" %></li>
@@ -319,6 +303,22 @@ viewNavbarNavLinks =
     , li [] [ a [ href "/players/new" ] [ text "Sign Up" ] ]
     , li [] [ a [ href "/sessions/new" ] [ text "Sign In" ] ]
     ]
+
+
+viewPage : Model -> Html Msg
+viewPage model =
+    case model.currentPage of
+        Home ->
+            viewHome
+
+        Players ->
+            viewPlayers model
+
+        Games ->
+            viewGames model
+
+        _ ->
+            viewHome
 
 
 viewHome : Html Msg

@@ -14349,8 +14349,7 @@ var _user$project$Main$viewNavbarNavLinks = {
 						_elm_lang$html$Html$a,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(
-								_user$project$Main$Navigate(_user$project$Main$Players)),
+							_0: _elm_lang$html$Html_Attributes$href('/players'),
 							_1: {ctor: '[]'}
 						},
 						{
