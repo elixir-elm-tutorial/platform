@@ -162,16 +162,16 @@ pageView : Model -> Html Msg
 pageView model =
     case model.currentPage of
         Home ->
-            viewHome
+            viewHomePage
 
         Players ->
-            viewPlayers model
+            viewPlayersPage model
 
         Games ->
-            viewGames model
+            viewGamesPage model
 
         _ ->
-            viewHome
+            viewHomePage
 
 
 
@@ -308,20 +308,20 @@ viewPage : Model -> Html Msg
 viewPage model =
     case model.currentPage of
         Home ->
-            viewHome
+            viewHomePage
 
         Players ->
-            viewPlayers model
+            viewPlayersPage model
 
         Games ->
-            viewGames model
+            viewGamesPage model
 
         _ ->
-            viewHome
+            viewHomePage
 
 
-viewHome : Html Msg
-viewHome =
+viewHomePage : Html Msg
+viewHomePage =
     div []
         [ viewHomeHero
         , viewHomeContent
@@ -384,8 +384,8 @@ viewHomeContent =
         ]
 
 
-viewPlayers : Model -> Html Msg
-viewPlayers { players } =
+viewPlayersPage : Model -> Html Msg
+viewPlayersPage { players } =
     div []
         [ h2 [] [ text "Players" ]
         , ul [ class "player-list" ] (players |> List.map viewPlayer)
@@ -398,8 +398,8 @@ viewPlayer player =
         [ text player.username ]
 
 
-viewGames : Model -> Html Msg
-viewGames { games } =
+viewGamesPage : Model -> Html Msg
+viewGamesPage { games } =
     div [ class "games" ]
         [ h2 [] [ text "Games" ]
         , ul [] (games |> List.map viewGame)

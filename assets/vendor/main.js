@@ -13594,7 +13594,7 @@ var _user$project$Main$viewGame = function (game) {
 			_1: {ctor: '[]'}
 		});
 };
-var _user$project$Main$viewGames = function (_p0) {
+var _user$project$Main$viewGamesPage = function (_p0) {
 	var _p1 = _p0;
 	return A2(
 		_elm_lang$html$Html$div,
@@ -13637,7 +13637,7 @@ var _user$project$Main$viewPlayer = function (player) {
 			_1: {ctor: '[]'}
 		});
 };
-var _user$project$Main$viewPlayers = function (_p2) {
+var _user$project$Main$viewPlayersPage = function (_p2) {
 	var _p3 = _p2;
 	return A2(
 		_elm_lang$html$Html$div,
@@ -14053,7 +14053,7 @@ var _user$project$Main$viewHomeHero = A2(
 			}),
 		_1: {ctor: '[]'}
 	});
-var _user$project$Main$viewHome = A2(
+var _user$project$Main$viewHomePage = A2(
 	_elm_lang$html$Html$div,
 	{ctor: '[]'},
 	{
@@ -14069,13 +14069,13 @@ var _user$project$Main$viewPage = function (model) {
 	var _p4 = model.currentPage;
 	switch (_p4.ctor) {
 		case 'Home':
-			return _user$project$Main$viewHome;
+			return _user$project$Main$viewHomePage;
 		case 'Players':
-			return _user$project$Main$viewPlayers(model);
+			return _user$project$Main$viewPlayersPage(model);
 		case 'Games':
-			return _user$project$Main$viewGames(model);
+			return _user$project$Main$viewGamesPage(model);
 		default:
-			return _user$project$Main$viewHome;
+			return _user$project$Main$viewHomePage;
 	}
 };
 var _user$project$Main$subscriptions = function (_p5) {
@@ -14085,13 +14085,13 @@ var _user$project$Main$pageView = function (model) {
 	var _p6 = model.currentPage;
 	switch (_p6.ctor) {
 		case 'Home':
-			return _user$project$Main$viewHome;
+			return _user$project$Main$viewHomePage;
 		case 'Players':
-			return _user$project$Main$viewPlayers(model);
+			return _user$project$Main$viewPlayersPage(model);
 		case 'Games':
-			return _user$project$Main$viewGames(model);
+			return _user$project$Main$viewGamesPage(model);
 		default:
-			return _user$project$Main$viewHome;
+			return _user$project$Main$viewHomePage;
 	}
 };
 var _user$project$Main$pageToHash = function (page) {
