@@ -16,18 +16,18 @@ body {
   margin-bottom: 0 !important;
 }
 
-.splash {
+.hero {
   background-color: black;
   color: white;
   height: 400px;
 }
 
-.splash-image {
+.hero-image {
   padding-top: 60px;
   height: 340px;
 }
 
-.splash-header {
+.hero-header {
   padding-top: 60px;
 }
 

@@ -13,38 +13,12 @@
   </head>
 
   <body>
-    <div class="header">
-      <nav class="navbar navbar-default navbar-static-top">
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="/">Elixir and Elm Tutorial</a>
-          </div>
-          <div class="collapse navbar-collapse navbar-right">
-            <ul class="nav navbar-nav">
-              <li><a href="https://leanpub.com/elixir-elm-tutorial">Book</a></li>
-              <li><a href="/api/games">Games API</a></li>
-              <li><a href="/players">Players</a></li>
-              <%= if @current_user do %>
-                <li class="navbar-text">Logged in as <strong><%= @current_user.username %></strong></li>
-                <li><%= link "Log Out", to: player_session_path(@conn, :delete, @current_user), method: "delete", class: "navbar-link" %></li>
-              <% else %>
-                <li><%= link "Sign Up", to: player_path(@conn, :new) %></li>
-                <li><%= link "Sign In", to: player_session_path(@conn, :new) %></li>
-              <% end %>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </div>
-
     <div class="container">
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
     </div>
 
-    <div>
-      <%= render @view_module, @view_template, assigns %>
-    </div>
+    <%= render @view_module, @view_template, assigns %>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>
