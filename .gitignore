@@ -27,7 +27,7 @@ npm-debug.log
 /config/*.secret.exs
 
 # Elm
-/lib/platform/web/elm/elm-stuff
+/elm/elm-stuff
 
 # ExDoc
 /doc

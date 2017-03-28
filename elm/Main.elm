@@ -2,9 +2,10 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
 import Json.Decode as Decode
+import Json.Encode as Encode
 import Navigation
 
 
@@ -27,13 +28,17 @@ main =
 
 type alias Model =
     { currentPage : Page
+    , newPlayerUsername : String
     , players : List Player
     , games : List Game
+    , errors : String
     }
 
 
 type Page
     = Home
+    | SignUp
+    | SignIn
     | Players
     | Games
     | NotFound
@@ -68,8 +73,10 @@ init location =
 initialModel : Page -> Model
 initialModel page =
     { currentPage = page
+    , newPlayerUsername = ""
     , players = []
     , games = []
+    , errors = ""
     }
 
 
@@ -81,6 +88,8 @@ type Msg
     = NoOp
     | Navigate Page
     | ChangePage Page
+    | PlayerCreate String
+    | PlayerCreateHandler (Result Http.Error Player)
     | FetchPlayers (Result Http.Error (List Player))
     | FetchGames (Result Http.Error (List Game))
 
@@ -96,6 +105,15 @@ update msg model =
 
         ChangePage page ->
             ( { model | currentPage = page }, Cmd.none )
+
+        PlayerCreate username ->
+            ( model, performPlayerCreation username )
+
+        PlayerCreateHandler (Ok player) ->
+            ( model, Cmd.none )
+
+        PlayerCreateHandler (Err httpError) ->
+            ( { model | errors = httpError |> toString }, Cmd.none )
 
         FetchPlayers (Ok newPlayers) ->
             ( { model | players = newPlayers }, Cmd.none )
@@ -132,6 +150,12 @@ hashToPage hash =
         "#/" ->
             Home
 
+        "#/signup" ->
+            SignUp
+
+        "#/signin" ->
+            SignIn
+
         "#/players" ->
             Players
 
@@ -147,6 +171,12 @@ pageToHash page =
     case page of
         Home ->
             "#/"
+
+        SignUp ->
+            "#/signup"
+
+        SignIn ->
+            "#/signin"
 
         Players ->
             "#/players"
@@ -164,6 +194,12 @@ pageView model =
         Home ->
             viewHomePage
 
+        SignUp ->
+            viewSignUpPage model
+
+        SignIn ->
+            viewSignInPage
+
         Players ->
             viewPlayersPage model
 
@@ -176,6 +212,30 @@ pageView model =
 
 
 -- API
+
+
+newPlayer : String -> Encode.Value
+newPlayer username =
+    Encode.object
+        [ ( "player"
+          , Encode.object
+                [ ( "username", Encode.string username )
+                , ( "score", Encode.int 0 )
+                ]
+          )
+        ]
+
+
+playerCreation : String -> Http.Request Player
+playerCreation username =
+    Http.post "/api/players" (Http.jsonBody (newPlayer username)) decodePlayerData
+
+
+performPlayerCreation : String -> Cmd Msg
+performPlayerCreation username =
+    username
+        |> playerCreation
+        |> Http.send PlayerCreateHandler
 
 
 fetchAll : Cmd Msg
@@ -299,14 +359,20 @@ viewNavbarNavLinks =
       --     <li><%= link "Sign Up", to: player_path(@conn, :new) %></li>
       --     <li><%= link "Sign In", to: player_session_path(@conn, :new) %></li>
       --   <% end %>
-    , li [] [ a [ href "/players/new" ] [ text "Sign Up" ] ]
-    , li [] [ a [ href "/sessions/new" ] [ text "Sign In" ] ]
+    , li [] [ a [ onClick <| Navigate SignUp ] [ text "Sign Up" ] ]
+    , li [] [ a [ onClick <| Navigate SignIn ] [ text "Sign In" ] ]
     ]
 
 
 viewPage : Model -> Html Msg
 viewPage model =
     case model.currentPage of
+        SignUp ->
+            viewSignUpPage model
+
+        SignIn ->
+            viewSignInPage
+
         Home ->
             viewHomePage
 
@@ -380,6 +446,46 @@ viewHomeContent =
                     , text " to track scores and manage player accounts."
                     ]
                 ]
+            ]
+        ]
+
+
+viewSignUpPage : Model -> Html Msg
+viewSignUpPage model =
+    div [ class "container" ]
+        [ h2 [] [ text "Player Sign Up" ]
+          -- <%= form_for @changeset, player_path(@conn, :create), fn f -> %>
+          -- hidden input for csrf_token
+        , Html.form [ onSubmit <| PlayerCreate model.newPlayerUsername, acceptCharset "UTF-8", action "/players", method "post" ]
+            [ div [ class "form-group" ]
+                [ label [ class "control-label", for "player_username" ] [ text "Player Username" ]
+                , input [ class "form-control", id "player_username", name "player[username]", placeholder "Enter username...", type_ "text" ] []
+                ]
+            , div [ class "form-group" ]
+                [ label [ class "control-label", for "player_password" ] [ text "Player Password" ]
+                , input [ class "form-control", id "player_password", name "player[password]", placeholder "Enter password...", type_ "text" ] []
+                ]
+            , button [ class "btn btn-primary", type_ "submit" ] [ text "Sign Up" ]
+            ]
+        ]
+
+
+viewSignInPage : Html Msg
+viewSignInPage =
+    div [ class "container" ]
+        [ h2 [] [ text "Player Sign In" ]
+          -- <%= form_for @conn, player_session_path(@conn, :create), [as: :session], fn f -> %>
+          -- hidden input for csrf_token
+        , Html.form [ acceptCharset "UTF-8", action "/sessions", method "post" ]
+            [ div [ class "form-group" ]
+                [ label [ class "control-label", for "session_username" ] [ text "Player Username" ]
+                , input [ class "form-control", id "session_username", name "session[username]", placeholder "Enter username...", type_ "text" ] []
+                ]
+            , div [ class "form-group" ]
+                [ label [ class "control-label", for "session_password" ] [ text "Player Password" ]
+                , input [ class "form-control", id "session_password", name "session[password]", placeholder "Enter password...", type_ "text" ] []
+                ]
+            , button [ class "btn btn-primary", type_ "submit" ] [ text "Sign In" ]
             ]
         ]
 
