@@ -9,7 +9,7 @@ which is the demo application from the
 
 ## Requirements
 
-- Elixir 1.4.1
+- Elixir 1.4
 - Phoenix 1.3
 
 ## Setup
@@ -28,6 +28,7 @@ which is the demo application from the
 [TravisCI](https://travis-ci.org/elixir-elm-tutorial/platform).
 - Run a static analysis check with `mix credo --strict`.
 - Generate documentation with `mix docs`.
+- Check for outdated dependencies with `mix hex.outdated`.
 
 ## Deployment
 
