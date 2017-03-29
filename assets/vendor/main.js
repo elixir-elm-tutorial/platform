@@ -13859,6 +13859,177 @@ var _user$project$Main$viewPlayersPage = function (_p2) {
 			}
 		});
 };
+var _user$project$Main$viewSignInPage = A2(
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('container'),
+		_1: {ctor: '[]'}
+	},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$h2,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('Player Sign In'),
+				_1: {ctor: '[]'}
+			}),
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$form,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$acceptCharset('UTF-8'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$action('/sessions'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$method('post'),
+							_1: {ctor: '[]'}
+						}
+					}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('form-group'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$label,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('control-label'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$for('session_username'),
+										_1: {ctor: '[]'}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Player Username'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$input,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('form-control'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$id('session_username'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$name('session[username]'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$placeholder('Enter username...'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$type_('text'),
+														_1: {ctor: '[]'}
+													}
+												}
+											}
+										}
+									},
+									{ctor: '[]'}),
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('form-group'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$label,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('control-label'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$for('session_password'),
+											_1: {ctor: '[]'}
+										}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Player Password'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$input,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('form-control'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$id('session_password'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$name('session[password]'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$placeholder('Enter password...'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$type_('text'),
+															_1: {ctor: '[]'}
+														}
+													}
+												}
+											}
+										},
+										{ctor: '[]'}),
+									_1: {ctor: '[]'}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('btn btn-primary'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$type_('submit'),
+										_1: {ctor: '[]'}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Sign In'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}),
+			_1: {ctor: '[]'}
+		}
+	});
 var _user$project$Main$viewHomeContent = A2(
 	_elm_lang$html$Html$div,
 	{
@@ -14105,7 +14276,7 @@ var _user$project$Main$viewHomeHero = A2(
 					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('col-xs-6'),
+						_0: _elm_lang$html$Html_Attributes$class('col-xs-5'),
 						_1: {ctor: '[]'}
 					},
 					{
@@ -14141,7 +14312,7 @@ var _user$project$Main$viewHomeHero = A2(
 						_elm_lang$html$Html$div,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('col-xs-6'),
+							_0: _elm_lang$html$Html_Attributes$class('col-xs-7'),
 							_1: {ctor: '[]'}
 						},
 						{
@@ -14161,30 +14332,15 @@ var _user$project$Main$viewHomeHero = A2(
 							_1: {
 								ctor: '::',
 								_0: A2(
-									_elm_lang$html$Html$a,
+									_elm_lang$html$Html$p,
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$href('https://leanpub.com/elixir-elm-tutorial'),
-										_1: {
-											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$target('_blank'),
-											_1: {ctor: '[]'}
-										}
+										_0: _elm_lang$html$Html_Attributes$class('hero-tagline'),
+										_1: {ctor: '[]'}
 									},
 									{
 										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$button,
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$class('btn btn-lg btn-success'),
-												_1: {ctor: '[]'}
-											},
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text('Buy the Book!'),
-												_1: {ctor: '[]'}
-											}),
+										_0: _elm_lang$html$Html$text('Create a small gaming platform with Elixir and learn functional programming with Elm!'),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -14193,49 +14349,86 @@ var _user$project$Main$viewHomeHero = A2(
 										_elm_lang$html$Html$a,
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$class('twitter-hashtag-button'),
+											_0: _elm_lang$html$Html_Attributes$href('https://leanpub.com/elixir-elm-tutorial'),
 											_1: {
 												ctor: '::',
-												_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-show-count', 'false'),
-												_1: {
-													ctor: '::',
-													_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-text', 'I\'m learning functional programming with Elixir and Elm!'),
-													_1: {
-														ctor: '::',
-														_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-url', 'https://leanpub.com/elixir-elm-tutorial'),
-														_1: {
-															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$href('https://twitter.com/intent/tweet?button_hashtag=ElixirElmTutorial'),
-															_1: {ctor: '[]'}
-														}
-													}
-												}
+												_0: _elm_lang$html$Html_Attributes$target('_blank'),
+												_1: {ctor: '[]'}
 											}
 										},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html$text('Tweet #ElixirElmTutorial'),
+											_0: A2(
+												_elm_lang$html$Html$button,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('btn btn-lg btn-success'),
+													_1: {ctor: '[]'}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Get the Book!'),
+													_1: {ctor: '[]'}
+												}),
 											_1: {ctor: '[]'}
 										}),
 									_1: {
 										ctor: '::',
-										_0: A3(
-											_elm_lang$html$Html$node,
-											'script',
+										_0: A2(
+											_elm_lang$html$Html$div,
+											{ctor: '[]'},
 											{
 												ctor: '::',
-												_0: A2(_elm_lang$html$Html_Attributes$attribute, 'async', ''),
+												_0: A2(
+													_elm_lang$html$Html$a,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$class('twitter-hashtag-button'),
+														_1: {
+															ctor: '::',
+															_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-show-count', 'false'),
+															_1: {
+																ctor: '::',
+																_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-text', 'I\'m learning functional programming with Elixir and Elm!'),
+																_1: {
+																	ctor: '::',
+																	_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-url', 'https://leanpub.com/elixir-elm-tutorial'),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$href('https://twitter.com/intent/tweet?button_hashtag=ElixirElmTutorial'),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														}
+													},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Tweet #ElixirElmTutorial'),
+														_1: {ctor: '[]'}
+													}),
 												_1: {
 													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$charset('utf-8'),
-													_1: {
-														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$src('//platform.twitter.com/widgets.js'),
-														_1: {ctor: '[]'}
-													}
+													_0: A3(
+														_elm_lang$html$Html$node,
+														'script',
+														{
+															ctor: '::',
+															_0: A2(_elm_lang$html$Html_Attributes$attribute, 'async', ''),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$charset('utf-8'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$src('//platform.twitter.com/widgets.js'),
+																	_1: {ctor: '[]'}
+																}
+															}
+														},
+														{ctor: '[]'}),
+													_1: {ctor: '[]'}
 												}
-											},
-											{ctor: '[]'}),
+											}),
 										_1: {ctor: '[]'}
 									}
 								}
@@ -14258,40 +14451,86 @@ var _user$project$Main$viewHomePage = A2(
 			_1: {ctor: '[]'}
 		}
 	});
-var _user$project$Main$viewPage = function (model) {
-	var _p4 = model.currentPage;
-	switch (_p4.ctor) {
-		case 'Home':
-			return _user$project$Main$viewHomePage;
-		case 'Players':
-			return _user$project$Main$viewPlayersPage(model);
-		case 'Games':
-			return _user$project$Main$viewGamesPage(model);
-		default:
-			return _user$project$Main$viewHomePage;
+var _user$project$Main$viewNavbarNavButtons = {
+	ctor: '::',
+	_0: A2(
+		_elm_lang$html$Html$a,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$href('/players/new'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('btn btn-sm btn-success'),
+				_1: {ctor: '[]'}
+			}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('Create Account'),
+			_1: {ctor: '[]'}
+		}),
+	_1: {
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$a,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$href('/sessions/new'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('btn btn-sm btn-info'),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('Sign In'),
+				_1: {ctor: '[]'}
+			}),
+		_1: {ctor: '[]'}
 	}
 };
-var _user$project$Main$subscriptions = function (_p5) {
+var _user$project$Main$subscriptions = function (_p4) {
 	return _elm_lang$core$Platform_Sub$none;
 };
-var _user$project$Main$pageView = function (model) {
-	var _p6 = model.currentPage;
-	switch (_p6.ctor) {
-		case 'Home':
-			return _user$project$Main$viewHomePage;
-		case 'Players':
-			return _user$project$Main$viewPlayersPage(model);
-		case 'Games':
-			return _user$project$Main$viewGamesPage(model);
-		default:
-			return _user$project$Main$viewHomePage;
-	}
+var _user$project$Main$newPlayer = function (username) {
+	return _elm_lang$core$Json_Encode$object(
+		{
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple2',
+				_0: 'player',
+				_1: _elm_lang$core$Json_Encode$object(
+					{
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'username',
+							_1: _elm_lang$core$Json_Encode$string(username)
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: 'score',
+								_1: _elm_lang$core$Json_Encode$int(0)
+							},
+							_1: {ctor: '[]'}
+						}
+					})
+			},
+			_1: {ctor: '[]'}
+		});
 };
 var _user$project$Main$pageToHash = function (page) {
-	var _p7 = page;
-	switch (_p7.ctor) {
+	var _p5 = page;
+	switch (_p5.ctor) {
 		case 'Home':
 			return '#/';
+		case 'SignUp':
+			return '#/signup';
+		case 'SignIn':
+			return '#/signin';
 		case 'Players':
 			return '#/players';
 		case 'Games':
@@ -14300,66 +14539,18 @@ var _user$project$Main$pageToHash = function (page) {
 			return '#/notfound';
 	}
 };
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		var _p8 = msg;
-		switch (_p8.ctor) {
-			case 'NoOp':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'Navigate':
-				var _p9 = _p8._0;
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{currentPage: _p9}),
-					_1: _elm_lang$navigation$Navigation$newUrl(
-						_user$project$Main$pageToHash(_p9))
-				};
-			case 'ChangePage':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{currentPage: _p8._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'FetchPlayers':
-				if (_p8._0.ctor === 'Ok') {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{players: _p8._0._0}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				}
-			default:
-				if (_p8._0.ctor === 'Ok') {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{games: _p8._0._0}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				}
-		}
-	});
 var _user$project$Main$initialModel = function (page) {
 	return {
 		currentPage: page,
+		newPlayerUsername: '',
 		players: {ctor: '[]'},
-		games: {ctor: '[]'}
+		games: {ctor: '[]'},
+		errors: ''
 	};
 };
-var _user$project$Main$Model = F3(
-	function (a, b, c) {
-		return {currentPage: a, players: b, games: c};
+var _user$project$Main$Model = F5(
+	function (a, b, c, d, e) {
+		return {currentPage: a, newPlayerUsername: b, players: c, games: d, errors: e};
 	});
 var _user$project$Main$Player = F2(
 	function (a, b) {
@@ -14370,6 +14561,14 @@ var _user$project$Main$decodePlayerData = A3(
 	_user$project$Main$Player,
 	A2(_elm_lang$core$Json_Decode$field, 'username', _elm_lang$core$Json_Decode$string),
 	A2(_elm_lang$core$Json_Decode$field, 'score', _elm_lang$core$Json_Decode$int));
+var _user$project$Main$playerCreation = function (username) {
+	return A3(
+		_elm_lang$http$Http$post,
+		'/api/players',
+		_elm_lang$http$Http$jsonBody(
+			_user$project$Main$newPlayer(username)),
+		_user$project$Main$decodePlayerData);
+};
 var _user$project$Main$decodePlayerList = _elm_lang$core$Json_Decode$list(_user$project$Main$decodePlayerData);
 var _user$project$Main$decodePlayerFetch = A2(
 	_elm_lang$core$Json_Decode$at,
@@ -14401,12 +14600,18 @@ var _user$project$Main$decodeGameFetch = A2(
 var _user$project$Main$NotFound = {ctor: 'NotFound'};
 var _user$project$Main$Games = {ctor: 'Games'};
 var _user$project$Main$Players = {ctor: 'Players'};
+var _user$project$Main$SignIn = {ctor: 'SignIn'};
+var _user$project$Main$SignUp = {ctor: 'SignUp'};
 var _user$project$Main$Home = {ctor: 'Home'};
 var _user$project$Main$hashToPage = function (hash) {
-	var _p10 = hash;
-	switch (_p10) {
+	var _p6 = hash;
+	switch (_p6) {
 		case '#/':
 			return _user$project$Main$Home;
+		case '#/signup':
+			return _user$project$Main$SignUp;
+		case '#/signin':
+			return _user$project$Main$SignIn;
 		case '#/players':
 			return _user$project$Main$Players;
 		case '#/games':
@@ -14446,6 +14651,300 @@ var _user$project$Main$fetchPlayers = A2(
 	_elm_lang$http$Http$send,
 	_user$project$Main$FetchPlayers,
 	A2(_elm_lang$http$Http$get, '/api/players', _user$project$Main$decodePlayerFetch));
+var _user$project$Main$PlayerCreateHandler = function (a) {
+	return {ctor: 'PlayerCreateHandler', _0: a};
+};
+var _user$project$Main$performPlayerCreation = function (username) {
+	return A2(
+		_elm_lang$http$Http$send,
+		_user$project$Main$PlayerCreateHandler,
+		_user$project$Main$playerCreation(username));
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p7 = msg;
+		switch (_p7.ctor) {
+			case 'NoOp':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'Navigate':
+				var _p8 = _p7._0;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{currentPage: _p8}),
+					_1: _elm_lang$navigation$Navigation$newUrl(
+						_user$project$Main$pageToHash(_p8))
+				};
+			case 'ChangePage':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{currentPage: _p7._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'PlayerCreate':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _user$project$Main$performPlayerCreation(_p7._0)
+				};
+			case 'PlayerCreateHandler':
+				if (_p7._0.ctor === 'Ok') {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errors: _elm_lang$core$Basics$toString(_p7._0._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'FetchPlayers':
+				if (_p7._0.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{players: _p7._0._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			default:
+				if (_p7._0.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{games: _p7._0._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+		}
+	});
+var _user$project$Main$PlayerCreate = function (a) {
+	return {ctor: 'PlayerCreate', _0: a};
+};
+var _user$project$Main$viewSignUpPage = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('container'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h2,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Player Sign Up'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$form,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onSubmit(
+							_user$project$Main$PlayerCreate(model.newPlayerUsername)),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$acceptCharset('UTF-8'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$action('/players'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$method('post'),
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('form-group'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$label,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('control-label'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$for('player_username'),
+											_1: {ctor: '[]'}
+										}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Player Username'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$input,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('form-control'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$id('player_username'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$name('player[username]'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$placeholder('Enter username...'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$type_('text'),
+															_1: {ctor: '[]'}
+														}
+													}
+												}
+											}
+										},
+										{ctor: '[]'}),
+									_1: {ctor: '[]'}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('form-group'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$label,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('control-label'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$for('player_password'),
+												_1: {ctor: '[]'}
+											}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Player Password'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$input,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$class('form-control'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$id('player_password'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$name('player[password]'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$placeholder('Enter password...'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$type_('text'),
+																_1: {ctor: '[]'}
+															}
+														}
+													}
+												}
+											},
+											{ctor: '[]'}),
+										_1: {ctor: '[]'}
+									}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$button,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('btn btn-primary'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$type_('submit'),
+											_1: {ctor: '[]'}
+										}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Sign Up'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Main$pageView = function (model) {
+	var _p9 = model.currentPage;
+	switch (_p9.ctor) {
+		case 'Home':
+			return _user$project$Main$viewHomePage;
+		case 'SignUp':
+			return _user$project$Main$viewSignUpPage(model);
+		case 'SignIn':
+			return _user$project$Main$viewSignInPage;
+		case 'Players':
+			return _user$project$Main$viewPlayersPage(model);
+		case 'Games':
+			return _user$project$Main$viewGamesPage(model);
+		default:
+			return _user$project$Main$viewHomePage;
+	}
+};
+var _user$project$Main$viewPage = function (model) {
+	var _p10 = model.currentPage;
+	switch (_p10.ctor) {
+		case 'SignUp':
+			return _user$project$Main$viewSignUpPage(model);
+		case 'SignIn':
+			return _user$project$Main$viewSignInPage;
+		case 'Home':
+			return _user$project$Main$viewHomePage;
+		case 'Players':
+			return _user$project$Main$viewPlayersPage(model);
+		case 'Games':
+			return _user$project$Main$viewGamesPage(model);
+		default:
+			return _user$project$Main$viewHomePage;
+	}
+};
 var _user$project$Main$ChangePage = function (a) {
 	return {ctor: 'ChangePage', _0: a};
 };
@@ -14456,7 +14955,7 @@ var _user$project$Main$locationToMessage = function (location) {
 var _user$project$Main$Navigate = function (a) {
 	return {ctor: 'Navigate', _0: a};
 };
-var _user$project$Main$viewNavbarHeader = A2(
+var _user$project$Main$viewNavbarBrand = A2(
 	_elm_lang$html$Html$div,
 	{
 		ctor: '::',
@@ -14552,51 +15051,7 @@ var _user$project$Main$viewNavbarNavLinks = {
 						}),
 					_1: {ctor: '[]'}
 				}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$li,
-					{ctor: '[]'},
-					{
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$a,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$href('/players/new'),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text('Sign Up'),
-								_1: {ctor: '[]'}
-							}),
-						_1: {ctor: '[]'}
-					}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$li,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$a,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$href('/sessions/new'),
-									_1: {ctor: '[]'}
-								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text('Sign In'),
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				}
-			}
+			_1: {ctor: '[]'}
 		}
 	}
 };
@@ -14604,7 +15059,7 @@ var _user$project$Main$viewNavbarNav = A2(
 	_elm_lang$html$Html$div,
 	{
 		ctor: '::',
-		_0: _elm_lang$html$Html_Attributes$class('collapse navbar-collapse navbar-right'),
+		_0: _elm_lang$html$Html_Attributes$class('collapse navbar-collapse'),
 		_1: {ctor: '[]'}
 	},
 	{
@@ -14617,10 +15072,21 @@ var _user$project$Main$viewNavbarNav = A2(
 				_1: {ctor: '[]'}
 			},
 			_user$project$Main$viewNavbarNavLinks),
-		_1: {ctor: '[]'}
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$span,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('nav-buttons navbar-right'),
+					_1: {ctor: '[]'}
+				},
+				_user$project$Main$viewNavbarNavButtons),
+			_1: {ctor: '[]'}
+		}
 	});
 var _user$project$Main$viewNavbar = A2(
-	_elm_lang$html$Html$div,
+	_elm_lang$html$Html$nav,
 	{
 		ctor: '::',
 		_0: _elm_lang$html$Html_Attributes$class('navbar navbar-default navbar-static-top'),
@@ -14637,7 +15103,7 @@ var _user$project$Main$viewNavbar = A2(
 			},
 			{
 				ctor: '::',
-				_0: _user$project$Main$viewNavbarHeader,
+				_0: _user$project$Main$viewNavbarBrand,
 				_1: {
 					ctor: '::',
 					_0: _user$project$Main$viewNavbarNav,
@@ -14681,7 +15147,7 @@ var _user$project$Main$NoOp = {ctor: 'NoOp'};
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Main.Msg":{"args":[],"tags":{"FetchGames":["Result.Result Http.Error (List Main.Game)"],"FetchPlayers":["Result.Result Http.Error (List Main.Player)"],"Navigate":["Main.Page"],"ChangePage":["Main.Page"],"NoOp":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Main.Page":{"args":[],"tags":{"Home":[],"Games":[],"NotFound":[],"Players":[]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Main.Player":{"args":[],"type":"{ username : String, score : Int }"},"Main.Game":{"args":[],"type":"{ title : String, description : String, authorId : Int }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Main.Msg":{"args":[],"tags":{"PlayerCreate":["String"],"PlayerCreateHandler":["Result.Result Http.Error Main.Player"],"FetchGames":["Result.Result Http.Error (List Main.Game)"],"FetchPlayers":["Result.Result Http.Error (List Main.Player)"],"Navigate":["Main.Page"],"ChangePage":["Main.Page"],"NoOp":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Main.Page":{"args":[],"tags":{"SignIn":[],"Home":[],"Games":[],"NotFound":[],"SignUp":[],"Players":[]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Main.Player":{"args":[],"type":"{ username : String, score : Int }"},"Main.Game":{"args":[],"type":"{ title : String, description : String, authorId : Int }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

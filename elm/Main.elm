@@ -2,9 +2,10 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
 import Json.Decode as Decode
+import Json.Encode as Encode
 import Navigation
 
 
@@ -27,13 +28,17 @@ main =
 
 type alias Model =
     { currentPage : Page
+    , newPlayerUsername : String
     , players : List Player
     , games : List Game
+    , errors : String
     }
 
 
 type Page
     = Home
+    | SignUp
+    | SignIn
     | Players
     | Games
     | NotFound
@@ -68,8 +73,10 @@ init location =
 initialModel : Page -> Model
 initialModel page =
     { currentPage = page
+    , newPlayerUsername = ""
     , players = []
     , games = []
+    , errors = ""
     }
 
 
@@ -81,6 +88,8 @@ type Msg
     = NoOp
     | Navigate Page
     | ChangePage Page
+    | PlayerCreate String
+    | PlayerCreateHandler (Result Http.Error Player)
     | FetchPlayers (Result Http.Error (List Player))
     | FetchGames (Result Http.Error (List Game))
 
@@ -96,6 +105,15 @@ update msg model =
 
         ChangePage page ->
             ( { model | currentPage = page }, Cmd.none )
+
+        PlayerCreate username ->
+            ( model, performPlayerCreation username )
+
+        PlayerCreateHandler (Ok player) ->
+            ( model, Cmd.none )
+
+        PlayerCreateHandler (Err httpError) ->
+            ( { model | errors = httpError |> toString }, Cmd.none )
 
         FetchPlayers (Ok newPlayers) ->
             ( { model | players = newPlayers }, Cmd.none )
@@ -132,6 +150,12 @@ hashToPage hash =
         "#/" ->
             Home
 
+        "#/signup" ->
+            SignUp
+
+        "#/signin" ->
+            SignIn
+
         "#/players" ->
             Players
 
@@ -147,6 +171,12 @@ pageToHash page =
     case page of
         Home ->
             "#/"
+
+        SignUp ->
+            "#/signup"
+
+        SignIn ->
+            "#/signin"
 
         Players ->
             "#/players"
@@ -164,6 +194,12 @@ pageView model =
         Home ->
             viewHomePage
 
+        SignUp ->
+            viewSignUpPage model
+
+        SignIn ->
+            viewSignInPage
+
         Players ->
             viewPlayersPage model
 
@@ -176,6 +212,30 @@ pageView model =
 
 
 -- API
+
+
+newPlayer : String -> Encode.Value
+newPlayer username =
+    Encode.object
+        [ ( "player"
+          , Encode.object
+                [ ( "username", Encode.string username )
+                , ( "score", Encode.int 0 )
+                ]
+          )
+        ]
+
+
+playerCreation : String -> Http.Request Player
+playerCreation username =
+    Http.post "/api/players" (Http.jsonBody (newPlayer username)) decodePlayerData
+
+
+performPlayerCreation : String -> Cmd Msg
+performPlayerCreation username =
+    username
+        |> playerCreation
+        |> Http.send PlayerCreateHandler
 
 
 fetchAll : Cmd Msg
@@ -265,16 +325,16 @@ viewHeader =
 
 viewNavbar : Html Msg
 viewNavbar =
-    div [ class "navbar navbar-default navbar-static-top" ]
+    nav [ class "navbar navbar-default navbar-static-top" ]
         [ div [ class "container" ]
-            [ viewNavbarHeader
+            [ viewNavbarBrand
             , viewNavbarNav
             ]
         ]
 
 
-viewNavbarHeader : Html Msg
-viewNavbarHeader =
+viewNavbarBrand : Html Msg
+viewNavbarBrand =
     div [ class "navbar-header" ]
         [ a [ class "navbar-brand", onClick <| Navigate Home ] [ text "Elixir and Elm Tutorial" ]
         ]
@@ -282,8 +342,9 @@ viewNavbarHeader =
 
 viewNavbarNav : Html Msg
 viewNavbarNav =
-    div [ class "collapse navbar-collapse navbar-right" ]
+    div [ class "collapse navbar-collapse" ]
         [ ul [ class "nav navbar-nav" ] viewNavbarNavLinks
+        , span [ class "nav-buttons navbar-right" ] viewNavbarNavButtons
         ]
 
 
@@ -292,6 +353,12 @@ viewNavbarNavLinks =
     [ li [] [ a [ href "https://leanpub.com/elixir-elm-tutorial", target "_blank" ] [ text "Book" ] ]
     , li [] [ a [ onClick <| Navigate Games ] [ text "Games" ] ]
     , li [] [ a [ href "/players" ] [ text "Players" ] ]
+    ]
+
+
+viewNavbarNavButtons : List (Html Msg)
+viewNavbarNavButtons =
+    [ -- Phoenix Authentication
       --   <%= if @current_user do %>
       --     <li class="navbar-text">Logged in as <strong><%= @current_user.username %></strong></li>
       --     <li><%= link "Log Out", to: player_session_path(@conn, :delete, @current_user), method: "delete", class: "navbar-link" %></li>
@@ -299,14 +366,23 @@ viewNavbarNavLinks =
       --     <li><%= link "Sign Up", to: player_path(@conn, :new) %></li>
       --     <li><%= link "Sign In", to: player_session_path(@conn, :new) %></li>
       --   <% end %>
-    , li [] [ a [ href "/players/new" ] [ text "Sign Up" ] ]
-    , li [] [ a [ href "/sessions/new" ] [ text "Sign In" ] ]
+      -- Elm Authentication Buttons
+      -- a [ onClick <| Navigate SignUp, class "btn btn-sm btn-success" ] [ text "Create Account" ]
+      -- a [ onClick <| Navigate SignIn, class "btn btn-sm btn-info" ] [ text "Sign In" ]
+      a [ href "/players/new", class "btn btn-sm btn-success" ] [ text "Create Account" ]
+    , a [ href "/sessions/new", class "btn btn-sm btn-info" ] [ text "Sign In" ]
     ]
 
 
 viewPage : Model -> Html Msg
 viewPage model =
     case model.currentPage of
+        SignUp ->
+            viewSignUpPage model
+
+        SignIn ->
+            viewSignInPage
+
         Home ->
             viewHomePage
 
@@ -332,15 +408,18 @@ viewHomeHero : Html Msg
 viewHomeHero =
     div [ class "container-fluid hero" ]
         [ div [ class "container" ]
-            [ div [ class "col-xs-6" ]
+            [ div [ class "col-xs-5" ]
                 [ a [ href "https://leanpub.com/elixir-elm-tutorial" ] [ img [ class "hero-image", src "images/book_cover.png" ] [] ]
                 ]
-            , div [ class "col-xs-6" ]
+            , div [ class "col-xs-7" ]
                 [ h1 [ class "hero-header" ]
                     [ text "Want to learn how to create a site like this?" ]
-                , a [ href "https://leanpub.com/elixir-elm-tutorial", target "_blank" ] [ button [ class "btn btn-lg btn-success" ] [ text "Buy the Book!" ] ]
-                , a [ class "twitter-hashtag-button", attribute "data-show-count" "false", attribute "data-text" "I'm learning functional programming with Elixir and Elm!", attribute "data-url" "https://leanpub.com/elixir-elm-tutorial", href "https://twitter.com/intent/tweet?button_hashtag=ElixirElmTutorial" ] [ text "Tweet #ElixirElmTutorial" ]
-                , node "script" [ attribute "async" "", charset "utf-8", src "//platform.twitter.com/widgets.js" ] []
+                , p [ class "hero-tagline" ] [ text "Create a small gaming platform with Elixir and learn functional programming with Elm!" ]
+                , a [ href "https://leanpub.com/elixir-elm-tutorial", target "_blank" ] [ button [ class "btn btn-lg btn-success" ] [ text "Get the Book!" ] ]
+                , div []
+                    [ a [ class "twitter-hashtag-button", attribute "data-show-count" "false", attribute "data-text" "I'm learning functional programming with Elixir and Elm!", attribute "data-url" "https://leanpub.com/elixir-elm-tutorial", href "https://twitter.com/intent/tweet?button_hashtag=ElixirElmTutorial" ] [ text "Tweet #ElixirElmTutorial" ]
+                    , node "script" [ attribute "async" "", charset "utf-8", src "//platform.twitter.com/widgets.js" ] []
+                    ]
                 ]
             ]
         ]
@@ -380,6 +459,46 @@ viewHomeContent =
                     , text " to track scores and manage player accounts."
                     ]
                 ]
+            ]
+        ]
+
+
+viewSignUpPage : Model -> Html Msg
+viewSignUpPage model =
+    div [ class "container" ]
+        [ h2 [] [ text "Player Sign Up" ]
+          -- <%= form_for @changeset, player_path(@conn, :create), fn f -> %>
+          -- hidden input for csrf_token
+        , Html.form [ onSubmit <| PlayerCreate model.newPlayerUsername, acceptCharset "UTF-8", action "/players", method "post" ]
+            [ div [ class "form-group" ]
+                [ label [ class "control-label", for "player_username" ] [ text "Player Username" ]
+                , input [ class "form-control", id "player_username", name "player[username]", placeholder "Enter username...", type_ "text" ] []
+                ]
+            , div [ class "form-group" ]
+                [ label [ class "control-label", for "player_password" ] [ text "Player Password" ]
+                , input [ class "form-control", id "player_password", name "player[password]", placeholder "Enter password...", type_ "text" ] []
+                ]
+            , button [ class "btn btn-primary", type_ "submit" ] [ text "Sign Up" ]
+            ]
+        ]
+
+
+viewSignInPage : Html Msg
+viewSignInPage =
+    div [ class "container" ]
+        [ h2 [] [ text "Player Sign In" ]
+          -- <%= form_for @conn, player_session_path(@conn, :create), [as: :session], fn f -> %>
+          -- hidden input for csrf_token
+        , Html.form [ acceptCharset "UTF-8", action "/sessions", method "post" ]
+            [ div [ class "form-group" ]
+                [ label [ class "control-label", for "session_username" ] [ text "Player Username" ]
+                , input [ class "form-control", id "session_username", name "session[username]", placeholder "Enter username...", type_ "text" ] []
+                ]
+            , div [ class "form-group" ]
+                [ label [ class "control-label", for "session_password" ] [ text "Player Password" ]
+                , input [ class "form-control", id "session_password", name "session[password]", placeholder "Enter password...", type_ "text" ] []
+                ]
+            , button [ class "btn btn-primary", type_ "submit" ] [ text "Sign In" ]
             ]
         ]
 

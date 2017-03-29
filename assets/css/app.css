@@ -16,6 +16,23 @@ body {
   margin-bottom: 0 !important;
 }
 
+.nav-buttons {
+  padding-top: 12px;
+}
+
+.nav-buttons button {
+  margin-left: 5px;
+}
+
+.nav-buttons a {
+  color: white;
+}
+
+.nav-buttons a:hover {
+  color: white;
+  text-decoration: none;
+}
+
 .hero {
   background-color: black;
   color: white;
@@ -23,12 +40,16 @@ body {
 }
 
 .hero-image {
-  padding-top: 60px;
-  height: 340px;
+  padding-top: 30px;
+  height: 360px;
 }
 
 .hero-header {
   padding-top: 60px;
+}
+
+.hero-tagline {
+  font-weight: 400;
 }
 
 .twitter-hashtag-button {
