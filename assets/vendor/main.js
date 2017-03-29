@@ -14894,7 +14894,7 @@ var _user$project$Main$locationToMessage = function (location) {
 var _user$project$Main$Navigate = function (a) {
 	return {ctor: 'Navigate', _0: a};
 };
-var _user$project$Main$viewNavbarHeader = A2(
+var _user$project$Main$viewNavbarBrand = A2(
 	_elm_lang$html$Html$div,
 	{
 		ctor: '::',
@@ -14990,61 +14990,70 @@ var _user$project$Main$viewNavbarNavLinks = {
 						}),
 					_1: {ctor: '[]'}
 				}),
-			_1: {
+			_1: {ctor: '[]'}
+		}
+	}
+};
+var _user$project$Main$viewNavbarNavButtons = {
+	ctor: '::',
+	_0: A2(
+		_elm_lang$html$Html$button,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('btn btn-sm btn-success'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$a,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Events$onClick(
+						_user$project$Main$Navigate(_user$project$Main$SignUp)),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Create Account'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		}),
+	_1: {
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$button,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('btn btn-sm btn-info'),
+				_1: {ctor: '[]'}
+			},
+			{
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$li,
-					{ctor: '[]'},
+					_elm_lang$html$Html$a,
 					{
 						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$a,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onClick(
-									_user$project$Main$Navigate(_user$project$Main$SignUp)),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text('Sign Up'),
-								_1: {ctor: '[]'}
-							}),
+						_0: _elm_lang$html$Html_Events$onClick(
+							_user$project$Main$Navigate(_user$project$Main$SignIn)),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Sign In'),
 						_1: {ctor: '[]'}
 					}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$li,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$a,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onClick(
-										_user$project$Main$Navigate(_user$project$Main$SignIn)),
-									_1: {ctor: '[]'}
-								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text('Sign In'),
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				}
-			}
-		}
+				_1: {ctor: '[]'}
+			}),
+		_1: {ctor: '[]'}
 	}
 };
 var _user$project$Main$viewNavbarNav = A2(
 	_elm_lang$html$Html$div,
 	{
 		ctor: '::',
-		_0: _elm_lang$html$Html_Attributes$class('collapse navbar-collapse navbar-right'),
+		_0: _elm_lang$html$Html_Attributes$class('collapse navbar-collapse'),
 		_1: {ctor: '[]'}
 	},
 	{
@@ -15057,10 +15066,21 @@ var _user$project$Main$viewNavbarNav = A2(
 				_1: {ctor: '[]'}
 			},
 			_user$project$Main$viewNavbarNavLinks),
-		_1: {ctor: '[]'}
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$span,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('nav-buttons navbar-right'),
+					_1: {ctor: '[]'}
+				},
+				_user$project$Main$viewNavbarNavButtons),
+			_1: {ctor: '[]'}
+		}
 	});
 var _user$project$Main$viewNavbar = A2(
-	_elm_lang$html$Html$div,
+	_elm_lang$html$Html$nav,
 	{
 		ctor: '::',
 		_0: _elm_lang$html$Html_Attributes$class('navbar navbar-default navbar-static-top'),
@@ -15077,7 +15097,7 @@ var _user$project$Main$viewNavbar = A2(
 			},
 			{
 				ctor: '::',
-				_0: _user$project$Main$viewNavbarHeader,
+				_0: _user$project$Main$viewNavbarBrand,
 				_1: {
 					ctor: '::',
 					_0: _user$project$Main$viewNavbarNav,

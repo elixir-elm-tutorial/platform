@@ -325,16 +325,16 @@ viewHeader =
 
 viewNavbar : Html Msg
 viewNavbar =
-    div [ class "navbar navbar-default navbar-static-top" ]
+    nav [ class "navbar navbar-default navbar-static-top" ]
         [ div [ class "container" ]
-            [ viewNavbarHeader
+            [ viewNavbarBrand
             , viewNavbarNav
             ]
         ]
 
 
-viewNavbarHeader : Html Msg
-viewNavbarHeader =
+viewNavbarBrand : Html Msg
+viewNavbarBrand =
     div [ class "navbar-header" ]
         [ a [ class "navbar-brand", onClick <| Navigate Home ] [ text "Elixir and Elm Tutorial" ]
         ]
@@ -342,8 +342,9 @@ viewNavbarHeader =
 
 viewNavbarNav : Html Msg
 viewNavbarNav =
-    div [ class "collapse navbar-collapse navbar-right" ]
+    div [ class "collapse navbar-collapse" ]
         [ ul [ class "nav navbar-nav" ] viewNavbarNavLinks
+        , span [ class "nav-buttons navbar-right" ] viewNavbarNavButtons
         ]
 
 
@@ -352,15 +353,20 @@ viewNavbarNavLinks =
     [ li [] [ a [ href "https://leanpub.com/elixir-elm-tutorial", target "_blank" ] [ text "Book" ] ]
     , li [] [ a [ onClick <| Navigate Games ] [ text "Games" ] ]
     , li [] [ a [ href "/players" ] [ text "Players" ] ]
-      --   <%= if @current_user do %>
+    ]
+
+
+viewNavbarNavButtons : List (Html Msg)
+viewNavbarNavButtons =
+    [ --   <%= if @current_user do %>
       --     <li class="navbar-text">Logged in as <strong><%= @current_user.username %></strong></li>
       --     <li><%= link "Log Out", to: player_session_path(@conn, :delete, @current_user), method: "delete", class: "navbar-link" %></li>
       --   <% else %>
       --     <li><%= link "Sign Up", to: player_path(@conn, :new) %></li>
       --     <li><%= link "Sign In", to: player_session_path(@conn, :new) %></li>
       --   <% end %>
-    , li [] [ a [ onClick <| Navigate SignUp ] [ text "Sign Up" ] ]
-    , li [] [ a [ onClick <| Navigate SignIn ] [ text "Sign In" ] ]
+      button [ class "btn btn-sm btn-success" ] [ a [ onClick <| Navigate SignUp ] [ text "Create Account" ] ]
+    , button [ class "btn btn-sm btn-info" ] [ a [ onClick <| Navigate SignIn ] [ text "Sign In" ] ]
     ]
 
 

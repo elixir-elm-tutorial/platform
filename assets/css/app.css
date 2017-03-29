@@ -16,6 +16,23 @@ body {
   margin-bottom: 0 !important;
 }
 
+.nav-buttons {
+  padding-top: 12px;
+}
+
+.nav-buttons button {
+  margin-left: 5px;
+}
+
+.nav-buttons a {
+  color: white;
+}
+
+.nav-buttons a:hover {
+  color: white;
+  text-decoration: none;
+}
+
 .hero {
   background-color: black;
   color: white;
