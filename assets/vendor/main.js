@@ -14276,7 +14276,7 @@ var _user$project$Main$viewHomeHero = A2(
 					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('col-xs-6'),
+						_0: _elm_lang$html$Html_Attributes$class('col-xs-5'),
 						_1: {ctor: '[]'}
 					},
 					{
@@ -14312,7 +14312,7 @@ var _user$project$Main$viewHomeHero = A2(
 						_elm_lang$html$Html$div,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('col-xs-6'),
+							_0: _elm_lang$html$Html_Attributes$class('col-xs-7'),
 							_1: {ctor: '[]'}
 						},
 						{
@@ -14332,30 +14332,15 @@ var _user$project$Main$viewHomeHero = A2(
 							_1: {
 								ctor: '::',
 								_0: A2(
-									_elm_lang$html$Html$a,
+									_elm_lang$html$Html$p,
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$href('https://leanpub.com/elixir-elm-tutorial'),
-										_1: {
-											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$target('_blank'),
-											_1: {ctor: '[]'}
-										}
+										_0: _elm_lang$html$Html_Attributes$class('hero-tagline'),
+										_1: {ctor: '[]'}
 									},
 									{
 										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$button,
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$class('btn btn-lg btn-success'),
-												_1: {ctor: '[]'}
-											},
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text('Buy the Book!'),
-												_1: {ctor: '[]'}
-											}),
+										_0: _elm_lang$html$Html$text('Create a small gaming platform with Elixir and learn functional programming with Elm!'),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -14364,49 +14349,86 @@ var _user$project$Main$viewHomeHero = A2(
 										_elm_lang$html$Html$a,
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$class('twitter-hashtag-button'),
+											_0: _elm_lang$html$Html_Attributes$href('https://leanpub.com/elixir-elm-tutorial'),
 											_1: {
 												ctor: '::',
-												_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-show-count', 'false'),
-												_1: {
-													ctor: '::',
-													_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-text', 'I\'m learning functional programming with Elixir and Elm!'),
-													_1: {
-														ctor: '::',
-														_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-url', 'https://leanpub.com/elixir-elm-tutorial'),
-														_1: {
-															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$href('https://twitter.com/intent/tweet?button_hashtag=ElixirElmTutorial'),
-															_1: {ctor: '[]'}
-														}
-													}
-												}
+												_0: _elm_lang$html$Html_Attributes$target('_blank'),
+												_1: {ctor: '[]'}
 											}
 										},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html$text('Tweet #ElixirElmTutorial'),
+											_0: A2(
+												_elm_lang$html$Html$button,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('btn btn-lg btn-success'),
+													_1: {ctor: '[]'}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Get the Book!'),
+													_1: {ctor: '[]'}
+												}),
 											_1: {ctor: '[]'}
 										}),
 									_1: {
 										ctor: '::',
-										_0: A3(
-											_elm_lang$html$Html$node,
-											'script',
+										_0: A2(
+											_elm_lang$html$Html$div,
+											{ctor: '[]'},
 											{
 												ctor: '::',
-												_0: A2(_elm_lang$html$Html_Attributes$attribute, 'async', ''),
+												_0: A2(
+													_elm_lang$html$Html$a,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$class('twitter-hashtag-button'),
+														_1: {
+															ctor: '::',
+															_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-show-count', 'false'),
+															_1: {
+																ctor: '::',
+																_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-text', 'I\'m learning functional programming with Elixir and Elm!'),
+																_1: {
+																	ctor: '::',
+																	_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-url', 'https://leanpub.com/elixir-elm-tutorial'),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$href('https://twitter.com/intent/tweet?button_hashtag=ElixirElmTutorial'),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														}
+													},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Tweet #ElixirElmTutorial'),
+														_1: {ctor: '[]'}
+													}),
 												_1: {
 													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$charset('utf-8'),
-													_1: {
-														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$src('//platform.twitter.com/widgets.js'),
-														_1: {ctor: '[]'}
-													}
+													_0: A3(
+														_elm_lang$html$Html$node,
+														'script',
+														{
+															ctor: '::',
+															_0: A2(_elm_lang$html$Html_Attributes$attribute, 'async', ''),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$charset('utf-8'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$src('//platform.twitter.com/widgets.js'),
+																	_1: {ctor: '[]'}
+																}
+															}
+														},
+														{ctor: '[]'}),
+													_1: {ctor: '[]'}
 												}
-											},
-											{ctor: '[]'}),
+											}),
 										_1: {ctor: '[]'}
 									}
 								}

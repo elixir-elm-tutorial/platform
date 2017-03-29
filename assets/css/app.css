@@ -48,6 +48,10 @@ body {
   padding-top: 60px;
 }
 
+.hero-tagline {
+  font-weight: 400;
+}
+
 .twitter-hashtag-button {
   margin-top: 5px;
 }
