@@ -358,15 +358,19 @@ viewNavbarNavLinks =
 
 viewNavbarNavButtons : List (Html Msg)
 viewNavbarNavButtons =
-    [ --   <%= if @current_user do %>
+    [ -- Phoenix Authentication
+      --   <%= if @current_user do %>
       --     <li class="navbar-text">Logged in as <strong><%= @current_user.username %></strong></li>
       --     <li><%= link "Log Out", to: player_session_path(@conn, :delete, @current_user), method: "delete", class: "navbar-link" %></li>
       --   <% else %>
       --     <li><%= link "Sign Up", to: player_path(@conn, :new) %></li>
       --     <li><%= link "Sign In", to: player_session_path(@conn, :new) %></li>
       --   <% end %>
-      button [ class "btn btn-sm btn-success" ] [ a [ onClick <| Navigate SignUp ] [ text "Create Account" ] ]
-    , button [ class "btn btn-sm btn-info" ] [ a [ onClick <| Navigate SignIn ] [ text "Sign In" ] ]
+      -- Elm Authentication Buttons
+      -- a [ onClick <| Navigate SignUp, class "btn btn-sm btn-success" ] [ text "Create Account" ]
+      -- a [ onClick <| Navigate SignIn, class "btn btn-sm btn-info" ] [ text "Sign In" ]
+      a [ href "/players/new", class "btn btn-sm btn-success" ] [ text "Create Account" ]
+    , a [ href "/sessions/new", class "btn btn-sm btn-info" ] [ text "Sign In" ]
     ]
 
 
