@@ -17,5 +17,7 @@ Platform.Repo.insert!(%Platform.Players.Player{display_name: "Evan Czaplicki", u
 
 # Games
 
-Platform.Repo.insert!(%Platform.Games.Game{title: "Platform Game", description: "Platform game example.", author_id: 1})
-Platform.Repo.insert!(%Platform.Games.Game{title: "Adventure Game", description: "Adventure game example.", author_id: 2})
+Platform.Repo.insert!(%Platform.Games.Game{title: "Adventure Game", description: "Adventure game example.", author_id: 1})
+Platform.Repo.insert!(%Platform.Games.Game{title: "Driving Game", description: "Driving game example.", author_id: 1})
+Platform.Repo.insert!(%Platform.Games.Game{title: "Platform Game", description: "Platform game example.", author_id: 2})
+Platform.Repo.insert!(%Platform.Games.Game{title: "Sports Game", description: "Sports game example.", author_id: 2})
