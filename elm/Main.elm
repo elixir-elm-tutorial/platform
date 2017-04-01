@@ -543,24 +543,18 @@ viewGamesHero =
 viewGamesContent : Model -> Html Msg
 viewGamesContent { games } =
     div [ class "container" ]
-        (games |> List.map viewGame)
+        [ div
+            [ class "content" ]
+            (games |> List.map viewGame)
+        ]
 
 
 viewGame : Game -> Html Msg
 viewGame game =
-    div [ class "content" ]
-        [ div [ class "col-xs-6" ]
-            [ a [ href "/" ] [ img [ class "content-image games-image", src "images/games_sample.png" ] [] ]
-            , h2 [ class "games-header" ] [ text game.title ]
-            , p [ class "games-text" ]
-                [ text game.description
-                ]
-            ]
-        , div [ class "col-xs-6" ]
-            [ a [ href "/" ] [ img [ class "content-image games-image", src "images/games_sample.png" ] [] ]
-            , h2 [ class "games-header" ] [ text game.title ]
-            , p [ class "games-text" ]
-                [ text game.description
-                ]
+    div [ class "col-xs-6" ]
+        [ a [ href "/" ] [ img [ class "content-image games-image", src "images/games_sample.png" ] [] ]
+        , h2 [ class "games-header" ] [ text game.title ]
+        , p [ class "games-text" ]
+            [ text game.description
             ]
         ]
