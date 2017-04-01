@@ -65,3 +65,7 @@ body {
   border-radius: 10px;
   width: 400px;
 }
+
+.games-image {
+  width: 100%;
+}
