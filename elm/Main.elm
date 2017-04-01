@@ -552,7 +552,7 @@ viewGamesContent { games } =
 viewGame : Game -> Html Msg
 viewGame game =
     div [ class "col-xs-6" ]
-        [ a [ href "/" ] [ img [ class "content-image games-image", src "images/games_sample.png" ] [] ]
+        [ a [ href "/" ] [ img [ class "content-image game-image", src "images/games_sample.png" ] [] ]
         , h2 [ class "games-header" ] [ text game.title ]
         , p [ class "games-text" ]
             [ text game.description

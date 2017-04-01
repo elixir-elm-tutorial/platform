@@ -13607,7 +13607,7 @@ var _user$project$Main$viewGame = function (game) {
 						_elm_lang$html$Html$img,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('content-image games-image'),
+							_0: _elm_lang$html$Html_Attributes$class('content-image game-image'),
 							_1: {
 								ctor: '::',
 								_0: _elm_lang$html$Html_Attributes$src('images/games_sample.png'),
