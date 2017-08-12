@@ -1,0 +1,18 @@
+<h2>Show Player</h2>
+
+<ul>
+
+  <li>
+    <strong>Username:</strong>
+    <%= @player.username %>
+  </li>
+
+  <li>
+    <strong>Score:</strong>
+    <%= @player.score %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: player_path(@conn, :edit, @player) %></span>
+<span><%= link "Back", to: player_path(@conn, :index) %></span>

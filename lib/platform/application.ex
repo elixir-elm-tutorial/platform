@@ -1,9 +1,8 @@
 defmodule Platform.Application do
-  @moduledoc """
-  Platform OTP Application
-  """
   use Application
 
+  # See https://hexdocs.pm/elixir/Application.html
+  # for more information on OTP Applications
   def start(_type, _args) do
     import Supervisor.Spec
 
@@ -12,15 +11,21 @@ defmodule Platform.Application do
       # Start the Ecto repository
       supervisor(Platform.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(Platform.Web.Endpoint, []),
-      # Start your own worker by calling:
-      # Platform.Worker.start_link(arg1, arg2, arg3)
+      supervisor(PlatformWeb.Endpoint, []),
+      # Start your own worker by calling: Platform.Worker.start_link(arg1, arg2, arg3)
       # worker(Platform.Worker, [arg1, arg2, arg3]),
     ]
 
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
+    # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Platform.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  # Tell Phoenix to update the endpoint configuration
+  # whenever the application is updated.
+  def config_change(changed, _new, removed) do
+    PlatformWeb.Endpoint.config_change(changed, removed)
+    :ok
   end
 end

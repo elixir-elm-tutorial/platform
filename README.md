@@ -1,20 +1,18 @@
 # Platform
 
-[![Build Status](https://travis-ci.org/elixir-elm-tutorial/platform.svg?branch=master)](https://travis-ci.org/elixir-elm-tutorial/platform)
-
 This repository contains the source code for
-[elixir-elm-tutorial.herokuapp.com](https://elixir-elm-tutorial.herokuapp.com/),
+[elixir-elm-tutorial.herokuapp.com](https://elixir-elm-tutorial.herokuapp.com),
 which is the demo application from the
 [Elixir and Elm Tutorial](https://leanpub.com/elixir-elm-tutorial).
 
 ## Requirements
 
-- Elixir 1.4
+- Elixir 1.5
 - Phoenix 1.3
 
 ## Setup
 
-1. `git clone https://github.com/ElmOrlando/ElmOrlando.git`
+1. `git clone https://github.com/elixir-and-elm-tutorial/platform.git`
 2. `mix deps.get` to install Phoenix dependencies.
 3. `config/dev.exs` and `config/test.exs` to configure local database.
 4. `mix ecto.setup` to create, migrate, and seed the database.
@@ -24,15 +22,12 @@ which is the demo application from the
 
 ## Tests and Tooling
 
-- Run the test suite with `mix test`. The CI build is also available on
-[TravisCI](https://travis-ci.org/elixir-elm-tutorial/platform).
-- Run a static analysis check with `mix credo --strict`.
-- Generate documentation with `mix docs`.
+- Run the test suite with `mix test`.
 - Check for outdated dependencies with `mix hex.outdated`.
 
 ## Deployment
 
-This app is deployed to Heroku at https://elixir-elm-tutorial.herokuapp.com/.
+This app is deployed to Heroku at https://elixir-elm-tutorial.herokuapp.com.
 
 ## Need Help?
 
