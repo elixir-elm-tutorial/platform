@@ -18,6 +18,6 @@ defmodule Platform.Accounts.Player do
   def changeset(%Player{} = player, attrs) do
     player
     |> cast(attrs, [:display_name, :password, :score, :username])
-    |> validate_required([:password, :username])
+    |> validate_required([:username])
   end
 end
