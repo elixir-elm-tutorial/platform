@@ -19,6 +19,8 @@ defmodule Platform.Accounts.Player do
     player
     |> cast(attrs, [:display_name, :password, :score, :username])
     |> validate_required([:username])
+    |> validate_length(:username, min: 2, max: 100)
+    |> validate_length(:password, min: 6, max: 100)
     |> put_pass_digest()
   end
 
