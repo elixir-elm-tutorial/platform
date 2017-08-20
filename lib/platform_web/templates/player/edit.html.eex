@@ -8,15 +8,21 @@
   <% end %>
 
   <div class="form-group">
-    <%= label f, :display_name, "Player Display Name", class: "control-label" %>
+    <%= label f, :display_name, "Change Display Name", class: "control-label" %>
     <%= text_input f, :display_name, placeholder: "Enter display name...", class: "form-control" %>
     <%= error_tag f, :display_name %>
   </div>
 
   <div class="form-group">
-    <%= label f, :username, "Player Username", class: "control-label" %>
+    <%= label f, :username, "Change Username", class: "control-label" %>
     <%= text_input f, :username, placeholder: "Enter username...", class: "form-control" %>
     <%= error_tag f, :username %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :password, "Change Password", class: "control-label" %>
+    <%= text_input f, :password, placeholder: "Enter password...", class: "form-control" %>
+    <%= error_tag f, :password %>
   </div>
 
   <div class="form-group">

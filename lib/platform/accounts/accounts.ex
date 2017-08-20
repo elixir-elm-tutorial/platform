@@ -51,7 +51,7 @@ defmodule Platform.Accounts do
   """
   def create_player(attrs \\ %{}) do
     %Player{}
-    |> Player.changeset(attrs)
+    |> Player.registration_changeset(attrs)
     |> Repo.insert()
   end
 
