@@ -19,6 +19,7 @@ defmodule PlatformWeb.Router do
 
     get "/", PageController, :index
     resources "/players", PlayerController
+    resources "/sessions", PlayerSessionController, only: [:new, :create, :delete]
   end
 
   # Other scopes may use custom stacks.

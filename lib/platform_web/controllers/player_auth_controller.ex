@@ -19,4 +19,23 @@ defmodule PlatformWeb.PlayerAuthController do
     |> put_session(:player_id, player.id)
     |> configure_session(renew: true)
   end
+
+  def sign_in_with_username_and_password(conn, username, given_pass, opts) do
+    repo = Keyword.fetch!(opts, :repo)
+    player = repo.get_by(Player, username: username)
+
+    cond do
+      player && Comeonin.Bcrypt.checkpw(given_pass, player.password_digest) ->
+        {:ok, sign_in(conn, player)}
+      player ->
+        {:error, :unauthorized, conn}
+      true ->
+        Comeonin.Bcrypt.dummy_checkpw()
+        {:error, :not_found, conn}
+    end
+  end
+
+  def sign_out(conn) do
+    configure_session(conn, drop: true)
+  end
 end
