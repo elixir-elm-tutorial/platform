@@ -16,7 +16,13 @@
       <header class="header">
         <nav role="navigation">
           <ul class="nav nav-pills pull-right">
-            <li><a href="http://www.phoenixframework.org/docs">Get Started</a></li>
+            <%= if @current_user do %>
+              <p class="small">Signed in as <strong><%= @current_user.username %></strong></p>
+              <%= link "Sign Out", to: player_session_path(@conn, :delete, @current_user), method: "delete", class: "btn btn-sm btn-danger" %>
+            <% else %>
+              <%= link "Sign Up", to: player_path(@conn, :new), class: "btn btn-sm btn-success" %>
+              <%= link "Sign In", to: player_session_path(@conn, :new), class: "btn btn-sm btn-primary" %>
+            <% end %>
           </ul>
         </nav>
         <span class="logo"></span>
