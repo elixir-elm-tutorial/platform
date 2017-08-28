@@ -9,7 +9,10 @@ import Html.Attributes exposing (..)
 
 main : Html msg
 main =
-    gamesIndex
+    div []
+        [ h1 [] [ text "Games" ]
+        , gamesIndex model
+        ]
 
 
 
@@ -23,30 +26,20 @@ model =
     ]
 
 
-firstGameMaybe : Maybe String
-firstGameMaybe =
-    List.head model
-
-
-firstGameTitle : String
-firstGameTitle =
-    Maybe.withDefault "" firstGameMaybe
-
-
 
 -- VIEW
 
 
-gamesIndex : Html msg
-gamesIndex =
-    div [ class "games-index" ] [ gamesList ]
+gamesIndex : List String -> Html msg
+gamesIndex gameTitles =
+    div [ class "games-index" ] [ gamesList gameTitles ]
 
 
-gamesList : Html msg
-gamesList =
-    ul [ class "games-list" ] [ gamesListItem ]
+gamesList : List String -> Html msg
+gamesList gameTitles =
+    ul [ class "games-list" ] (List.map gamesListItem gameTitles)
 
 
-gamesListItem : Html msg
-gamesListItem =
-    li [] [ text firstGameTitle ]
+gamesListItem : String -> Html msg
+gamesListItem gameTitle =
+    li [] [ text gameTitle ]
