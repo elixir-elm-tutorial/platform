@@ -1,3 +1,1 @@
-<%= link("Create Player Account", to: "/players/new", class: "btn btn-success") %>
-
-<%= link("List All Players", to: "/players", class: "btn btn-info") %>
+<div id="elm-container"></div>

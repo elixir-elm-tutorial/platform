@@ -31,7 +31,7 @@ defmodule Platform.Accounts.Player do
   @doc false
   def registration_changeset(%Player{} = player, attrs) do
     player
-    |> cast(attrs, [:password, :username])
+    |> cast(attrs, [:display_name, :password, :score, :username])
     |> validate_required([:password, :username])
     |> validate_length(:username, min: 2, max: 100)
     |> validate_length(:password, min: 6, max: 100)
