@@ -3,6 +3,8 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Http
+import Json.Decode as Decode
 
 
 -- MAIN
@@ -24,29 +26,53 @@ main =
 
 type alias Model =
     { gamesList : List Game
-    , displayGamesList : Bool
     }
 
 
 type alias Game =
-    { gameTitle : String
-    , gameDescription : String
+    { title : String
+    , description : String
     }
 
 
 initialModel : Model
 initialModel =
-    { gamesList =
-        [ { gameTitle = "Platform Game", gameDescription = "Platform game example." }
-        , { gameTitle = "Adventure Game", gameDescription = "Adventure game example." }
-        ]
-    , displayGamesList = False
+    { gamesList = []
     }
+
+
+initialCommand : Cmd Msg
+initialCommand =
+    fetchGamesList
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( initialModel, Cmd.none )
+    ( initialModel, initialCommand )
+
+
+
+-- API
+
+
+fetchGamesList : Cmd Msg
+fetchGamesList =
+    Http.get "/api/games" decodeGamesList
+        |> Http.send FetchGamesList
+
+
+decodeGamesList : Decode.Decoder (List Game)
+decodeGamesList =
+    decodeGame
+        |> Decode.list
+        |> Decode.at [ "data" ]
+
+
+decodeGame : Decode.Decoder Game
+decodeGame =
+    Decode.map2 Game
+        (Decode.field "title" Decode.string)
+        (Decode.field "description" Decode.string)
 
 
 
@@ -54,18 +80,19 @@ init =
 
 
 type Msg
-    = DisplayGamesList
-    | HideGamesList
+    = FetchGamesList (Result Http.Error (List Game))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        DisplayGamesList ->
-            ( { model | displayGamesList = True }, Cmd.none )
+        FetchGamesList result ->
+            case result of
+                Ok games ->
+                    ( { model | gamesList = games }, Cmd.none )
 
-        HideGamesList ->
-            ( { model | displayGamesList = False }, Cmd.none )
+                Err _ ->
+                    ( model, Cmd.none )
 
 
 
@@ -83,15 +110,13 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ h1 [ class "games-section" ] [ text "Games" ]
-        , button [ class "btn btn-success", onClick DisplayGamesList ] [ text "Display Games List" ]
-        , button [ class "btn btn-danger", onClick HideGamesList ] [ text "Hide Games List" ]
-        , if model.displayGamesList then
-            gamesIndex model
-          else
-            div [] []
-        ]
+    if List.isEmpty model.gamesList then
+        div [] []
+    else
+        div []
+            [ h1 [ class "games-section" ] [ text "Games" ]
+            , gamesIndex model
+            ]
 
 
 gamesIndex : Model -> Html msg
@@ -107,6 +132,6 @@ gamesList games =
 gamesListItem : Game -> Html msg
 gamesListItem game =
     li [ class "game-item" ]
-        [ strong [] [ text game.gameTitle ]
-        , p [] [ text game.gameDescription ]
+        [ strong [] [ text game.title ]
+        , p [] [ text game.description ]
         ]
