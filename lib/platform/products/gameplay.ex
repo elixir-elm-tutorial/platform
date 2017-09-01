@@ -6,8 +6,8 @@ defmodule Platform.Products.Gameplay do
   alias Platform.Accounts.Player
 
   schema "gameplays" do
-    has_one :game, Game
-    has_one :player, Player
+    belongs_to :game, Game
+    belongs_to :player, Player
 
     field :player_score, :integer, default: 0
   end
