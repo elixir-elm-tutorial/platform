@@ -1,6 +1,20 @@
 /* This file is for your main application css. */
 .featured {
-  height: 400px;
+  height: 360px;
   background-color: black;
   color: white;
+}
+
+.featured-img {
+  margin-top: 50px;
+  margin-right: 50px;
+  float: left;
+}
+
+.featured-thumbnail {
+  height: 260px;
+}
+
+.featured-data {
+  margin-top: 50px;
 }

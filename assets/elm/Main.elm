@@ -169,8 +169,30 @@ view model =
 
 featured : Model -> Html msg
 featured model =
-    div [ class "featured" ]
-        [ h1 [] [ text "Featured" ] ]
+    case featuredGame model.gamesList of
+        Just game ->
+            div [ class "row featured" ]
+                [ div [ class "container" ]
+                    [ div [ class "featured-img" ]
+                        [ img [ class "featured-thumbnail", src game.thumbnail ] [] ]
+                    , div [ class "featured-data" ]
+                        [ h1 [] [ text "Featured" ]
+                        , h2 [] [ text game.title ]
+                        , p [] [ text game.description ]
+                        , button [ class "btn btn-lg btn-primary" ] [ text "Play Now!" ]
+                        ]
+                    ]
+                ]
+
+        Nothing ->
+            div [] []
+
+
+featuredGame : List Game -> Maybe Game
+featuredGame games =
+    games
+        |> List.filter .featured
+        |> List.head
 
 
 gamesIndex : Model -> Html msg
