@@ -1,4 +1,21 @@
 /* This file is for your main application css. */
+
+/* Phoenix flash messages */
+.alert:empty { display: none; }
+
+/* Custom page header */
+.logo {
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 3em;
+  color: #333;
+}
+.logo:hover {
+  text-decoration: none;
+  color: #000;
+}
+
+/* Featured section */
 .featured {
   height: 360px;
   background-color: black;
@@ -17,4 +34,5 @@
 
 .featured-data {
   margin-top: 50px;
+  overflow: hidden;
 }
