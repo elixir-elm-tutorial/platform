@@ -18,16 +18,17 @@ body, form, ul, table {
 .alert:empty { display: none; }
 
 /* Custom page header */
-.header {
-  border-bottom: 1px solid #e5e5e5;
-}
 .logo {
-  width: 519px;
   height: 71px;
-  display: inline-block;
   margin-bottom: 1em;
-  background-image: url("/images/phoenix.png");
-  background-size: 519px 71px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 3em;
+  color: #333;
+}
+.logo:hover {
+  text-decoration: none;
+  color: #000;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */

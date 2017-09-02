@@ -1,1 +1,6 @@
 /* This file is for your main application css. */
+.featured {
+  height: 400px;
+  background-color: black;
+  color: white;
+}
