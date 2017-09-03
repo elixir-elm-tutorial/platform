@@ -21,10 +21,10 @@ import "phoenix_html"
 // import socket from "./socket"
 
 // Elm
-import Elm from "./main"
+// import Elm from "./main"
 
-const elmContainer = document.querySelector("#elm-container");
+// const elmContainer = document.querySelector("#elm-container");
 
-if (elmContainer) {
-  const elmApplication = Elm.Main.embed(elmContainer);
-}
+// if (elmContainer) {
+//   const elmApplication = Elm.Main.embed(elmContainer);
+// }
