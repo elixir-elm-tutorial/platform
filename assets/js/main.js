@@ -13392,7 +13392,15 @@ var _user$project$Main$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			} else {
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							errors: _elm_lang$core$Basics$toString(_p3._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			}
 		} else {
 			var _p4 = _p2._0;
@@ -13405,17 +13413,26 @@ var _user$project$Main$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			} else {
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							errors: _elm_lang$core$Basics$toString(_p4._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			}
 		}
 	});
 var _user$project$Main$initialModel = {
 	gamesList: {ctor: '[]'},
-	playersList: {ctor: '[]'}
+	playersList: {ctor: '[]'},
+	errors: ''
 };
-var _user$project$Main$Model = F2(
-	function (a, b) {
-		return {gamesList: a, playersList: b};
+var _user$project$Main$Model = F3(
+	function (a, b, c) {
+		return {gamesList: a, playersList: b, errors: c};
 	});
 var _user$project$Main$Game = F5(
 	function (a, b, c, d, e) {
