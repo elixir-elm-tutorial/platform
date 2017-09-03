@@ -208,14 +208,21 @@ gamesIndex model =
 
 gamesList : List Game -> Html msg
 gamesList games =
-    ul [ class "games-list" ] (List.map gamesListItem games)
+    ul [ class "games-list media-list" ] (List.map gamesListItem games)
 
 
 gamesListItem : Game -> Html msg
 gamesListItem game =
-    li [ class "game-item" ]
-        [ strong [] [ text game.title ]
-        , p [] [ text game.description ]
+    a [ href "#" ]
+        [ li [ class "game-item media" ]
+            [ div [ class "media-left" ]
+                [ img [ class "media-object", src game.thumbnail ] []
+                ]
+            , div [ class "media-body media-middle" ]
+                [ h4 [ class "media-heading" ] [ text game.title ]
+                , p [] [ text game.description ]
+                ]
+            ]
         ]
 
 
@@ -240,12 +247,15 @@ playersSortedByScore players =
 
 playersList : List Player -> Html msg
 playersList players =
-    ul [ class "players-list" ] (List.map playersListItem players)
+    div [ class "players-list panel panel-info" ]
+        [ div [ class "panel-heading" ] [ text "Leaderboard" ]
+        , ul [ class "list-group" ] (List.map playersListItem players)
+        ]
 
 
 playersListItem : Player -> Html msg
 playersListItem player =
-    li [ class "player-item" ]
+    li [ class "player-item list-group-item" ]
         [ strong [] [ text player.displayName ]
-        , p [] [ text (toString player.score) ]
+        , span [ class "badge" ] [ text (toString player.score) ]
         ]

@@ -18,11 +18,14 @@
         <nav role="navigation">
           <ul class="nav nav-pills pull-right">
             <%= if @current_user do %>
-              <p class="small">Signed in as <strong><%= @current_user.username %></strong></p>
-              <%= link "Sign Out", to: player_session_path(@conn, :delete, @current_user), method: "delete", class: "btn btn-sm btn-danger" %>
+              <p class="navbar-text">
+                Signed in as
+                <strong><%= link @current_user.username, to: player_path(@conn, :edit, @current_user) %></strong>
+              </p>
+              <span><%= link "Sign Out", to: player_session_path(@conn, :delete, @current_user), method: "delete", class: "btn navbar-btn btn-danger" %></span>
             <% else %>
-              <%= link "Sign Up", to: player_path(@conn, :new), class: "btn btn-sm btn-success" %>
-              <%= link "Sign In", to: player_session_path(@conn, :new), class: "btn btn-sm btn-primary" %>
+              <%= link "Sign Up", to: player_path(@conn, :new), class: "btn navbar-btn btn-success" %>
+              <%= link "Sign In", to: player_session_path(@conn, :new), class: "btn navbar-btn btn-primary" %>
             <% end %>
           </ul>
         </nav>

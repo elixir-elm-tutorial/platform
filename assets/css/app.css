@@ -10,9 +10,16 @@
   font-size: 3em;
   color: #333;
 }
+
 .logo:hover {
   text-decoration: none;
   color: #000;
+}
+
+.nav {
+  margin-top: 6px;
+  max-height: 50px;
+  overflow: hidden;
 }
 
 /* Featured section */
@@ -35,4 +42,14 @@
 .featured-data {
   margin-top: 50px;
   overflow: hidden;
+}
+
+/* Games section */
+.game-item {
+  border: 2px solid black;
+  border-radius: 10px;
+}
+
+.media-object {
+  height: 120px;
 }
