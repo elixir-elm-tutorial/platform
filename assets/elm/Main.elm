@@ -27,6 +27,7 @@ main =
 type alias Model =
     { gamesList : List Game
     , playersList : List Player
+    , errors : String
     }
 
 
@@ -51,6 +52,7 @@ initialModel : Model
 initialModel =
     { gamesList = []
     , playersList = []
+    , errors = ""
     }
 
 
@@ -133,16 +135,16 @@ update msg model =
                 Ok games ->
                     ( { model | gamesList = games }, Cmd.none )
 
-                Err _ ->
-                    ( model, Cmd.none )
+                Err error ->
+                    ( { model | errors = (toString error) }, Cmd.none )
 
         FetchPlayersList result ->
             case result of
                 Ok players ->
                     ( { model | playersList = players }, Cmd.none )
 
-                Err _ ->
-                    ( model, Cmd.none )
+                Err error ->
+                    ( { model | errors = (toString error) }, Cmd.none )
 
 
 
