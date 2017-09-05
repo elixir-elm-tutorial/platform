@@ -27,10 +27,10 @@ import Game from "./platformer"
 const elmContainer = document.querySelector("#elm-container");
 const elmGameContainer = document.querySelector("#elm-game-container");
 
-if (elmContainer && Elm && Elm.Main) {
+if (elmContainer) {
   const elmApplication = Elm.Main.embed(elmContainer);
 }
 
-if (elmGameContainer && Game && Game.Platformer) {
+if (elmGameContainer) {
   const elmGame = Game.Platformer.embed(elmGameContainer);
 }
