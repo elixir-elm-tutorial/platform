@@ -22,9 +22,15 @@ import "phoenix_html"
 
 // Elm
 import Elm from "./main"
+import Game from "./platformer"
 
 const elmContainer = document.querySelector("#elm-container");
+const elmGameContainer = document.querySelector("#elm-game-container");
 
-if (elmContainer) {
+if (elmContainer && Elm && Elm.Main) {
   const elmApplication = Elm.Main.embed(elmContainer);
+}
+
+if (elmGameContainer && Game && Game.Platformer) {
+  const elmGame = Game.Platformer.embed(elmGameContainer);
 }
