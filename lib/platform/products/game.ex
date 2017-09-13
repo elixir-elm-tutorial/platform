@@ -11,6 +11,7 @@ defmodule Platform.Products.Game do
 
     field :description, :string
     field :featured, :boolean, default: false
+    field :slug, :string
     field :thumbnail, :string
     field :title, :string
 
@@ -20,7 +21,7 @@ defmodule Platform.Products.Game do
   @doc false
   def changeset(%Game{} = game, attrs) do
     game
-    |> cast(attrs, [:title, :description, :thumbnail, :featured])
-    |> validate_required([:title, :description, :thumbnail, :featured])
+    |> cast(attrs, [:description, :featured, :slug, :thumbnail, :title])
+    |> validate_required([:description, :featured, :slug, :thumbnail, :title])
   end
 end

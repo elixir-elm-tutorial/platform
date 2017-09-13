@@ -23,4 +23,4 @@ Accounts.create_player(%{display_name: "Chris McCord", username: "chrismccord", 
 
 # Games
 
-Products.create_game(%{title: "Platformer", description: "Platform game example.", thumbnail: "http://via.placeholder.com/300x200", featured: true})
+Products.create_game(%{title: "Platformer", slug: "platformer", description: "Platform game example.", thumbnail: "http://via.placeholder.com/300x200", featured: true})

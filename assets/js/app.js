@@ -21,16 +21,10 @@ import "phoenix_html"
 // import socket from "./socket"
 
 // Elm
-import Elm from "./main"
-import Game from "./platformer"
+const Elm = require("./elm.js");
 
 const elmContainer = document.querySelector("#elm-container");
-const elmGameContainer = document.querySelector("#elm-game-container");
+const platformer = document.querySelector("#platformer");
 
-if (elmContainer) {
-  const elmApplication = Elm.Main.embed(elmContainer);
-}
-
-if (elmGameContainer) {
-  const elmGame = Game.Platformer.embed(elmGameContainer);
-}
+if (elmContainer) Elm.Main.embed(elmContainer);
+if (platformer) Elm.Platformer.embed(platformer);

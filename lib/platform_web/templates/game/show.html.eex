@@ -1,1 +1,1 @@
-<div id="elm-game-container"></div>
+<div id="<%= @game.slug %>"></div>
