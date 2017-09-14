@@ -23,7 +23,7 @@ import "phoenix_html"
 // Elm
 const fs = require("fs");
 
-if (fs.existsSync("./elm.js")) const Elm = require("./elm.js");
+if (fs.existsSync("./elm.js")) { const Elm = require("./elm.js"); }
 
 const elmContainer = document.querySelector("#elm-container");
 const platformer = document.querySelector("#platformer");
