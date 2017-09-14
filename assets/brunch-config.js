@@ -12,6 +12,7 @@ exports.config = {
   plugins: {
     babel: { ignore: [/vendor/] },
     elmBrunch: {
+      executablePath: "./node_modules/elm/binwrappers",
       mainModules: ["elm/Main.elm", "elm/Platformer.elm"],
       makeParameters: ["--debug"],
       outputFile: "elm.js",
