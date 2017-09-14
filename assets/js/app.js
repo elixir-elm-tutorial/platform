@@ -21,9 +21,7 @@ import "phoenix_html"
 // import socket from "./socket"
 
 // Elm
-const fs = require("fs");
-
-if (fs.existsSync("./elm.js")) { const Elm = require("./elm.js"); }
+const Elm = require("./elm.js");
 
 const elmContainer = document.querySelector("#elm-container");
 const platformer = document.querySelector("#platformer");
