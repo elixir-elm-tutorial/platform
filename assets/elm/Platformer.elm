@@ -1,6 +1,7 @@
 module Platformer exposing (..)
 
 import Html exposing (Html, div)
+import Keyboard exposing (KeyCode, downs)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
@@ -50,6 +51,7 @@ init =
 
 type Msg
     = NoOp
+    | KeyDown KeyCode
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -58,6 +60,9 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
+        KeyDown keyCode ->
+            ( { model | characterPositionX = model.characterPositionX + 15 }, Cmd.none )
+
 
 
 -- SUBSCRIPTIONS
@@ -65,7 +70,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Sub.batch [ downs KeyDown ]
 
 
 
