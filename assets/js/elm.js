@@ -13849,6 +13849,62 @@ var _user$project$Main$init = {ctor: '_Tuple2', _0: _user$project$Main$initialMo
 var _user$project$Main$main = _elm_lang$html$Html$program(
 	{init: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})();
 
+var _user$project$Platformer$viewItem = function (model) {
+	return A2(
+		_elm_lang$svg$Svg$image,
+		{
+			ctor: '::',
+			_0: _elm_lang$svg$Svg_Attributes$xlinkHref('/images/coin.svg'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Attributes$x(
+					_elm_lang$core$Basics$toString(model.itemPositionX)),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$y(
+						_elm_lang$core$Basics$toString(model.itemPositionY)),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$width('20'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$height('20'),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		},
+		{ctor: '[]'});
+};
+var _user$project$Platformer$viewCharacter = function (model) {
+	return A2(
+		_elm_lang$svg$Svg$image,
+		{
+			ctor: '::',
+			_0: _elm_lang$svg$Svg_Attributes$xlinkHref('/images/character.gif'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Attributes$x(
+					_elm_lang$core$Basics$toString(model.characterPositionX)),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$y(
+						_elm_lang$core$Basics$toString(model.characterPositionY)),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$width('50'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$height('50'),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		},
+		{ctor: '[]'});
+};
 var _user$project$Platformer$viewGameGround = A2(
 	_elm_lang$svg$Svg$rect,
 	{
@@ -13917,41 +13973,51 @@ var _user$project$Platformer$viewGameWindow = A2(
 		}
 	},
 	{ctor: '[]'});
-var _user$project$Platformer$viewGame = A2(
-	_elm_lang$svg$Svg$svg,
-	{
-		ctor: '::',
-		_0: _elm_lang$svg$Svg_Attributes$version('1.1'),
-		_1: {
+var _user$project$Platformer$viewGame = function (model) {
+	return A2(
+		_elm_lang$svg$Svg$svg,
+		{
 			ctor: '::',
-			_0: _elm_lang$svg$Svg_Attributes$width('600'),
+			_0: _elm_lang$svg$Svg_Attributes$version('1.1'),
 			_1: {
 				ctor: '::',
-				_0: _elm_lang$svg$Svg_Attributes$height('400'),
-				_1: {ctor: '[]'}
+				_0: _elm_lang$svg$Svg_Attributes$width('600'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$height('400'),
+					_1: {ctor: '[]'}
+				}
 			}
-		}
-	},
-	{
-		ctor: '::',
-		_0: _user$project$Platformer$viewGameWindow,
-		_1: {
+		},
+		{
 			ctor: '::',
-			_0: _user$project$Platformer$viewGameSky,
+			_0: _user$project$Platformer$viewGameWindow,
 			_1: {
 				ctor: '::',
-				_0: _user$project$Platformer$viewGameGround,
-				_1: {ctor: '[]'}
+				_0: _user$project$Platformer$viewGameSky,
+				_1: {
+					ctor: '::',
+					_0: _user$project$Platformer$viewGameGround,
+					_1: {
+						ctor: '::',
+						_0: _user$project$Platformer$viewCharacter(model),
+						_1: {
+							ctor: '::',
+							_0: _user$project$Platformer$viewItem(model),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
 			}
-		}
-	});
+		});
+};
 var _user$project$Platformer$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: _user$project$Platformer$viewGame,
+			_0: _user$project$Platformer$viewGame(model),
 			_1: {ctor: '[]'}
 		});
 };
@@ -13963,11 +14029,14 @@ var _user$project$Platformer$update = F2(
 		var _p0 = msg;
 		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 	});
-var _user$project$Platformer$initialModel = {};
+var _user$project$Platformer$initialModel = {characterPositionX: 50, characterPositionY: 300, itemPositionX: 500, itemPositionY: 300};
 var _user$project$Platformer$init = {ctor: '_Tuple2', _0: _user$project$Platformer$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
 var _user$project$Platformer$main = _elm_lang$html$Html$program(
 	{init: _user$project$Platformer$init, view: _user$project$Platformer$view, update: _user$project$Platformer$update, subscriptions: _user$project$Platformer$subscriptions})();
-var _user$project$Platformer$Model = {};
+var _user$project$Platformer$Model = F4(
+	function (a, b, c, d) {
+		return {characterPositionX: a, characterPositionY: b, itemPositionX: c, itemPositionY: d};
+	});
 var _user$project$Platformer$NoOp = {ctor: 'NoOp'};
 
 var Elm = {};
