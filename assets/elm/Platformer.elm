@@ -1,9 +1,12 @@
 module Platformer exposing (..)
 
+import AnimationFrame exposing (diffs)
 import Html exposing (Html, div)
 import Keyboard exposing (KeyCode, downs)
+import Random
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
+import Time exposing (Time)
 
 
 -- MAIN
@@ -52,6 +55,8 @@ init =
 type Msg
     = NoOp
     | KeyDown KeyCode
+    | TimeUpdate Time
+    | SetNewItemPositionX Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -61,7 +66,39 @@ update msg model =
             ( model, Cmd.none )
 
         KeyDown keyCode ->
-            ( { model | characterPositionX = model.characterPositionX + 15 }, Cmd.none )
+            case keyCode of
+                37 ->
+                    ( { model | characterPositionX = model.characterPositionX - 15 }, Cmd.none )
+
+                39 ->
+                    ( { model | characterPositionX = model.characterPositionX + 15 }, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        TimeUpdate time ->
+            if characterFoundItem model then
+                ( model, Random.generate SetNewItemPositionX (Random.int 50 500) )
+            else
+                ( model, Cmd.none )
+
+        SetNewItemPositionX newPositionX ->
+            ( { model | itemPositionX = newPositionX }, Cmd.none )
+
+
+characterFoundItem : Model -> Bool
+characterFoundItem model =
+    let
+        approximateItemLowerBound =
+            model.itemPositionX - 35
+
+        approximateItemUpperBound =
+            model.itemPositionX
+
+        approximateItemRange =
+            List.range approximateItemLowerBound approximateItemUpperBound
+    in
+        List.member model.characterPositionX approximateItemRange
 
 
 
@@ -70,7 +107,10 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch [ downs KeyDown ]
+    Sub.batch
+        [ downs KeyDown
+        , diffs TimeUpdate
+        ]
 
 
 
