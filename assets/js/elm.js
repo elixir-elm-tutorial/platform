@@ -14993,6 +14993,159 @@ var _user$project$Platformer$viewGameWindow = A2(
 		}
 	},
 	{ctor: '[]'});
+var _user$project$Platformer$viewGameOverScreenText = A2(
+	_elm_lang$svg$Svg$svg,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: A3(_user$project$Platformer$viewGameText, 260, 160, 'Game Over'),
+		_1: {
+			ctor: '::',
+			_0: A3(_user$project$Platformer$viewGameText, 140, 180, 'Press the SPACE BAR key to restart.'),
+			_1: {ctor: '[]'}
+		}
+	});
+var _user$project$Platformer$viewSuccessScreenText = A2(
+	_elm_lang$svg$Svg$svg,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: A3(_user$project$Platformer$viewGameText, 260, 160, 'Success!'),
+		_1: {
+			ctor: '::',
+			_0: A3(_user$project$Platformer$viewGameText, 140, 180, 'Press the SPACE BAR key to restart.'),
+			_1: {ctor: '[]'}
+		}
+	});
+var _user$project$Platformer$viewStartScreenText = A2(
+	_elm_lang$svg$Svg$svg,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: A3(_user$project$Platformer$viewGameText, 140, 160, 'Collect ten coins in ten seconds!'),
+		_1: {
+			ctor: '::',
+			_0: A3(_user$project$Platformer$viewGameText, 140, 180, 'Press the SPACE BAR key to start.'),
+			_1: {ctor: '[]'}
+		}
+	});
+var _user$project$Platformer$viewGameState = function (model) {
+	var _p0 = model.gameState;
+	switch (_p0.ctor) {
+		case 'StartScreen':
+			return {
+				ctor: '::',
+				_0: _user$project$Platformer$viewGameWindow,
+				_1: {
+					ctor: '::',
+					_0: _user$project$Platformer$viewGameSky,
+					_1: {
+						ctor: '::',
+						_0: _user$project$Platformer$viewGameGround,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Platformer$viewCharacter(model),
+							_1: {
+								ctor: '::',
+								_0: _user$project$Platformer$viewItem(model),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Platformer$viewStartScreenText,
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			};
+		case 'Playing':
+			return {
+				ctor: '::',
+				_0: _user$project$Platformer$viewGameWindow,
+				_1: {
+					ctor: '::',
+					_0: _user$project$Platformer$viewGameSky,
+					_1: {
+						ctor: '::',
+						_0: _user$project$Platformer$viewGameGround,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Platformer$viewCharacter(model),
+							_1: {
+								ctor: '::',
+								_0: _user$project$Platformer$viewItem(model),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Platformer$viewGameScore(model),
+									_1: {
+										ctor: '::',
+										_0: _user$project$Platformer$viewItemsCollected(model),
+										_1: {
+											ctor: '::',
+											_0: _user$project$Platformer$viewGameTime(model),
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			};
+		case 'Success':
+			return {
+				ctor: '::',
+				_0: _user$project$Platformer$viewGameWindow,
+				_1: {
+					ctor: '::',
+					_0: _user$project$Platformer$viewGameSky,
+					_1: {
+						ctor: '::',
+						_0: _user$project$Platformer$viewGameGround,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Platformer$viewCharacter(model),
+							_1: {
+								ctor: '::',
+								_0: _user$project$Platformer$viewItem(model),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Platformer$viewSuccessScreenText,
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			};
+		default:
+			return {
+				ctor: '::',
+				_0: _user$project$Platformer$viewGameWindow,
+				_1: {
+					ctor: '::',
+					_0: _user$project$Platformer$viewGameSky,
+					_1: {
+						ctor: '::',
+						_0: _user$project$Platformer$viewGameGround,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Platformer$viewCharacter(model),
+							_1: {
+								ctor: '::',
+								_0: _user$project$Platformer$viewItem(model),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Platformer$viewGameOverScreenText,
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			};
+	}
+};
 var _user$project$Platformer$viewGame = function (model) {
 	return A2(
 		_elm_lang$svg$Svg$svg,
@@ -15009,39 +15162,7 @@ var _user$project$Platformer$viewGame = function (model) {
 				}
 			}
 		},
-		{
-			ctor: '::',
-			_0: _user$project$Platformer$viewGameWindow,
-			_1: {
-				ctor: '::',
-				_0: _user$project$Platformer$viewGameSky,
-				_1: {
-					ctor: '::',
-					_0: _user$project$Platformer$viewGameGround,
-					_1: {
-						ctor: '::',
-						_0: _user$project$Platformer$viewCharacter(model),
-						_1: {
-							ctor: '::',
-							_0: _user$project$Platformer$viewItem(model),
-							_1: {
-								ctor: '::',
-								_0: _user$project$Platformer$viewGameScore(model),
-								_1: {
-									ctor: '::',
-									_0: _user$project$Platformer$viewItemsCollected(model),
-									_1: {
-										ctor: '::',
-										_0: _user$project$Platformer$viewGameTime(model),
-										_1: {ctor: '[]'}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		});
+		_user$project$Platformer$viewGameState(model));
 };
 var _user$project$Platformer$view = function (model) {
 	return A2(
@@ -15059,40 +15180,52 @@ var _user$project$Platformer$characterFoundItem = function (model) {
 	var approximateItemRange = A2(_elm_lang$core$List$range, approximateItemLowerBound, approximateItemUpperBound);
 	return A2(_elm_lang$core$List$member, model.characterPositionX, approximateItemRange);
 };
-var _user$project$Platformer$initialModel = {characterPositionX: 50, characterPositionY: 300, itemPositionX: 500, itemPositionY: 300, itemsCollected: 0, playerScore: 0, timeRemaining: 10};
-var _user$project$Platformer$init = {ctor: '_Tuple2', _0: _user$project$Platformer$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
-var _user$project$Platformer$Model = F7(
-	function (a, b, c, d, e, f, g) {
-		return {characterPositionX: a, characterPositionY: b, itemPositionX: c, itemPositionY: d, itemsCollected: e, playerScore: f, timeRemaining: g};
+var _user$project$Platformer$Model = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {gameState: a, characterPositionX: b, characterPositionY: c, itemPositionX: d, itemPositionY: e, itemsCollected: f, playerScore: g, timeRemaining: h};
 	});
+var _user$project$Platformer$GameOver = {ctor: 'GameOver'};
+var _user$project$Platformer$Success = {ctor: 'Success'};
+var _user$project$Platformer$Playing = {ctor: 'Playing'};
+var _user$project$Platformer$StartScreen = {ctor: 'StartScreen'};
+var _user$project$Platformer$initialModel = {gameState: _user$project$Platformer$StartScreen, characterPositionX: 50, characterPositionY: 300, itemPositionX: 500, itemPositionY: 300, itemsCollected: 0, playerScore: 0, timeRemaining: 10};
+var _user$project$Platformer$init = {ctor: '_Tuple2', _0: _user$project$Platformer$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
 var _user$project$Platformer$SetNewItemPositionX = function (a) {
 	return {ctor: 'SetNewItemPositionX', _0: a};
 };
 var _user$project$Platformer$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'KeyDown':
-				var _p1 = _p0._0;
-				switch (_p1) {
+				var _p2 = _p1._0;
+				switch (_p2) {
+					case 32:
+						return (!_elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing)) ? {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{gameState: _user$project$Platformer$Playing, playerScore: 0, itemsCollected: 0, timeRemaining: 10}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 37:
-						return {
+						return _elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing) ? {
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
 								{characterPositionX: model.characterPositionX - 15}),
 							_1: _elm_lang$core$Platform_Cmd$none
-						};
+						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 39:
-						return {
+						return _elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing) ? {
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
 								{characterPositionX: model.characterPositionX + 15}),
 							_1: _elm_lang$core$Platform_Cmd$none
-						};
+						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					default:
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
@@ -15106,9 +15239,21 @@ var _user$project$Platformer$update = F2(
 						_elm_lang$core$Random$generate,
 						_user$project$Platformer$SetNewItemPositionX,
 						A2(_elm_lang$core$Random$int, 50, 500))
-				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				} : ((_elm_lang$core$Native_Utils.cmp(model.itemsCollected, 10) > -1) ? {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{gameState: _user$project$Platformer$Success}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				} : (((_elm_lang$core$Native_Utils.cmp(model.itemsCollected, 10) < 0) && _elm_lang$core$Native_Utils.eq(model.timeRemaining, 0)) ? {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{gameState: _user$project$Platformer$GameOver}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none}));
 			case 'CountdownTimer':
-				return (_elm_lang$core$Native_Utils.cmp(model.timeRemaining, 0) > 0) ? {
+				return (_elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing) && (_elm_lang$core$Native_Utils.cmp(model.timeRemaining, 0) > 0)) ? {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
@@ -15120,7 +15265,7 @@ var _user$project$Platformer$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{itemPositionX: _p0._0}),
+						{itemPositionX: _p1._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
