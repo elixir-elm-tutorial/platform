@@ -14752,6 +14752,123 @@ var _user$project$Main$init = {ctor: '_Tuple2', _0: _user$project$Main$initialMo
 var _user$project$Main$main = _elm_lang$html$Html$program(
 	{init: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})();
 
+var _user$project$Platformer$viewGameText = F3(
+	function (positionX, positionY, str) {
+		return A2(
+			_elm_lang$svg$Svg$text_,
+			{
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Attributes$x(
+					_elm_lang$core$Basics$toString(positionX)),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$y(
+						_elm_lang$core$Basics$toString(positionY)),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$fontFamily('Courier'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$fontWeight('bold'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$fontSize('16'),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$svg$Svg$text(str),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$Platformer$viewGameScore = function (model) {
+	var currentScore = A3(
+		_elm_lang$core$String$padLeft,
+		5,
+		_elm_lang$core$Native_Utils.chr('0'),
+		_elm_lang$core$Basics$toString(model.playerScore));
+	return A2(
+		_elm_lang$svg$Svg$svg,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A3(_user$project$Platformer$viewGameText, 25, 25, 'SCORE'),
+			_1: {
+				ctor: '::',
+				_0: A3(_user$project$Platformer$viewGameText, 25, 40, currentScore),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Platformer$viewItemsCollected = function (model) {
+	var currentItemCount = A3(
+		_elm_lang$core$String$padLeft,
+		3,
+		_elm_lang$core$Native_Utils.chr('0'),
+		_elm_lang$core$Basics$toString(model.itemsCollected));
+	return A2(
+		_elm_lang$svg$Svg$svg,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$svg$Svg$image,
+				{
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$xlinkHref('/images/coin.svg'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$x('275'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$y('18'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$width('15'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$height('15'),
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: A3(
+					_user$project$Platformer$viewGameText,
+					300,
+					30,
+					A2(_elm_lang$core$Basics_ops['++'], 'x ', currentItemCount)),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Platformer$viewGameTime = function (model) {
+	var currentTime = A3(
+		_elm_lang$core$String$padLeft,
+		4,
+		_elm_lang$core$Native_Utils.chr('0'),
+		_elm_lang$core$Basics$toString(model.timeRemaining));
+	return A2(
+		_elm_lang$svg$Svg$svg,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A3(_user$project$Platformer$viewGameText, 525, 25, 'TIME'),
+			_1: {
+				ctor: '::',
+				_0: A3(_user$project$Platformer$viewGameText, 525, 40, currentTime),
+				_1: {ctor: '[]'}
+			}
+		});
+};
 var _user$project$Platformer$viewItem = function (model) {
 	return A2(
 		_elm_lang$svg$Svg$image,
@@ -14907,7 +15024,19 @@ var _user$project$Platformer$viewGame = function (model) {
 						_1: {
 							ctor: '::',
 							_0: _user$project$Platformer$viewItem(model),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: _user$project$Platformer$viewGameScore(model),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Platformer$viewItemsCollected(model),
+									_1: {
+										ctor: '::',
+										_0: _user$project$Platformer$viewGameTime(model),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
 						}
 					}
 				}
@@ -14930,11 +15059,11 @@ var _user$project$Platformer$characterFoundItem = function (model) {
 	var approximateItemRange = A2(_elm_lang$core$List$range, approximateItemLowerBound, approximateItemUpperBound);
 	return A2(_elm_lang$core$List$member, model.characterPositionX, approximateItemRange);
 };
-var _user$project$Platformer$initialModel = {characterPositionX: 50, characterPositionY: 300, itemPositionX: 500, itemPositionY: 300};
+var _user$project$Platformer$initialModel = {characterPositionX: 50, characterPositionY: 300, itemPositionX: 500, itemPositionY: 300, itemsCollected: 0, playerScore: 0, timeRemaining: 10};
 var _user$project$Platformer$init = {ctor: '_Tuple2', _0: _user$project$Platformer$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
-var _user$project$Platformer$Model = F4(
-	function (a, b, c, d) {
-		return {characterPositionX: a, characterPositionY: b, itemPositionX: c, itemPositionY: d};
+var _user$project$Platformer$Model = F7(
+	function (a, b, c, d, e, f, g) {
+		return {characterPositionX: a, characterPositionY: b, itemPositionX: c, itemPositionY: d, itemsCollected: e, playerScore: f, timeRemaining: g};
 	});
 var _user$project$Platformer$SetNewItemPositionX = function (a) {
 	return {ctor: 'SetNewItemPositionX', _0: a};
@@ -14970,11 +15099,21 @@ var _user$project$Platformer$update = F2(
 			case 'TimeUpdate':
 				return _user$project$Platformer$characterFoundItem(model) ? {
 					ctor: '_Tuple2',
-					_0: model,
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{itemsCollected: model.itemsCollected + 1, playerScore: model.playerScore + 100}),
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Platformer$SetNewItemPositionX,
 						A2(_elm_lang$core$Random$int, 50, 500))
+				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'CountdownTimer':
+				return (_elm_lang$core$Native_Utils.cmp(model.timeRemaining, 0) > 0) ? {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{timeRemaining: model.timeRemaining - 1}),
+					_1: _elm_lang$core$Platform_Cmd$none
 				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			default:
 				return {
@@ -14986,6 +15125,9 @@ var _user$project$Platformer$update = F2(
 				};
 		}
 	});
+var _user$project$Platformer$CountdownTimer = function (a) {
+	return {ctor: 'CountdownTimer', _0: a};
+};
 var _user$project$Platformer$TimeUpdate = function (a) {
 	return {ctor: 'TimeUpdate', _0: a};
 };
@@ -15000,7 +15142,11 @@ var _user$project$Platformer$subscriptions = function (model) {
 			_1: {
 				ctor: '::',
 				_0: _elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Platformer$TimeUpdate),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A2(_elm_lang$core$Time$every, _elm_lang$core$Time$second, _user$project$Platformer$CountdownTimer),
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };
@@ -15015,7 +15161,7 @@ if (typeof _user$project$Main$main !== 'undefined') {
 }
 Elm['Platformer'] = Elm['Platformer'] || {};
 if (typeof _user$project$Platformer$main !== 'undefined') {
-    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Platformer.Msg":{"args":[],"tags":{"SetNewItemPositionX":["Int"],"TimeUpdate":["Time.Time"],"KeyDown":["Keyboard.KeyCode"],"NoOp":[]}}},"aliases":{"Keyboard.KeyCode":{"args":[],"type":"Int"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Platformer.Msg":{"args":[],"tags":{"SetNewItemPositionX":["Int"],"CountdownTimer":["Time.Time"],"TimeUpdate":["Time.Time"],"KeyDown":["Keyboard.KeyCode"],"NoOp":[]}}},"aliases":{"Keyboard.KeyCode":{"args":[],"type":"Int"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])
