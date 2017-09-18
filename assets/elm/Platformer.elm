@@ -1,9 +1,9 @@
 module Platformer exposing (..)
 
 import AnimationFrame exposing (diffs)
+import Array exposing (Array, fromList, get)
 import Html exposing (Html, div)
 import Keyboard exposing (KeyCode, downs)
-import Random
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Time exposing (Time, every, second)
@@ -33,6 +33,11 @@ type GameState
     | GameOver
 
 
+type Level
+    = One
+    | Two
+
+
 type alias Model =
     { gameState : GameState
     , characterPositionX : Int
@@ -50,7 +55,7 @@ initialModel =
     { gameState = StartScreen
     , characterPositionX = 50
     , characterPositionY = 300
-    , itemPositionX = 500
+    , itemPositionX = 150
     , itemPositionY = 300
     , itemsCollected = 0
     , playerScore = 0
@@ -72,7 +77,6 @@ type Msg
     | KeyDown KeyCode
     | TimeUpdate Time
     | CountdownTimer Time
-    | SetNewItemPositionX Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -87,6 +91,7 @@ update msg model =
                     if model.gameState /= Playing then
                         ( { model
                             | gameState = Playing
+                            , characterPositionX = 50
                             , playerScore = 0
                             , itemsCollected = 0
                             , timeRemaining = 10
@@ -116,8 +121,9 @@ update msg model =
                 ( { model
                     | itemsCollected = model.itemsCollected + 1
                     , playerScore = model.playerScore + 100
+                    , itemPositionX = spawnNewItem model.itemsCollected
                   }
-                , Random.generate SetNewItemPositionX (Random.int 50 500)
+                , Cmd.none
                 )
             else if model.itemsCollected >= 10 then
                 ( { model | gameState = Success }, Cmd.none )
@@ -132,8 +138,29 @@ update msg model =
             else
                 ( model, Cmd.none )
 
-        SetNewItemPositionX newPositionX ->
-            ( { model | itemPositionX = newPositionX }, Cmd.none )
+
+levelOneItemPositions : Array Int
+levelOneItemPositions =
+    Array.fromList [ 200, 250, 300, 350, 400, 450, 500, 400, 300 ]
+
+
+levelTwoItemPositions : Array Int
+levelTwoItemPositions =
+    Array.fromList [ 500, 300, 100, 500, 300, 100, 500, 300, 100 ]
+
+
+spawnNewItem : Int -> Int
+spawnNewItem currentItemCount =
+    let
+        hiddenPosition =
+            -100
+    in
+        case Array.get currentItemCount levelTwoItemPositions of
+            Just itemPosition ->
+                itemPosition
+
+            Nothing ->
+                hiddenPosition
 
 
 characterFoundItem : Model -> Bool
