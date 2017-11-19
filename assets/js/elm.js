@@ -14796,10 +14796,10 @@ var _user$project$Platformer$view = function (model) {
 		});
 };
 var _user$project$Platformer$characterFoundItem = function (model) {
-	var currentCharacterPosition = model.characterPositionX;
-	var approximateItemUpperBound = _elm_lang$core$Basics$toFloat(model.itemPositionX);
-	var approximateItemLowerBound = _elm_lang$core$Basics$toFloat(model.itemPositionX) - 35;
-	return (_elm_lang$core$Native_Utils.cmp(currentCharacterPosition, approximateItemLowerBound) > -1) && (_elm_lang$core$Native_Utils.cmp(currentCharacterPosition, approximateItemUpperBound) < 1);
+	var approximateItemUpperBound = model.itemPositionX;
+	var approximateItemLowerBound = model.itemPositionX - 35;
+	var approximateItemRange = A2(_elm_lang$core$List$range, approximateItemLowerBound, approximateItemUpperBound);
+	return A2(_elm_lang$core$List$member, model.characterPositionX, approximateItemRange);
 };
 var _user$project$Platformer$levelTwoItemPositions = _elm_lang$core$Array$fromList(
 	{
@@ -14839,6 +14839,15 @@ var _user$project$Platformer$levelTwoItemPositions = _elm_lang$core$Array$fromLi
 			}
 		}
 	});
+var _user$project$Platformer$spawnNewItem = function (currentItemCount) {
+	var hiddenPosition = -100;
+	var _p1 = A2(_elm_lang$core$Array$get, currentItemCount, _user$project$Platformer$levelTwoItemPositions);
+	if (_p1.ctor === 'Just') {
+		return _p1._0;
+	} else {
+		return hiddenPosition;
+	}
+};
 var _user$project$Platformer$levelOneItemPositions = _elm_lang$core$Array$fromList(
 	{
 		ctor: '::',
@@ -14863,10 +14872,10 @@ var _user$project$Platformer$levelOneItemPositions = _elm_lang$core$Array$fromLi
 								_0: 500,
 								_1: {
 									ctor: '::',
-									_0: 300,
+									_0: 400,
 									_1: {
 										ctor: '::',
-										_0: 100,
+										_0: 300,
 										_1: {ctor: '[]'}
 									}
 								}
@@ -14877,38 +14886,10 @@ var _user$project$Platformer$levelOneItemPositions = _elm_lang$core$Array$fromLi
 			}
 		}
 	});
-var _user$project$Platformer$spawnNewItem = function (currentItemCount) {
-	var hiddenPosition = -100;
-	var _p1 = A2(_elm_lang$core$Array$get, currentItemCount, _user$project$Platformer$levelOneItemPositions);
-	if (_p1.ctor === 'Just') {
-		return _p1._0;
-	} else {
-		return hiddenPosition;
-	}
-};
-var _user$project$Platformer$Model = function (a) {
-	return function (b) {
-		return function (c) {
-			return function (d) {
-				return function (e) {
-					return function (f) {
-						return function (g) {
-							return function (h) {
-								return function (i) {
-									return function (j) {
-										return function (k) {
-											return {gameState: a, characterPositionX: b, characterPositionY: c, characterVelocityX: d, characterVelocityY: e, characterDirection: f, itemPositionX: g, itemPositionY: h, itemsCollected: i, playerScore: j, timeRemaining: k};
-										};
-									};
-								};
-							};
-						};
-					};
-				};
-			};
-		};
-	};
-};
+var _user$project$Platformer$Model = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {gameState: a, characterPositionX: b, characterPositionY: c, itemPositionX: d, itemPositionY: e, itemsCollected: f, playerScore: g, timeRemaining: h};
+	});
 var _user$project$Platformer$GameOver = {ctor: 'GameOver'};
 var _user$project$Platformer$Success = {ctor: 'Success'};
 var _user$project$Platformer$Playing = {ctor: 'Playing'};
@@ -14934,7 +14915,7 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterVelocityX: -0.25}),
+								{characterPositionX: model.characterPositionX - 15}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 39:
@@ -14942,7 +14923,7 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterVelocityX: 0.25}),
+								{characterPositionX: model.characterPositionX + 15}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					default:
@@ -14972,7 +14953,7 @@ var _user$project$Platformer$update = F2(
 						{gameState: _user$project$Platformer$GameOver}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none}));
-			case 'CountdownTimer':
+			default:
 				return (_elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing) && (_elm_lang$core$Native_Utils.cmp(model.timeRemaining, 0) > 0)) ? {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -14980,24 +14961,13 @@ var _user$project$Platformer$update = F2(
 						{timeRemaining: model.timeRemaining - 1}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			default:
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{characterPositionX: model.characterPositionX + (model.characterVelocityX * _p2._0)}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
 		}
 	});
 var _user$project$Platformer$StartScreen = {ctor: 'StartScreen'};
-var _user$project$Platformer$Right = {ctor: 'Right'};
-var _user$project$Platformer$initialModel = {gameState: _user$project$Platformer$StartScreen, characterPositionX: 50.0, characterPositionY: 300.0, characterVelocityX: 0.0, characterVelocityY: 0.0, characterDirection: _user$project$Platformer$Right, itemPositionX: 150, itemPositionY: 300, itemsCollected: 0, playerScore: 0, timeRemaining: 10};
+var _user$project$Platformer$initialModel = {gameState: _user$project$Platformer$StartScreen, characterPositionX: 50, characterPositionY: 300, itemPositionX: 150, itemPositionY: 300, itemsCollected: 0, playerScore: 0, timeRemaining: 10};
 var _user$project$Platformer$init = {ctor: '_Tuple2', _0: _user$project$Platformer$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
-var _user$project$Platformer$Left = {ctor: 'Left'};
-var _user$project$Platformer$MoveCharacter = function (a) {
-	return {ctor: 'MoveCharacter', _0: a};
-};
+var _user$project$Platformer$Two = {ctor: 'Two'};
+var _user$project$Platformer$One = {ctor: 'One'};
 var _user$project$Platformer$CountdownTimer = function (a) {
 	return {ctor: 'CountdownTimer', _0: a};
 };
@@ -15034,7 +15004,7 @@ if (typeof _user$project$Main$main !== 'undefined') {
 }
 Elm['Platformer'] = Elm['Platformer'] || {};
 if (typeof _user$project$Platformer$main !== 'undefined') {
-    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Platformer.Msg":{"args":[],"tags":{"CountdownTimer":["Time.Time"],"TimeUpdate":["Time.Time"],"KeyDown":["Keyboard.KeyCode"],"MoveCharacter":["Time.Time"],"NoOp":[]}}},"aliases":{"Keyboard.KeyCode":{"args":[],"type":"Int"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Platformer.Msg":{"args":[],"tags":{"CountdownTimer":["Time.Time"],"TimeUpdate":["Time.Time"],"KeyDown":["Keyboard.KeyCode"],"NoOp":[]}}},"aliases":{"Keyboard.KeyCode":{"args":[],"type":"Int"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])
