@@ -33,15 +33,18 @@ type GameState
     | GameOver
 
 
-type Level
-    = One
-    | Two
+type Direction
+    = Left
+    | Right
 
 
 type alias Model =
     { gameState : GameState
-    , characterPositionX : Int
-    , characterPositionY : Int
+    , characterPositionX : Float
+    , characterPositionY : Float
+    , characterVelocityX : Float
+    , characterVelocityY : Float
+    , characterDirection : Direction
     , itemPositionX : Int
     , itemPositionY : Int
     , itemsCollected : Int
@@ -53,8 +56,11 @@ type alias Model =
 initialModel : Model
 initialModel =
     { gameState = StartScreen
-    , characterPositionX = 50
-    , characterPositionY = 300
+    , characterPositionX = 50.0
+    , characterPositionY = 300.0
+    , characterVelocityX = 0.0
+    , characterVelocityY = 0.0
+    , characterDirection = Right
     , itemPositionX = 150
     , itemPositionY = 300
     , itemsCollected = 0
@@ -77,6 +83,7 @@ type Msg
     | KeyDown KeyCode
     | TimeUpdate Time
     | CountdownTimer Time
+    | MoveCharacter Time
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -103,13 +110,13 @@ update msg model =
 
                 37 ->
                     if model.gameState == Playing then
-                        ( { model | characterPositionX = model.characterPositionX - 15 }, Cmd.none )
+                        ( { model | characterVelocityX = -0.25 }, Cmd.none )
                     else
                         ( model, Cmd.none )
 
                 39 ->
                     if model.gameState == Playing then
-                        ( { model | characterPositionX = model.characterPositionX + 15 }, Cmd.none )
+                        ( { model | characterVelocityX = 0.25 }, Cmd.none )
                     else
                         ( model, Cmd.none )
 
@@ -138,10 +145,13 @@ update msg model =
             else
                 ( model, Cmd.none )
 
+        MoveCharacter time ->
+            ( { model | characterPositionX = model.characterPositionX + model.characterVelocityX * time }, Cmd.none )
+
 
 levelOneItemPositions : Array Int
 levelOneItemPositions =
-    Array.fromList [ 200, 250, 300, 350, 400, 450, 500, 400, 300 ]
+    Array.fromList [ 200, 250, 300, 350, 400, 450, 500, 300, 100 ]
 
 
 levelTwoItemPositions : Array Int
@@ -155,7 +165,7 @@ spawnNewItem currentItemCount =
         hiddenPosition =
             -100
     in
-        case Array.get currentItemCount levelTwoItemPositions of
+        case Array.get currentItemCount levelOneItemPositions of
             Just itemPosition ->
                 itemPosition
 
@@ -167,15 +177,18 @@ characterFoundItem : Model -> Bool
 characterFoundItem model =
     let
         approximateItemLowerBound =
-            model.itemPositionX - 35
+            toFloat model.itemPositionX - 35
 
         approximateItemUpperBound =
-            model.itemPositionX
+            toFloat model.itemPositionX
 
-        approximateItemRange =
-            List.range approximateItemLowerBound approximateItemUpperBound
+        currentCharacterPosition =
+            model.characterPositionX
     in
-        List.member model.characterPositionX approximateItemRange
+        currentCharacterPosition
+            >= approximateItemLowerBound
+            && currentCharacterPosition
+            <= approximateItemUpperBound
 
 
 
