@@ -12,7 +12,7 @@ defmodule Platform.Accounts.Player do
     field :display_name, :string
     field :password, :string, virtual: true
     field :password_digest, :string
-    field :score, :integer
+    field :score, :integer, default: 0
     field :username, :string, unique: true
 
     timestamps()
