@@ -13,7 +13,7 @@ defmodule Platform.Accounts.Player do
     field :password, :string, virtual: true
     field :password_digest, :string
     field :score, :integer
-    field :username, :string
+    field :username, :string, unique: true
 
     timestamps()
   end
@@ -23,6 +23,7 @@ defmodule Platform.Accounts.Player do
     player
     |> cast(attrs, [:display_name, :password, :score, :username])
     |> validate_required([:username])
+    |> unique_constraint(:username)
     |> validate_length(:username, min: 2, max: 100)
     |> validate_length(:password, min: 6, max: 100)
     |> put_pass_digest()
@@ -33,6 +34,7 @@ defmodule Platform.Accounts.Player do
     player
     |> cast(attrs, [:display_name, :password, :score, :username])
     |> validate_required([:password, :username])
+    |> unique_constraint(:username)
     |> validate_length(:username, min: 2, max: 100)
     |> validate_length(:password, min: 6, max: 100)
     |> put_pass_digest()
