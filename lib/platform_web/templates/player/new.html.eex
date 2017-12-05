@@ -21,7 +21,5 @@
 
   <div class="form-group">
     <%= submit "Submit", class: "btn btn-primary" %>
-    <span><%= link "Sign In", to: player_session_path(@conn, :new), class: "btn btn-success" %></span>
-    <span><%= link "Back", to: page_path(@conn, :index), class: "btn btn-default" %></span>
   </div>
 <% end %>
