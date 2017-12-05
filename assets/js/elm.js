@@ -13858,6 +13858,7 @@ var _elm_lang$svg$Svg_Attributes$accelerate = _elm_lang$virtual_dom$VirtualDom$a
 var _elm_lang$svg$Svg_Attributes$accentHeight = _elm_lang$virtual_dom$VirtualDom$attribute('accent-height');
 
 var _user$project$Main$playersListItem = function (player) {
+	var displayName = _elm_lang$core$Native_Utils.eq(player.displayName, _elm_lang$core$Maybe$Nothing) ? player.username : A2(_elm_lang$core$Maybe$withDefault, '', player.displayName);
 	return A2(
 		_elm_lang$html$Html$li,
 		{
@@ -13872,7 +13873,7 @@ var _user$project$Main$playersListItem = function (player) {
 				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text(player.displayName),
+					_0: _elm_lang$html$Html$text(displayName),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
@@ -14333,7 +14334,8 @@ var _user$project$Main$Player = F4(
 var _user$project$Main$decodePlayer = A5(
 	_elm_lang$core$Json_Decode$map4,
 	_user$project$Main$Player,
-	A2(_elm_lang$core$Json_Decode$field, 'display_name', _elm_lang$core$Json_Decode$string),
+	_elm_lang$core$Json_Decode$maybe(
+		A2(_elm_lang$core$Json_Decode$field, 'display_name', _elm_lang$core$Json_Decode$string)),
 	A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int),
 	A2(_elm_lang$core$Json_Decode$field, 'score', _elm_lang$core$Json_Decode$int),
 	A2(_elm_lang$core$Json_Decode$field, 'username', _elm_lang$core$Json_Decode$string));
@@ -15000,7 +15002,7 @@ var _user$project$Platformer$NoOp = {ctor: 'NoOp'};
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Main.Msg":{"args":[],"tags":{"FetchGamesList":["Result.Result Http.Error (List Main.Game)"],"FetchPlayersList":["Result.Result Http.Error (List Main.Player)"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Main.Player":{"args":[],"type":"{ displayName : String, id : Int, score : Int, username : String }"},"Main.Game":{"args":[],"type":"{ description : String , featured : Bool , id : Int , slug : String , thumbnail : String , title : String }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Main.Msg":{"args":[],"tags":{"FetchGamesList":["Result.Result Http.Error (List Main.Game)"],"FetchPlayersList":["Result.Result Http.Error (List Main.Player)"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Main.Player":{"args":[],"type":"{ displayName : Maybe.Maybe String , id : Int , score : Int , username : String }"},"Main.Game":{"args":[],"type":"{ description : String , featured : Bool , id : Int , slug : String , thumbnail : String , title : String }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
 }
 Elm['Platformer'] = Elm['Platformer'] || {};
 if (typeof _user$project$Platformer$main !== 'undefined') {
