@@ -137,16 +137,16 @@ update msg model =
                 Ok games ->
                     ( { model | gamesList = games }, Cmd.none )
 
-                Err error ->
-                    ( { model | errors = (toString error) }, Cmd.none )
+                Err message ->
+                    ( { model | errors = toString message }, Cmd.none )
 
         FetchPlayersList result ->
             case result of
                 Ok players ->
                     ( { model | playersList = players }, Cmd.none )
 
-                Err error ->
-                    ( { model | errors = (toString error) }, Cmd.none )
+                Err message ->
+                    ( { model | errors = toString message }, Cmd.none )
 
 
 
