@@ -3,6 +3,7 @@ defmodule PlatformWeb.UserSocket do
 
   ## Channels
   # channel "room:*", PlatformWeb.RoomChannel
+  channel "score:*", PlatformWeb.ScoreChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

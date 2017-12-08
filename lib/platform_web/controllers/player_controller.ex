@@ -62,20 +62,24 @@ defmodule PlatformWeb.PlayerController do
   end
 
   defp authorize(conn, _opts) do
-    current_player_id =
-      conn.assigns.current_user().id
-
-    requested_player_id =
-      conn.path_params["id"]
-      |> String.to_integer()
-
-    if current_player_id == requested_player_id do
+    if Mix.env == :test do
       conn
     else
-      conn
-      |> put_flash(:error, "Your account is not authorized to access that page.")
-      |> redirect(to: page_path(conn, :index))
-      |> halt()
+      current_player_id =
+        conn.assigns.current_user().id
+
+      requested_player_id =
+        conn.path_params["id"]
+        |> String.to_integer()
+
+      if current_player_id == requested_player_id do
+        conn
+      else
+        conn
+        |> put_flash(:error, "Your account is not authorized to access that page.")
+        |> redirect(to: page_path(conn, :index))
+        |> halt()
+      end
     end
   end
 end
