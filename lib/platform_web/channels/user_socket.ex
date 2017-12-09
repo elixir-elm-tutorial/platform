@@ -20,10 +20,16 @@ defmodule PlatformWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(params, socket) do
-    socket = assign(socket, :game_id, 1)
-    socket = assign(socket, :player_id, 3)
-    {:ok, socket}
+  def connect(%{"token" => token}, socket) do
+    case Phoenix.Token.verify(socket, "user socket", token, max_age: 1209600) do
+      {:ok, user_id} ->
+        socket = assign(socket, :current_user, user_id)
+        socket = assign(socket, :game_id, 1)
+        socket = assign(socket, :player_id, 3)
+        {:ok, socket}
+      {:error, _} ->
+        :error
+    end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:

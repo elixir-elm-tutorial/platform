@@ -41,5 +41,6 @@
 
     </div> <!-- /container -->
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <script>window.userToken = "<%= assigns[:user_token] %>";</script>
   </body>
 </html>
