@@ -7,6 +7,7 @@ defmodule Platform.Products do
   alias Platform.Repo
 
   alias Platform.Products.Game
+  alias Platform.Products.Gameplay
 
   @doc """
   Returns the list of games.
@@ -19,6 +20,10 @@ defmodule Platform.Products do
   """
   def list_games do
     Repo.all(Game)
+  end
+
+  def list_gameplays do
+    Repo.all(Gameplay)
   end
 
   @doc """
@@ -53,6 +58,12 @@ defmodule Platform.Products do
   def create_game(attrs \\ %{}) do
     %Game{}
     |> Game.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_gameplay(attrs \\ %{}) do
+    %Gameplay{}
+    |> Gameplay.changeset(attrs)
     |> Repo.insert()
   end
 
