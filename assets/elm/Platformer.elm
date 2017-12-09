@@ -1,7 +1,9 @@
 module Platformer exposing (..)
 
 import AnimationFrame exposing (diffs)
-import Html exposing (Html, div)
+import Html exposing (Html, button, div)
+import Html.Events exposing (onClick)
+import Json.Encode as Encode
 import Keyboard exposing (KeyCode, downs)
 import Phoenix.Channel
 import Phoenix.Push
@@ -54,7 +56,7 @@ initialModel =
     { gameState = StartScreen
     , characterPositionX = 50
     , characterPositionY = 300
-    , phxSocket = initialSocket
+    , phxSocket = initialSocketJoin
     , itemPositionX = 150
     , itemPositionY = 300
     , itemsCollected = 0
@@ -63,7 +65,7 @@ initialModel =
     }
 
 
-initialSocket : Phoenix.Socket.Socket Msg
+initialSocket : ( Phoenix.Socket.Socket Msg, Cmd (Phoenix.Socket.Msg Msg) )
 initialSocket =
     let
         devSocketServer =
@@ -71,11 +73,30 @@ initialSocket =
     in
         Phoenix.Socket.init devSocketServer
             |> Phoenix.Socket.withDebug
+            |> Phoenix.Socket.on "shout" "score:lobby" SendScore
+            |> Phoenix.Socket.join initialChannel
+
+
+initialChannel : Phoenix.Channel.Channel msg
+initialChannel =
+    Phoenix.Channel.init "score:lobby"
+
+
+initialSocketJoin : Phoenix.Socket.Socket Msg
+initialSocketJoin =
+    initialSocket
+        |> Tuple.first
+
+
+initialSocketCommand : Cmd (Phoenix.Socket.Msg Msg)
+initialSocketCommand =
+    initialSocket
+        |> Tuple.second
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( initialModel, Cmd.none )
+    ( initialModel, Cmd.map PhoenixMsg initialSocketCommand )
 
 
 
@@ -87,6 +108,9 @@ type Msg
     | CountdownTimer Time
     | KeyDown KeyCode
     | PhoenixMsg (Phoenix.Socket.Msg Msg)
+    | SendScore Encode.Value
+    | SendScoreError Encode.Value
+    | SendScoreRequest
     | SetNewItemPositionX Int
     | TimeUpdate Time
 
@@ -138,6 +162,31 @@ update msg model =
             let
                 ( phxSocket, phxCmd ) =
                     Phoenix.Socket.update msg model.phxSocket
+            in
+                ( { model | phxSocket = phxSocket }
+                , Cmd.map PhoenixMsg phxCmd
+                )
+
+        SendScore value ->
+            ( model, Cmd.none )
+
+        SendScoreError message ->
+            Debug.log "Error sending score over socket."
+                ( model, Cmd.none )
+
+        SendScoreRequest ->
+            let
+                payload =
+                    Encode.object [ ( "player_score", Encode.int model.playerScore ) ]
+
+                phxPush =
+                    Phoenix.Push.init "shout" "score:lobby"
+                        |> Phoenix.Push.withPayload payload
+                        |> Phoenix.Push.onOk SendScore
+                        |> Phoenix.Push.onError SendScoreError
+
+                ( phxSocket, phxCmd ) =
+                    Phoenix.Socket.push phxPush model.phxSocket
             in
                 ( { model | phxSocket = phxSocket }
                 , Cmd.map PhoenixMsg phxCmd
@@ -197,7 +246,21 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div [] [ viewGame model ]
+    div []
+        [ viewGame model
+        , viewSendScoreButton
+        ]
+
+
+viewSendScoreButton : Html Msg
+viewSendScoreButton =
+    div []
+        [ button
+            [ onClick SendScoreRequest
+            , class "btn btn-primary"
+            ]
+            [ text "Send Score" ]
+        ]
 
 
 viewGame : Model -> Svg Msg

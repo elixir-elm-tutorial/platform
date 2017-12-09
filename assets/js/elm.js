@@ -16405,27 +16405,13 @@ var _user$project$Platformer$viewGame = function (model) {
 		},
 		_user$project$Platformer$viewGameState(model));
 };
-var _user$project$Platformer$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: _user$project$Platformer$viewGame(model),
-			_1: {ctor: '[]'}
-		});
-};
 var _user$project$Platformer$characterFoundItem = function (model) {
 	var approximateItemUpperBound = model.itemPositionX;
 	var approximateItemLowerBound = model.itemPositionX - 35;
 	var approximateItemRange = A2(_elm_lang$core$List$range, approximateItemLowerBound, approximateItemUpperBound);
 	return A2(_elm_lang$core$List$member, model.characterPositionX, approximateItemRange);
 };
-var _user$project$Platformer$initialSocket = function () {
-	var devSocketServer = 'ws://localhost:4000/socket/websocket';
-	return _fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
-		_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer));
-}();
+var _user$project$Platformer$initialChannel = _fbonetti$elm_phoenix_socket$Phoenix_Channel$init('score:lobby');
 var _user$project$Platformer$Model = F9(
 	function (a, b, c, d, e, f, g, h, i) {
 		return {gameState: a, characterPositionX: b, characterPositionY: c, itemPositionX: d, itemPositionY: e, itemsCollected: f, phxSocket: g, playerScore: h, timeRemaining: i};
@@ -16434,16 +16420,79 @@ var _user$project$Platformer$GameOver = {ctor: 'GameOver'};
 var _user$project$Platformer$Success = {ctor: 'Success'};
 var _user$project$Platformer$Playing = {ctor: 'Playing'};
 var _user$project$Platformer$StartScreen = {ctor: 'StartScreen'};
-var _user$project$Platformer$initialModel = {gameState: _user$project$Platformer$StartScreen, characterPositionX: 50, characterPositionY: 300, phxSocket: _user$project$Platformer$initialSocket, itemPositionX: 150, itemPositionY: 300, itemsCollected: 0, playerScore: 0, timeRemaining: 10};
-var _user$project$Platformer$init = {ctor: '_Tuple2', _0: _user$project$Platformer$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
 var _user$project$Platformer$TimeUpdate = function (a) {
 	return {ctor: 'TimeUpdate', _0: a};
 };
 var _user$project$Platformer$SetNewItemPositionX = function (a) {
 	return {ctor: 'SetNewItemPositionX', _0: a};
 };
+var _user$project$Platformer$SendScoreRequest = {ctor: 'SendScoreRequest'};
+var _user$project$Platformer$viewSendScoreButton = A2(
+	_elm_lang$html$Html$div,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$button,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Events$onClick(_user$project$Platformer$SendScoreRequest),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$class('btn btn-primary'),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$svg$Svg$text('Send Score'),
+				_1: {ctor: '[]'}
+			}),
+		_1: {ctor: '[]'}
+	});
+var _user$project$Platformer$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _user$project$Platformer$viewGame(model),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Platformer$viewSendScoreButton,
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Platformer$SendScoreError = function (a) {
+	return {ctor: 'SendScoreError', _0: a};
+};
+var _user$project$Platformer$SendScore = function (a) {
+	return {ctor: 'SendScore', _0: a};
+};
+var _user$project$Platformer$initialSocket = function () {
+	var devSocketServer = 'ws://localhost:4000/socket/websocket';
+	return A2(
+		_fbonetti$elm_phoenix_socket$Phoenix_Socket$join,
+		_user$project$Platformer$initialChannel,
+		A4(
+			_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
+			'shout',
+			'score:lobby',
+			_user$project$Platformer$SendScore,
+			_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
+				_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer))));
+}();
+var _user$project$Platformer$initialSocketJoin = _elm_lang$core$Tuple$first(_user$project$Platformer$initialSocket);
+var _user$project$Platformer$initialModel = {gameState: _user$project$Platformer$StartScreen, characterPositionX: 50, characterPositionY: 300, phxSocket: _user$project$Platformer$initialSocketJoin, itemPositionX: 150, itemPositionY: 300, itemsCollected: 0, playerScore: 0, timeRemaining: 10};
+var _user$project$Platformer$initialSocketCommand = _elm_lang$core$Tuple$second(_user$project$Platformer$initialSocket);
 var _user$project$Platformer$PhoenixMsg = function (a) {
 	return {ctor: 'PhoenixMsg', _0: a};
+};
+var _user$project$Platformer$init = {
+	ctor: '_Tuple2',
+	_0: _user$project$Platformer$initialModel,
+	_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Platformer$PhoenixMsg, _user$project$Platformer$initialSocketCommand)
 };
 var _user$project$Platformer$update = F2(
 	function (msg, model) {
@@ -16493,6 +16542,44 @@ var _user$project$Platformer$update = F2(
 				var _p3 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p1._0, model.phxSocket);
 				var phxSocket = _p3._0;
 				var phxCmd = _p3._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{phxSocket: phxSocket}),
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Platformer$PhoenixMsg, phxCmd)
+				};
+			case 'SendScore':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'SendScoreError':
+				return A2(
+					_elm_lang$core$Debug$log,
+					'Error sending score over socket.',
+					{ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none});
+			case 'SendScoreRequest':
+				var payload = _elm_lang$core$Json_Encode$object(
+					{
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'player_score',
+							_1: _elm_lang$core$Json_Encode$int(model.playerScore)
+						},
+						_1: {ctor: '[]'}
+					});
+				var phxPush = A2(
+					_fbonetti$elm_phoenix_socket$Phoenix_Push$onError,
+					_user$project$Platformer$SendScoreError,
+					A2(
+						_fbonetti$elm_phoenix_socket$Phoenix_Push$onOk,
+						_user$project$Platformer$SendScore,
+						A2(
+							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
+							payload,
+							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'shout', 'score:lobby'))));
+				var _p4 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
+				var phxSocket = _p4._0;
+				var phxCmd = _p4._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -16570,7 +16657,7 @@ if (typeof _user$project$Main$main !== 'undefined') {
 }
 Elm['Platformer'] = Elm['Platformer'] || {};
 if (typeof _user$project$Platformer$main !== 'undefined') {
-    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Platformer.Msg":{"args":[],"tags":{"SetNewItemPositionX":["Int"],"CountdownTimer":["Time.Time"],"PhoenixMsg":["Phoenix.Socket.Msg Platformer.Msg"],"TimeUpdate":["Time.Time"],"KeyDown":["Keyboard.KeyCode"],"NoOp":[]}},"Phoenix.Socket.Msg":{"args":["msg"],"tags":{"ChannelErrored":["String"],"ChannelClosed":["String"],"ExternalMsg":["msg"],"ChannelJoined":["String"],"Heartbeat":["Time.Time"],"NoOp":[],"ReceiveReply":["String","Int"]}}},"aliases":{"Keyboard.KeyCode":{"args":[],"type":"Int"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Platformer.Msg":{"args":[],"tags":{"SetNewItemPositionX":["Int"],"SendScoreRequest":[],"CountdownTimer":["Time.Time"],"SendScore":["Json.Encode.Value"],"PhoenixMsg":["Phoenix.Socket.Msg Platformer.Msg"],"TimeUpdate":["Time.Time"],"SendScoreError":["Json.Encode.Value"],"KeyDown":["Keyboard.KeyCode"],"NoOp":[]}},"Json.Encode.Value":{"args":[],"tags":{"Value":[]}},"Phoenix.Socket.Msg":{"args":["msg"],"tags":{"ChannelErrored":["String"],"ChannelClosed":["String"],"ExternalMsg":["msg"],"ChannelJoined":["String"],"Heartbeat":["Time.Time"],"NoOp":[],"ReceiveReply":["String","Int"]}}},"aliases":{"Keyboard.KeyCode":{"args":[],"type":"Int"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])
