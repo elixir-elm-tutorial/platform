@@ -1,11 +1,11 @@
 defmodule PlatformWeb.ScoreChannel do
   use PlatformWeb, :channel
 
-  alias Platform.Accounts
   alias Platform.Products
 
-  def join("score:lobby", payload, socket) do
+  def join("score:" <> game_slug, payload, socket) do
     if authorized?(payload) do
+      Products.get_game_by_slug!(game_slug)
       {:ok, socket}
     else
       {:error, %{reason: "unauthorized"}}

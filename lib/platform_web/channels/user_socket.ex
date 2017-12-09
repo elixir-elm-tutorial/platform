@@ -33,6 +33,8 @@ defmodule PlatformWeb.UserSocket do
   end
 
   def connect(_params, socket) do
+    socket = assign(socket, :game_id, 1)
+    socket = assign(socket, :player_id, 3)
     {:ok, socket}
   end
 

@@ -56,10 +56,10 @@ initialModel =
     { gameState = StartScreen
     , characterPositionX = 50
     , characterPositionY = 300
-    , phxSocket = initialSocketJoin
     , itemPositionX = 150
     , itemPositionY = 300
     , itemsCollected = 0
+    , phxSocket = initialSocketJoin
     , playerScore = 0
     , timeRemaining = 10
     }
@@ -73,13 +73,13 @@ initialSocket =
     in
         Phoenix.Socket.init devSocketServer
             |> Phoenix.Socket.withDebug
-            |> Phoenix.Socket.on "shout" "score:lobby" SendScore
+            |> Phoenix.Socket.on "save_score" "score:platformer" SendScore
             |> Phoenix.Socket.join initialChannel
 
 
 initialChannel : Phoenix.Channel.Channel msg
 initialChannel =
-    Phoenix.Channel.init "score:lobby"
+    Phoenix.Channel.init "score:platformer"
 
 
 initialSocketJoin : Phoenix.Socket.Socket Msg
@@ -180,7 +180,7 @@ update msg model =
                     Encode.object [ ( "player_score", Encode.int model.playerScore ) ]
 
                 phxPush =
-                    Phoenix.Push.init "shout" "score:lobby"
+                    Phoenix.Push.init "save_score" "score:platformer"
                         |> Phoenix.Push.withPayload payload
                         |> Phoenix.Push.onOk SendScore
                         |> Phoenix.Push.onError SendScoreError

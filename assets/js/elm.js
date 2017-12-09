@@ -16411,7 +16411,7 @@ var _user$project$Platformer$characterFoundItem = function (model) {
 	var approximateItemRange = A2(_elm_lang$core$List$range, approximateItemLowerBound, approximateItemUpperBound);
 	return A2(_elm_lang$core$List$member, model.characterPositionX, approximateItemRange);
 };
-var _user$project$Platformer$initialChannel = _fbonetti$elm_phoenix_socket$Phoenix_Channel$init('score:lobby');
+var _user$project$Platformer$initialChannel = _fbonetti$elm_phoenix_socket$Phoenix_Channel$init('score:platformer');
 var _user$project$Platformer$Model = F9(
 	function (a, b, c, d, e, f, g, h, i) {
 		return {gameState: a, characterPositionX: b, characterPositionY: c, itemPositionX: d, itemPositionY: e, itemsCollected: f, phxSocket: g, playerScore: h, timeRemaining: i};
@@ -16477,14 +16477,14 @@ var _user$project$Platformer$initialSocket = function () {
 		_user$project$Platformer$initialChannel,
 		A4(
 			_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
-			'shout',
-			'score:lobby',
+			'save_score',
+			'score:platformer',
 			_user$project$Platformer$SendScore,
 			_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
 				_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer))));
 }();
 var _user$project$Platformer$initialSocketJoin = _elm_lang$core$Tuple$first(_user$project$Platformer$initialSocket);
-var _user$project$Platformer$initialModel = {gameState: _user$project$Platformer$StartScreen, characterPositionX: 50, characterPositionY: 300, phxSocket: _user$project$Platformer$initialSocketJoin, itemPositionX: 150, itemPositionY: 300, itemsCollected: 0, playerScore: 0, timeRemaining: 10};
+var _user$project$Platformer$initialModel = {gameState: _user$project$Platformer$StartScreen, characterPositionX: 50, characterPositionY: 300, itemPositionX: 150, itemPositionY: 300, itemsCollected: 0, phxSocket: _user$project$Platformer$initialSocketJoin, playerScore: 0, timeRemaining: 10};
 var _user$project$Platformer$initialSocketCommand = _elm_lang$core$Tuple$second(_user$project$Platformer$initialSocket);
 var _user$project$Platformer$PhoenixMsg = function (a) {
 	return {ctor: 'PhoenixMsg', _0: a};
@@ -16576,7 +16576,7 @@ var _user$project$Platformer$update = F2(
 						A2(
 							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 							payload,
-							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'shout', 'score:lobby'))));
+							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'save_score', 'score:platformer'))));
 				var _p4 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
 				var phxSocket = _p4._0;
 				var phxCmd = _p4._1;
