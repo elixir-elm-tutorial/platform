@@ -10,6 +10,8 @@ defmodule Platform.Products.Gameplay do
     belongs_to :player, Player
 
     field :player_score, :integer, default: 0
+
+    timestamps()
   end
 
   @doc false
