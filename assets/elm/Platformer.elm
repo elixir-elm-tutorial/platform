@@ -47,6 +47,7 @@ type alias Model =
     , itemsCollected : Int
     , phxSocket : Phoenix.Socket.Socket Msg
     , playerScore : Int
+    , playerScores : List Int
     , timeRemaining : Int
     }
 
@@ -61,6 +62,7 @@ initialModel =
     , itemsCollected = 0
     , phxSocket = initialSocketJoin
     , playerScore = 0
+    , playerScores = [ 1000, 1000, 1000 ]
     , timeRemaining = 10
     }
 
@@ -108,6 +110,7 @@ type Msg
     | CountdownTimer Time
     | KeyDown KeyCode
     | PhoenixMsg (Phoenix.Socket.Msg Msg)
+    | ReceiveScoreChanges Encode.Value
     | SaveScore Encode.Value
     | SaveScoreError Encode.Value
     | SaveScoreRequest
@@ -169,6 +172,9 @@ update msg model =
                 ( { model | phxSocket = phxSocket }
                 , Cmd.map PhoenixMsg phxCmd
                 )
+
+        ReceiveScoreChanges raw ->
+            ( { model | playerScores = 1 :: model.playerScores }, Cmd.none )
 
         SaveScore value ->
             ( model, Cmd.none )
@@ -278,6 +284,7 @@ view model =
         [ viewGame model
         , viewSendScoreButton
         , viewSaveScoreButton
+        , viewPlayerScores model
         ]
 
 
@@ -301,6 +308,12 @@ viewSaveScoreButton =
             ]
             [ text "Save Score" ]
         ]
+
+
+viewPlayerScores : Model -> Html Msg
+viewPlayerScores model =
+    div []
+        ((text "Player Scores") :: (List.map (toString >> text) model.playerScores))
 
 
 viewGame : Model -> Svg Msg

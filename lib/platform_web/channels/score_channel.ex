@@ -29,6 +29,18 @@ defmodule PlatformWeb.ScoreChannel do
     {:noreply, socket}
   end
 
+  def handle_in("make_change", %{"player_score" => player_score} = payload, socket) do
+    new_payload = %{
+      "data" => "ohai this is new data"
+    }
+
+    payload = Map.merge(payload, new_payload)
+
+    Process.send_after(self(), :make_change, 1_000)
+    PlatformWeb.Endpoint.broadcast("score:platformer", "make_change", payload)
+    {:reply, {:ok, payload}, socket}
+  end
+
   defp authorized?(_payload) do
     true
   end
