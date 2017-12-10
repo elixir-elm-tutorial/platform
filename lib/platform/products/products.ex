@@ -43,6 +43,11 @@ defmodule Platform.Products do
   def get_game!(id), do: Repo.get!(Game, id)
   def get_game_by_slug!(slug), do: Repo.get_by!(Game, slug: slug)
 
+  def get_gameplays_by_id!(id) do
+    query = from gp in "gameplays", where: gp.game_id == ^id, select: [:player_id, :player_score]
+    Repo.all(query)
+  end
+
   @doc """
   Creates a game.
 

@@ -2,6 +2,10 @@ defmodule PlatformWeb.GameView do
   use PlatformWeb, :view
   alias PlatformWeb.GameView
 
+  def player_name(id) do
+    Platform.Accounts.get_player!(id).display_name
+  end
+
   def render("index.json", %{games: games}) do
     %{data: render_many(games, GameView, "game.json")}
   end

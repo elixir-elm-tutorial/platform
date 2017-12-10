@@ -73,7 +73,7 @@ initialSocket =
     in
         Phoenix.Socket.init devSocketServer
             |> Phoenix.Socket.withDebug
-            |> Phoenix.Socket.on "save_score" "score:platformer" SendScore
+            |> Phoenix.Socket.on "shout" "score:platformer" SendScore
             |> Phoenix.Socket.join initialChannel
 
 
@@ -108,6 +108,9 @@ type Msg
     | CountdownTimer Time
     | KeyDown KeyCode
     | PhoenixMsg (Phoenix.Socket.Msg Msg)
+    | SaveScore Encode.Value
+    | SaveScoreError Encode.Value
+    | SaveScoreRequest
     | SendScore Encode.Value
     | SendScoreError Encode.Value
     | SendScoreRequest
@@ -167,6 +170,31 @@ update msg model =
                 , Cmd.map PhoenixMsg phxCmd
                 )
 
+        SaveScore value ->
+            ( model, Cmd.none )
+
+        SaveScoreError message ->
+            Debug.log "Error saveing score over socket."
+                ( model, Cmd.none )
+
+        SaveScoreRequest ->
+            let
+                payload =
+                    Encode.object [ ( "player_score", Encode.int model.playerScore ) ]
+
+                phxPush =
+                    Phoenix.Push.init "save_score" "score:platformer"
+                        |> Phoenix.Push.withPayload payload
+                        |> Phoenix.Push.onOk SaveScore
+                        |> Phoenix.Push.onError SaveScoreError
+
+                ( phxSocket, phxCmd ) =
+                    Phoenix.Socket.push phxPush model.phxSocket
+            in
+                ( { model | phxSocket = phxSocket }
+                , Cmd.map PhoenixMsg phxCmd
+                )
+
         SendScore value ->
             ( model, Cmd.none )
 
@@ -180,7 +208,7 @@ update msg model =
                     Encode.object [ ( "player_score", Encode.int model.playerScore ) ]
 
                 phxPush =
-                    Phoenix.Push.init "save_score" "score:platformer"
+                    Phoenix.Push.init "shout" "score:platformer"
                         |> Phoenix.Push.withPayload payload
                         |> Phoenix.Push.onOk SendScore
                         |> Phoenix.Push.onError SendScoreError
@@ -249,6 +277,7 @@ view model =
     div []
         [ viewGame model
         , viewSendScoreButton
+        , viewSaveScoreButton
         ]
 
 
@@ -260,6 +289,17 @@ viewSendScoreButton =
             , class "btn btn-primary"
             ]
             [ text "Send Score" ]
+        ]
+
+
+viewSaveScoreButton : Html Msg
+viewSaveScoreButton =
+    div []
+        [ button
+            [ onClick SaveScoreRequest
+            , class "btn btn-primary"
+            ]
+            [ text "Save Score" ]
         ]
 
 
