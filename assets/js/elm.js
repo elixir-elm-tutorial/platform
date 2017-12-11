@@ -16405,20 +16405,110 @@ var _user$project$Platformer$viewGame = function (model) {
 		},
 		_user$project$Platformer$viewGameState(model));
 };
-var _user$project$Platformer$viewPlayerScores = function (model) {
+var _user$project$Platformer$viewPlayerScoreItem = function (score) {
 	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
+		_elm_lang$html$Html$li,
 		{
 			ctor: '::',
-			_0: _elm_lang$svg$Svg$text('Player Scores'),
-			_1: A2(
-				_elm_lang$core$List$map,
-				function (_p1) {
-					return _elm_lang$svg$Svg$text(
-						_elm_lang$core$Basics$toString(_p1));
+			_0: _elm_lang$html$Html_Attributes$class('player-item list-group-item'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$strong,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$svg$Svg$text(
+						_elm_lang$core$Basics$toString(score.playerId)),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$span,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('badge'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$svg$Svg$text(
+							_elm_lang$core$Basics$toString(score.playerScore)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Platformer$viewPlayerScoresList = function (scores) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('players-list panel panel-info'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('panel-heading'),
+					_1: {ctor: '[]'}
 				},
-				model.playerScores)
+				{
+					ctor: '::',
+					_0: _elm_lang$svg$Svg$text('Leaderboard'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$ul,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('list-group'),
+						_1: {ctor: '[]'}
+					},
+					A2(_elm_lang$core$List$map, _user$project$Platformer$viewPlayerScoreItem, scores)),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Platformer$viewPlayerScoresIndex = function (model) {
+	return _elm_lang$core$List$isEmpty(model.playerScores) ? A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{ctor: '[]'}) : A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('players-index'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h1,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('players-section'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$svg$Svg$text('Player Scores'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Platformer$viewPlayerScoresList(model.playerScores),
+				_1: {ctor: '[]'}
+			}
 		});
 };
 var _user$project$Platformer$characterFoundItem = function (model) {
@@ -16438,7 +16528,9 @@ var _user$project$Platformer$Model = function (a) {
 							return function (h) {
 								return function (i) {
 									return function (j) {
-										return {gameState: a, characterPositionX: b, characterPositionY: c, itemPositionX: d, itemPositionY: e, itemsCollected: f, phxSocket: g, playerScore: h, playerScores: i, timeRemaining: j};
+										return function (k) {
+											return {errors: a, gameState: b, characterPositionX: c, characterPositionY: d, itemPositionX: e, itemPositionY: f, itemsCollected: g, phxSocket: h, playerScore: i, playerScores: j, timeRemaining: k};
+										};
 									};
 								};
 							};
@@ -16449,6 +16541,16 @@ var _user$project$Platformer$Model = function (a) {
 		};
 	};
 };
+var _user$project$Platformer$Score = F3(
+	function (a, b, c) {
+		return {gameId: a, playerId: b, playerScore: c};
+	});
+var _user$project$Platformer$scoreDecoder = A4(
+	_elm_lang$core$Json_Decode$map3,
+	_user$project$Platformer$Score,
+	A2(_elm_lang$core$Json_Decode$field, 'game_id', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'player_id', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'player_score', _elm_lang$core$Json_Decode$int));
 var _user$project$Platformer$GameOver = {ctor: 'GameOver'};
 var _user$project$Platformer$Success = {ctor: 'Success'};
 var _user$project$Platformer$Playing = {ctor: 'Playing'};
@@ -16472,7 +16574,7 @@ var _user$project$Platformer$viewSendScoreButton = A2(
 				_0: _elm_lang$html$Html_Events$onClick(_user$project$Platformer$SendScoreRequest),
 				_1: {
 					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$class('btn btn-primary'),
+					_0: _elm_lang$html$Html_Attributes$class('btn btn-primary'),
 					_1: {ctor: '[]'}
 				}
 			},
@@ -16489,45 +16591,6 @@ var _user$project$Platformer$SendScoreError = function (a) {
 var _user$project$Platformer$SendScore = function (a) {
 	return {ctor: 'SendScore', _0: a};
 };
-var _user$project$Platformer$initialSocket = function () {
-	var devSocketServer = 'ws://localhost:4000/socket/websocket';
-	return A2(
-		_fbonetti$elm_phoenix_socket$Phoenix_Socket$join,
-		_user$project$Platformer$initialChannel,
-		A4(
-			_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
-			'shout',
-			'score:platformer',
-			_user$project$Platformer$SendScore,
-			_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
-				_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer))));
-}();
-var _user$project$Platformer$initialSocketJoin = _elm_lang$core$Tuple$first(_user$project$Platformer$initialSocket);
-var _user$project$Platformer$initialModel = {
-	gameState: _user$project$Platformer$StartScreen,
-	characterPositionX: 50,
-	characterPositionY: 300,
-	itemPositionX: 150,
-	itemPositionY: 300,
-	itemsCollected: 0,
-	phxSocket: _user$project$Platformer$initialSocketJoin,
-	playerScore: 0,
-	playerScores: {
-		ctor: '::',
-		_0: 1000,
-		_1: {
-			ctor: '::',
-			_0: 1000,
-			_1: {
-				ctor: '::',
-				_0: 1000,
-				_1: {ctor: '[]'}
-			}
-		}
-	},
-	timeRemaining: 10
-};
-var _user$project$Platformer$initialSocketCommand = _elm_lang$core$Tuple$second(_user$project$Platformer$initialSocket);
 var _user$project$Platformer$SaveScoreRequest = {ctor: 'SaveScoreRequest'};
 var _user$project$Platformer$viewSaveScoreButton = A2(
 	_elm_lang$html$Html$div,
@@ -16541,7 +16604,7 @@ var _user$project$Platformer$viewSaveScoreButton = A2(
 				_0: _elm_lang$html$Html_Events$onClick(_user$project$Platformer$SaveScoreRequest),
 				_1: {
 					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$class('btn btn-primary'),
+					_0: _elm_lang$html$Html_Attributes$class('btn btn-primary'),
 					_1: {ctor: '[]'}
 				}
 			},
@@ -16567,7 +16630,7 @@ var _user$project$Platformer$view = function (model) {
 					_0: _user$project$Platformer$viewSaveScoreButton,
 					_1: {
 						ctor: '::',
-						_0: _user$project$Platformer$viewPlayerScores(model),
+						_0: _user$project$Platformer$viewPlayerScoresIndex(model),
 						_1: {ctor: '[]'}
 					}
 				}
@@ -16583,6 +16646,39 @@ var _user$project$Platformer$SaveScore = function (a) {
 var _user$project$Platformer$ReceiveScoreChanges = function (a) {
 	return {ctor: 'ReceiveScoreChanges', _0: a};
 };
+var _user$project$Platformer$initialSocket = function () {
+	var devSocketServer = 'ws://localhost:4000/socket/websocket';
+	return A2(
+		_fbonetti$elm_phoenix_socket$Phoenix_Socket$join,
+		_user$project$Platformer$initialChannel,
+		A4(
+			_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
+			'save_score',
+			'score:platformer',
+			_user$project$Platformer$ReceiveScoreChanges,
+			A4(
+				_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
+				'shout',
+				'score:platformer',
+				_user$project$Platformer$SendScore,
+				_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
+					_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer)))));
+}();
+var _user$project$Platformer$initialSocketJoin = _elm_lang$core$Tuple$first(_user$project$Platformer$initialSocket);
+var _user$project$Platformer$initialModel = {
+	errors: '',
+	gameState: _user$project$Platformer$StartScreen,
+	characterPositionX: 50,
+	characterPositionY: 300,
+	itemPositionX: 150,
+	itemPositionY: 300,
+	itemsCollected: 0,
+	phxSocket: _user$project$Platformer$initialSocketJoin,
+	playerScore: 0,
+	playerScores: {ctor: '[]'},
+	timeRemaining: 10
+};
+var _user$project$Platformer$initialSocketCommand = _elm_lang$core$Tuple$second(_user$project$Platformer$initialSocket);
 var _user$project$Platformer$PhoenixMsg = function (a) {
 	return {ctor: 'PhoenixMsg', _0: a};
 };
@@ -16593,8 +16689,8 @@ var _user$project$Platformer$init = {
 };
 var _user$project$Platformer$update = F2(
 	function (msg, model) {
-		var _p2 = msg;
-		switch (_p2.ctor) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'CountdownTimer':
@@ -16606,8 +16702,8 @@ var _user$project$Platformer$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'KeyDown':
-				var _p3 = _p2._0;
-				switch (_p3) {
+				var _p2 = _p1._0;
+				switch (_p2) {
 					case 32:
 						return (!_elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing)) ? {
 							ctor: '_Tuple2',
@@ -16636,9 +16732,9 @@ var _user$project$Platformer$update = F2(
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			case 'PhoenixMsg':
-				var _p4 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p2._0, model.phxSocket);
-				var phxSocket = _p4._0;
-				var phxCmd = _p4._1;
+				var _p3 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p1._0, model.phxSocket);
+				var phxSocket = _p3._0;
+				var phxCmd = _p3._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -16647,15 +16743,26 @@ var _user$project$Platformer$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Platformer$PhoenixMsg, phxCmd)
 				};
 			case 'ReceiveScoreChanges':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							playerScores: {ctor: '::', _0: 1, _1: model.playerScores}
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+				var _p4 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Platformer$scoreDecoder, _p1._0);
+				if (_p4.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								playerScores: {ctor: '::', _0: _p4._0, _1: model.playerScores}
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{errors: _p4._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
 			case 'SaveScore':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'SaveScoreError':
@@ -16737,7 +16844,7 @@ var _user$project$Platformer$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{itemPositionX: _p2._0}),
+						{itemPositionX: _p1._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:

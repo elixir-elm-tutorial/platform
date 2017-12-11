@@ -14,31 +14,16 @@ defmodule PlatformWeb.ScoreChannel do
     end
   end
 
-  def handle_in("ping", payload, socket) do
-    {:reply, {:ok, payload}, socket}
-  end
-
-  def handle_in("shout", payload, socket) do
-    broadcast(socket, "shout", payload)
-    {:noreply, socket}
-  end
-
   def handle_in("save_score", %{"player_score" => player_score} = payload, socket) do
-    Products.create_gameplay(%{player_score: player_score, game_id: socket.assigns.game_id, player_id: socket.assigns.player_id})
-    broadcast(socket, "save_score", payload)
-    {:noreply, socket}
-  end
-
-  def handle_in("make_change", %{"player_score" => player_score} = payload, socket) do
-    new_payload = %{
-      "data" => "ohai this is new data"
+    payload = %{
+      player_score: player_score,
+      game_id: socket.assigns.game_id,
+      player_id: socket.assigns.player_id
     }
 
-    payload = Map.merge(payload, new_payload)
-
-    Process.send_after(self(), :make_change, 1_000)
-    PlatformWeb.Endpoint.broadcast("score:platformer", "make_change", payload)
-    {:reply, {:ok, payload}, socket}
+    Products.create_gameplay(payload)
+    broadcast(socket, "save_score", payload)
+    {:noreply, socket}
   end
 
   defp authorized?(_payload) do

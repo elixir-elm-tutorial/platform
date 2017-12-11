@@ -1,8 +1,10 @@
 module Platformer exposing (..)
 
 import AnimationFrame exposing (diffs)
-import Html exposing (Html, button, div)
+import Html exposing (Html, button, div, h1, li, span, strong, ul)
+import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
+import Json.Decode as Decode
 import Json.Encode as Encode
 import Keyboard exposing (KeyCode, downs)
 import Phoenix.Channel
@@ -39,7 +41,8 @@ type GameState
 
 
 type alias Model =
-    { gameState : GameState
+    { errors : String
+    , gameState : GameState
     , characterPositionX : Int
     , characterPositionY : Int
     , itemPositionX : Int
@@ -47,14 +50,15 @@ type alias Model =
     , itemsCollected : Int
     , phxSocket : Phoenix.Socket.Socket Msg
     , playerScore : Int
-    , playerScores : List Int
+    , playerScores : List Score
     , timeRemaining : Int
     }
 
 
 initialModel : Model
 initialModel =
-    { gameState = StartScreen
+    { errors = ""
+    , gameState = StartScreen
     , characterPositionX = 50
     , characterPositionY = 300
     , itemPositionX = 150
@@ -62,7 +66,7 @@ initialModel =
     , itemsCollected = 0
     , phxSocket = initialSocketJoin
     , playerScore = 0
-    , playerScores = [ 1000, 1000, 1000 ]
+    , playerScores = []
     , timeRemaining = 10
     }
 
@@ -76,6 +80,7 @@ initialSocket =
         Phoenix.Socket.init devSocketServer
             |> Phoenix.Socket.withDebug
             |> Phoenix.Socket.on "shout" "score:platformer" SendScore
+            |> Phoenix.Socket.on "save_score" "score:platformer" ReceiveScoreChanges
             |> Phoenix.Socket.join initialChannel
 
 
@@ -99,6 +104,25 @@ initialSocketCommand =
 init : ( Model, Cmd Msg )
 init =
     ( initialModel, Cmd.map PhoenixMsg initialSocketCommand )
+
+
+
+-- API
+
+
+type alias Score =
+    { gameId : Int
+    , playerId : Int
+    , playerScore : Int
+    }
+
+
+scoreDecoder : Decode.Decoder Score
+scoreDecoder =
+    Decode.map3 Score
+        (Decode.field "game_id" Decode.int)
+        (Decode.field "player_id" Decode.int)
+        (Decode.field "player_score" Decode.int)
 
 
 
@@ -174,7 +198,12 @@ update msg model =
                 )
 
         ReceiveScoreChanges raw ->
-            ( { model | playerScores = 1 :: model.playerScores }, Cmd.none )
+            case Decode.decodeValue scoreDecoder raw of
+                Ok scoreChange ->
+                    ( { model | playerScores = scoreChange :: model.playerScores }, Cmd.none )
+
+                Err message ->
+                    ( { model | errors = message }, Cmd.none )
 
         SaveScore value ->
             ( model, Cmd.none )
@@ -284,7 +313,7 @@ view model =
         [ viewGame model
         , viewSendScoreButton
         , viewSaveScoreButton
-        , viewPlayerScores model
+        , viewPlayerScoresIndex model
         ]
 
 
@@ -293,7 +322,7 @@ viewSendScoreButton =
     div []
         [ button
             [ onClick SendScoreRequest
-            , class "btn btn-primary"
+            , Html.Attributes.class "btn btn-primary"
             ]
             [ text "Send Score" ]
         ]
@@ -304,16 +333,37 @@ viewSaveScoreButton =
     div []
         [ button
             [ onClick SaveScoreRequest
-            , class "btn btn-primary"
+            , Html.Attributes.class "btn btn-primary"
             ]
             [ text "Save Score" ]
         ]
 
 
-viewPlayerScores : Model -> Html Msg
-viewPlayerScores model =
-    div []
-        ((text "Player Scores") :: (List.map (toString >> text) model.playerScores))
+viewPlayerScoresIndex : Model -> Html Msg
+viewPlayerScoresIndex model =
+    if List.isEmpty model.playerScores then
+        div [] []
+    else
+        div [ Html.Attributes.class "players-index" ]
+            [ h1 [ Html.Attributes.class "players-section" ] [ text "Player Scores" ]
+            , viewPlayerScoresList model.playerScores
+            ]
+
+
+viewPlayerScoresList : List Score -> Html Msg
+viewPlayerScoresList scores =
+    div [ Html.Attributes.class "players-list panel panel-info" ]
+        [ div [ Html.Attributes.class "panel-heading" ] [ text "Leaderboard" ]
+        , ul [ Html.Attributes.class "list-group" ] (List.map viewPlayerScoreItem scores)
+        ]
+
+
+viewPlayerScoreItem : Score -> Html Msg
+viewPlayerScoreItem score =
+    li [ Html.Attributes.class "player-item list-group-item" ]
+        [ strong [] [ text (toString score.playerId) ]
+        , span [ Html.Attributes.class "badge" ] [ text (toString score.playerScore) ]
+        ]
 
 
 viewGame : Model -> Svg Msg
