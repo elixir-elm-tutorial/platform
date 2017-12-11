@@ -27,4 +27,4 @@ const elmContainer = document.querySelector("#elm-container");
 const platformer = document.querySelector("#platformer");
 
 if (elmContainer) Elm.Main.embed(elmContainer);
-if (platformer) Elm.Platformer.embed(platformer);
+if (platformer) Elm.Platformer.embed(platformer, { token: window.userToken });

@@ -16518,6 +16518,9 @@ var _user$project$Platformer$characterFoundItem = function (model) {
 	return A2(_elm_lang$core$List$member, model.characterPositionX, approximateItemRange);
 };
 var _user$project$Platformer$initialChannel = _fbonetti$elm_phoenix_socket$Phoenix_Channel$init('score:platformer');
+var _user$project$Platformer$Flags = function (a) {
+	return {token: a};
+};
 var _user$project$Platformer$Player = F4(
 	function (a, b, c, d) {
 		return {displayName: a, id: b, score: c, username: d};
@@ -16670,8 +16673,8 @@ var _user$project$Platformer$SaveScore = function (a) {
 var _user$project$Platformer$ReceiveScoreChanges = function (a) {
 	return {ctor: 'ReceiveScoreChanges', _0: a};
 };
-var _user$project$Platformer$initialSocket = function () {
-	var devSocketServer = 'ws://localhost:4000/socket/websocket';
+var _user$project$Platformer$initialSocket = function (flags) {
+	var devSocketServer = A2(_elm_lang$core$Basics_ops['++'], 'ws://localhost:4000/socket/websocket?token=', flags.token);
 	return A2(
 		_fbonetti$elm_phoenix_socket$Phoenix_Socket$join,
 		_user$project$Platformer$initialChannel,
@@ -16687,31 +16690,44 @@ var _user$project$Platformer$initialSocket = function () {
 				_user$project$Platformer$SendScore,
 				_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
 					_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer)))));
-}();
-var _user$project$Platformer$initialSocketJoin = _elm_lang$core$Tuple$first(_user$project$Platformer$initialSocket);
-var _user$project$Platformer$initialModel = {
-	errors: '',
-	gameId: 1,
-	gameState: _user$project$Platformer$StartScreen,
-	characterPositionX: 50,
-	characterPositionY: 300,
-	itemPositionX: 150,
-	itemPositionY: 300,
-	itemsCollected: 0,
-	phxSocket: _user$project$Platformer$initialSocketJoin,
-	playersList: {ctor: '[]'},
-	playerScore: 0,
-	playerScores: {ctor: '[]'},
-	timeRemaining: 10
 };
-var _user$project$Platformer$initialSocketCommand = _elm_lang$core$Tuple$second(_user$project$Platformer$initialSocket);
+var _user$project$Platformer$initialSocketJoin = function (flags) {
+	return _elm_lang$core$Tuple$first(
+		_user$project$Platformer$initialSocket(flags));
+};
+var _user$project$Platformer$initialModel = function (flags) {
+	return {
+		errors: '',
+		gameId: 1,
+		gameState: _user$project$Platformer$StartScreen,
+		characterPositionX: 50,
+		characterPositionY: 300,
+		itemPositionX: 150,
+		itemPositionY: 300,
+		itemsCollected: 0,
+		phxSocket: _user$project$Platformer$initialSocketJoin(flags),
+		playersList: {ctor: '[]'},
+		playerScore: 0,
+		playerScores: {ctor: '[]'},
+		timeRemaining: 10
+	};
+};
+var _user$project$Platformer$initialSocketCommand = function (flags) {
+	return _elm_lang$core$Tuple$second(
+		_user$project$Platformer$initialSocket(flags));
+};
 var _user$project$Platformer$PhoenixMsg = function (a) {
 	return {ctor: 'PhoenixMsg', _0: a};
 };
-var _user$project$Platformer$init = {
-	ctor: '_Tuple2',
-	_0: _user$project$Platformer$initialModel,
-	_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Platformer$PhoenixMsg, _user$project$Platformer$initialSocketCommand)
+var _user$project$Platformer$init = function (flags) {
+	return {
+		ctor: '_Tuple2',
+		_0: _user$project$Platformer$initialModel(flags),
+		_1: A2(
+			_elm_lang$core$Platform_Cmd$map,
+			_user$project$Platformer$PhoenixMsg,
+			_user$project$Platformer$initialSocketCommand(flags))
+	};
 };
 var _user$project$Platformer$update = F2(
 	function (msg, model) {
@@ -16952,8 +16968,15 @@ var _user$project$Platformer$subscriptions = function (model) {
 			}
 		});
 };
-var _user$project$Platformer$main = _elm_lang$html$Html$program(
-	{init: _user$project$Platformer$init, view: _user$project$Platformer$view, update: _user$project$Platformer$update, subscriptions: _user$project$Platformer$subscriptions})();
+var _user$project$Platformer$main = _elm_lang$html$Html$programWithFlags(
+	{init: _user$project$Platformer$init, view: _user$project$Platformer$view, update: _user$project$Platformer$update, subscriptions: _user$project$Platformer$subscriptions})(
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		function (token) {
+			return _elm_lang$core$Json_Decode$succeed(
+				{token: token});
+		},
+		A2(_elm_lang$core$Json_Decode$field, 'token', _elm_lang$core$Json_Decode$string)));
 var _user$project$Platformer$NoOp = {ctor: 'NoOp'};
 
 var Elm = {};

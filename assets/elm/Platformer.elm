@@ -20,9 +20,14 @@ import Time exposing (Time, every, second)
 -- MAIN
 
 
-main : Program Never Model Msg
+type alias Flags =
+    { token : String
+    }
+
+
+main : Program Flags Model Msg
 main =
-    Html.program
+    Html.programWithFlags
         { init = init
         , view = view
         , update = update
@@ -66,8 +71,8 @@ type alias Model =
     }
 
 
-initialModel : Model
-initialModel =
+initialModel : Flags -> Model
+initialModel flags =
     { errors = ""
     , gameId = 1
     , gameState = StartScreen
@@ -76,7 +81,7 @@ initialModel =
     , itemPositionX = 150
     , itemPositionY = 300
     , itemsCollected = 0
-    , phxSocket = initialSocketJoin
+    , phxSocket = initialSocketJoin flags
     , playersList = []
     , playerScore = 0
     , playerScores = []
@@ -84,11 +89,11 @@ initialModel =
     }
 
 
-initialSocket : ( Phoenix.Socket.Socket Msg, Cmd (Phoenix.Socket.Msg Msg) )
-initialSocket =
+initialSocket : Flags -> ( Phoenix.Socket.Socket Msg, Cmd (Phoenix.Socket.Msg Msg) )
+initialSocket flags =
     let
         devSocketServer =
-            "ws://localhost:4000/socket/websocket"
+            "ws://localhost:4000/socket/websocket?token=" ++ flags.token
     in
         Phoenix.Socket.init devSocketServer
             |> Phoenix.Socket.withDebug
@@ -102,21 +107,21 @@ initialChannel =
     Phoenix.Channel.init "score:platformer"
 
 
-initialSocketJoin : Phoenix.Socket.Socket Msg
-initialSocketJoin =
-    initialSocket
+initialSocketJoin : Flags -> Phoenix.Socket.Socket Msg
+initialSocketJoin flags =
+    initialSocket flags
         |> Tuple.first
 
 
-initialSocketCommand : Cmd (Phoenix.Socket.Msg Msg)
-initialSocketCommand =
-    initialSocket
+initialSocketCommand : Flags -> Cmd (Phoenix.Socket.Msg Msg)
+initialSocketCommand flags =
+    initialSocket flags
         |> Tuple.second
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( initialModel, Cmd.map PhoenixMsg initialSocketCommand )
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    ( initialModel flags, Cmd.map PhoenixMsg (initialSocketCommand flags) )
 
 
 

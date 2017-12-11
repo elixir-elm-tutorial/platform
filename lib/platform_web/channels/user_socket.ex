@@ -22,10 +22,8 @@ defmodule PlatformWeb.UserSocket do
   # performing token verification on connect.
   def connect(%{"token" => token}, socket) do
     case Phoenix.Token.verify(socket, "user socket", token, max_age: 1209600) do
-      {:ok, user_id} ->
-        socket = assign(socket, :current_user, user_id)
-        socket = assign(socket, :game_id, 1)
-        socket = assign(socket, :player_id, 3)
+      {:ok, current_user_id} ->
+        socket = assign(socket, :player_id, current_user_id)
         {:ok, socket}
       {:error, _} ->
         :error
@@ -33,8 +31,6 @@ defmodule PlatformWeb.UserSocket do
   end
 
   def connect(_params, socket) do
-    socket = assign(socket, :game_id, 1)
-    socket = assign(socket, :player_id, 3)
     {:ok, socket}
   end
 
