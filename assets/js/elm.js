@@ -16518,6 +16518,26 @@ var _user$project$Platformer$characterFoundItem = function (model) {
 	return A2(_elm_lang$core$List$member, model.characterPositionX, approximateItemRange);
 };
 var _user$project$Platformer$initialChannel = _fbonetti$elm_phoenix_socket$Phoenix_Channel$init('score:platformer');
+var _user$project$Platformer$Player = F4(
+	function (a, b, c, d) {
+		return {displayName: a, id: b, score: c, username: d};
+	});
+var _user$project$Platformer$decodePlayer = A5(
+	_elm_lang$core$Json_Decode$map4,
+	_user$project$Platformer$Player,
+	_elm_lang$core$Json_Decode$maybe(
+		A2(_elm_lang$core$Json_Decode$field, 'display_name', _elm_lang$core$Json_Decode$string)),
+	A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'score', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'username', _elm_lang$core$Json_Decode$string));
+var _user$project$Platformer$decodePlayersList = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'data',
+		_1: {ctor: '[]'}
+	},
+	_elm_lang$core$Json_Decode$list(_user$project$Platformer$decodePlayer));
 var _user$project$Platformer$Model = function (a) {
 	return function (b) {
 		return function (c) {
@@ -16529,7 +16549,11 @@ var _user$project$Platformer$Model = function (a) {
 								return function (i) {
 									return function (j) {
 										return function (k) {
-											return {errors: a, gameState: b, characterPositionX: c, characterPositionY: d, itemPositionX: e, itemPositionY: f, itemsCollected: g, phxSocket: h, playerScore: i, playerScores: j, timeRemaining: k};
+											return function (l) {
+												return function (m) {
+													return {errors: a, gameId: b, gameState: c, characterPositionX: d, characterPositionY: e, itemPositionX: f, itemPositionY: g, itemsCollected: h, phxSocket: i, playersList: j, playerScore: k, playerScores: l, timeRemaining: m};
+												};
+											};
 										};
 									};
 								};
@@ -16667,6 +16691,7 @@ var _user$project$Platformer$initialSocket = function () {
 var _user$project$Platformer$initialSocketJoin = _elm_lang$core$Tuple$first(_user$project$Platformer$initialSocket);
 var _user$project$Platformer$initialModel = {
 	errors: '',
+	gameId: 1,
 	gameState: _user$project$Platformer$StartScreen,
 	characterPositionX: 50,
 	characterPositionY: 300,
@@ -16674,6 +16699,7 @@ var _user$project$Platformer$initialModel = {
 	itemPositionY: 300,
 	itemsCollected: 0,
 	phxSocket: _user$project$Platformer$initialSocketJoin,
+	playersList: {ctor: '[]'},
 	playerScore: 0,
 	playerScores: {ctor: '[]'},
 	timeRemaining: 10
@@ -16701,9 +16727,30 @@ var _user$project$Platformer$update = F2(
 						{timeRemaining: model.timeRemaining - 1}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'KeyDown':
+			case 'FetchPlayersList':
 				var _p2 = _p1._0;
-				switch (_p2) {
+				if (_p2.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{playersList: _p2._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errors: _elm_lang$core$Basics$toString(_p2._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'KeyDown':
+				var _p3 = _p1._0;
+				switch (_p3) {
 					case 32:
 						return (!_elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing)) ? {
 							ctor: '_Tuple2',
@@ -16732,9 +16779,9 @@ var _user$project$Platformer$update = F2(
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			case 'PhoenixMsg':
-				var _p3 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p1._0, model.phxSocket);
-				var phxSocket = _p3._0;
-				var phxCmd = _p3._1;
+				var _p4 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p1._0, model.phxSocket);
+				var phxSocket = _p4._0;
+				var phxCmd = _p4._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -16743,14 +16790,14 @@ var _user$project$Platformer$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Platformer$PhoenixMsg, phxCmd)
 				};
 			case 'ReceiveScoreChanges':
-				var _p4 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Platformer$scoreDecoder, _p1._0);
-				if (_p4.ctor === 'Ok') {
+				var _p5 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Platformer$scoreDecoder, _p1._0);
+				if (_p5.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								playerScores: {ctor: '::', _0: _p4._0, _1: model.playerScores}
+								playerScores: {ctor: '::', _0: _p5._0, _1: model.playerScores}
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -16759,7 +16806,7 @@ var _user$project$Platformer$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{errors: _p4._0}),
+							{errors: _p5._0}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
@@ -16791,9 +16838,9 @@ var _user$project$Platformer$update = F2(
 							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 							payload,
 							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'save_score', 'score:platformer'))));
-				var _p5 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
-				var phxSocket = _p5._0;
-				var phxCmd = _p5._1;
+				var _p6 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
+				var phxSocket = _p6._0;
+				var phxCmd = _p6._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -16829,9 +16876,9 @@ var _user$project$Platformer$update = F2(
 							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 							payload,
 							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'shout', 'score:platformer'))));
-				var _p6 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
-				var phxSocket = _p6._0;
-				var phxCmd = _p6._1;
+				var _p7 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
+				var phxSocket = _p7._0;
+				var phxCmd = _p7._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -16875,6 +16922,13 @@ var _user$project$Platformer$update = F2(
 var _user$project$Platformer$KeyDown = function (a) {
 	return {ctor: 'KeyDown', _0: a};
 };
+var _user$project$Platformer$FetchPlayersList = function (a) {
+	return {ctor: 'FetchPlayersList', _0: a};
+};
+var _user$project$Platformer$fetchPlayersList = A2(
+	_elm_lang$http$Http$send,
+	_user$project$Platformer$FetchPlayersList,
+	A2(_elm_lang$http$Http$get, '/api/players', _user$project$Platformer$decodePlayersList));
 var _user$project$Platformer$CountdownTimer = function (a) {
 	return {ctor: 'CountdownTimer', _0: a};
 };
@@ -16909,7 +16963,7 @@ if (typeof _user$project$Main$main !== 'undefined') {
 }
 Elm['Platformer'] = Elm['Platformer'] || {};
 if (typeof _user$project$Platformer$main !== 'undefined') {
-    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Platformer.Msg":{"args":[],"tags":{"SetNewItemPositionX":["Int"],"SendScoreRequest":[],"SaveScoreRequest":[],"CountdownTimer":["Time.Time"],"SaveScore":["Json.Encode.Value"],"SendScore":["Json.Encode.Value"],"PhoenixMsg":["Phoenix.Socket.Msg Platformer.Msg"],"TimeUpdate":["Time.Time"],"SendScoreError":["Json.Encode.Value"],"KeyDown":["Keyboard.KeyCode"],"ReceiveScoreChanges":["Json.Encode.Value"],"NoOp":[],"SaveScoreError":["Json.Encode.Value"]}},"Json.Encode.Value":{"args":[],"tags":{"Value":[]}},"Phoenix.Socket.Msg":{"args":["msg"],"tags":{"ChannelErrored":["String"],"ChannelClosed":["String"],"ExternalMsg":["msg"],"ChannelJoined":["String"],"Heartbeat":["Time.Time"],"NoOp":[],"ReceiveReply":["String","Int"]}}},"aliases":{"Keyboard.KeyCode":{"args":[],"type":"Int"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Platformer.Msg":{"args":[],"tags":{"SetNewItemPositionX":["Int"],"SendScoreRequest":[],"SaveScoreRequest":[],"CountdownTimer":["Time.Time"],"FetchPlayersList":["Result.Result Http.Error (List Platformer.Player)"],"SaveScore":["Json.Encode.Value"],"SendScore":["Json.Encode.Value"],"PhoenixMsg":["Phoenix.Socket.Msg Platformer.Msg"],"TimeUpdate":["Time.Time"],"SendScoreError":["Json.Encode.Value"],"KeyDown":["Keyboard.KeyCode"],"ReceiveScoreChanges":["Json.Encode.Value"],"NoOp":[],"SaveScoreError":["Json.Encode.Value"]}},"Json.Encode.Value":{"args":[],"tags":{"Value":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Phoenix.Socket.Msg":{"args":["msg"],"tags":{"ChannelErrored":["String"],"ChannelClosed":["String"],"ExternalMsg":["msg"],"ChannelJoined":["String"],"Heartbeat":["Time.Time"],"NoOp":[],"ReceiveReply":["String","Int"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Keyboard.KeyCode":{"args":[],"type":"Int"},"Platformer.Player":{"args":[],"type":"{ displayName : Maybe.Maybe String , id : Int , score : Int , username : String }"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

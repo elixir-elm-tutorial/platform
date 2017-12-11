@@ -4,6 +4,7 @@ import AnimationFrame exposing (diffs)
 import Html exposing (Html, button, div, h1, li, span, strong, ul)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
+import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Keyboard exposing (KeyCode, downs)
@@ -40,8 +41,17 @@ type GameState
     | GameOver
 
 
+type alias Player =
+    { displayName : Maybe String
+    , id : Int
+    , score : Int
+    , username : String
+    }
+
+
 type alias Model =
     { errors : String
+    , gameId : Int
     , gameState : GameState
     , characterPositionX : Int
     , characterPositionY : Int
@@ -49,6 +59,7 @@ type alias Model =
     , itemPositionY : Int
     , itemsCollected : Int
     , phxSocket : Phoenix.Socket.Socket Msg
+    , playersList : List Player
     , playerScore : Int
     , playerScores : List Score
     , timeRemaining : Int
@@ -58,6 +69,7 @@ type alias Model =
 initialModel : Model
 initialModel =
     { errors = ""
+    , gameId = 1
     , gameState = StartScreen
     , characterPositionX = 50
     , characterPositionY = 300
@@ -65,6 +77,7 @@ initialModel =
     , itemPositionY = 300
     , itemsCollected = 0
     , phxSocket = initialSocketJoin
+    , playersList = []
     , playerScore = 0
     , playerScores = []
     , timeRemaining = 10
@@ -110,6 +123,28 @@ init =
 -- API
 
 
+fetchPlayersList : Cmd Msg
+fetchPlayersList =
+    Http.get "/api/players" decodePlayersList
+        |> Http.send FetchPlayersList
+
+
+decodePlayersList : Decode.Decoder (List Player)
+decodePlayersList =
+    decodePlayer
+        |> Decode.list
+        |> Decode.at [ "data" ]
+
+
+decodePlayer : Decode.Decoder Player
+decodePlayer =
+    Decode.map4 Player
+        (Decode.maybe (Decode.field "display_name" Decode.string))
+        (Decode.field "id" Decode.int)
+        (Decode.field "score" Decode.int)
+        (Decode.field "username" Decode.string)
+
+
 type alias Score =
     { gameId : Int
     , playerId : Int
@@ -132,6 +167,7 @@ scoreDecoder =
 type Msg
     = NoOp
     | CountdownTimer Time
+    | FetchPlayersList (Result Http.Error (List Player))
     | KeyDown KeyCode
     | PhoenixMsg (Phoenix.Socket.Msg Msg)
     | ReceiveScoreChanges Encode.Value
@@ -156,6 +192,14 @@ update msg model =
                 ( { model | timeRemaining = model.timeRemaining - 1 }, Cmd.none )
             else
                 ( model, Cmd.none )
+
+        FetchPlayersList result ->
+            case result of
+                Ok players ->
+                    ( { model | playersList = players }, Cmd.none )
+
+                Err message ->
+                    ( { model | errors = toString message }, Cmd.none )
 
         KeyDown keyCode ->
             case keyCode of
