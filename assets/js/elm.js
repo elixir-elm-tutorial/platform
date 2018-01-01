@@ -16674,6 +16674,7 @@ var _user$project$Platformer$ReceiveScoreChanges = function (a) {
 	return {ctor: 'ReceiveScoreChanges', _0: a};
 };
 var _user$project$Platformer$initialSocket = function (flags) {
+	var prodSocketServer = A2(_elm_lang$core$Basics_ops['++'], 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=', flags.token);
 	var devSocketServer = A2(_elm_lang$core$Basics_ops['++'], 'ws://localhost:4000/socket/websocket?token=', flags.token);
 	return A2(
 		_fbonetti$elm_phoenix_socket$Phoenix_Socket$join,
@@ -16689,7 +16690,7 @@ var _user$project$Platformer$initialSocket = function (flags) {
 				'score:platformer',
 				_user$project$Platformer$SendScore,
 				_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
-					_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer)))));
+					_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(prodSocketServer)))));
 };
 var _user$project$Platformer$initialSocketJoin = function (flags) {
 	return _elm_lang$core$Tuple$first(

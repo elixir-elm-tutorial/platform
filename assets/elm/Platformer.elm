@@ -94,8 +94,11 @@ initialSocket flags =
     let
         devSocketServer =
             "ws://localhost:4000/socket/websocket?token=" ++ flags.token
+
+        prodSocketServer =
+            "wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=" ++ flags.token
     in
-        Phoenix.Socket.init devSocketServer
+        Phoenix.Socket.init prodSocketServer
             |> Phoenix.Socket.withDebug
             |> Phoenix.Socket.on "shout" "score:platformer" SendScore
             |> Phoenix.Socket.on "save_score" "score:platformer" ReceiveScoreChanges
