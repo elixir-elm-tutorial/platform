@@ -38,6 +38,7 @@ defmodule Platform.Mixfile do
       {:comeonin, "~> 4.0"},
       {:cowboy, "~> 1.0"},
       {:credo, "~> 0.8.0", only: [:dev, :test], runtime: false},
+      {:ex_machina, "~> 2.1", only: :test},
       {:gettext, "~> 0.11"},
       {:phoenix, "~> 1.3.0"},
       {:phoenix_ecto, "~> 3.2"},
