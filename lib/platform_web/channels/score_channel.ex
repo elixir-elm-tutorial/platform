@@ -1,4 +1,15 @@
 defmodule PlatformWeb.ScoreChannel do
+  @moduledoc """
+  Track scores from Elm front-end games (via elm-phoenix-socket).
+
+  Channel joins can use each game's slug so this should be reusable for
+  different games that send a `player_score` value.
+
+  The "save_score" message should allow players to both save their score to
+  the database and also broadcast it to any other users connected to the
+  socket.
+  """
+
   use PlatformWeb, :channel
   use Appsignal.Instrumentation.Decorators
 

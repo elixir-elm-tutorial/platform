@@ -1,4 +1,8 @@
 defmodule Platform.Application do
+  @moduledoc """
+  Phoenix OTP Application
+  """
+
   use Application
 
   # See https://hexdocs.pm/elixir/Application.html

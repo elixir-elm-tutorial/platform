@@ -1,4 +1,12 @@
 defmodule Platform.Products.Gameplay do
+  @moduledoc """
+  Gameplays connect players and games. They allow for tracking individual
+  player score "attempts", and can be aggregated for a player's total score.
+
+  Player gameplay data should be accessible via `player.gameplays`, and game
+  data should be accessible via `game.gameplays`.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   alias Platform.Products.Gameplay

@@ -1,4 +1,10 @@
 defmodule Platform.Products.Game do
+  @moduledoc """
+  This module allows for creating game metadata and records on the
+  platform's back-end, but all game development actually occurs in
+  the Elm front-end.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   alias Platform.Products.Game
