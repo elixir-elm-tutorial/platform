@@ -1,5 +1,6 @@
 defmodule PlatformWeb.ScoreChannel do
   use PlatformWeb, :channel
+  use Appsignal.Instrumentation.Decorators
 
   alias Platform.Products
 
@@ -9,6 +10,7 @@ defmodule PlatformWeb.ScoreChannel do
     {:ok, socket}
   end
 
+  @decorate channel_action()
   def handle_in("save_score", %{"player_score" => player_score}, socket) do
     payload = %{
       player_score: player_score,
