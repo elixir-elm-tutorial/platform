@@ -34,7 +34,7 @@ defmodule Platform.Mixfile do
   defp deps do
     [
       {:appsignal, "~> 1.0"},
-      {:bcrypt_elixir, "~> 0.12"},
+      {:bcrypt_elixir, "~> 1.0"},
       {:comeonin, "~> 4.0"},
       {:cowboy, "~> 1.0"},
       {:credo, "~> 0.8.0", only: [:dev, :test], runtime: false},
