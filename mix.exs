@@ -37,6 +37,7 @@ defmodule Platform.Mixfile do
       {:bcrypt_elixir, "~> 1.0"},
       {:comeonin, "~> 4.0"},
       {:cowboy, "~> 1.0"},
+      {:credo, "~> 0.8.0", only: [:dev, :test], runtime: false},
       {:gettext, "~> 0.11"},
       {:phoenix, "~> 1.3.0"},
       {:phoenix_ecto, "~> 3.2"},
