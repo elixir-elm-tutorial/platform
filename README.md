@@ -1,7 +1,5 @@
 # Platform
 
-[![Build Status](https://semaphoreci.com/api/v1/bijanbwb/platform/branches/master/badge.svg)](https://semaphoreci.com/bijanbwb/platform)
-
 This repository contains the source code for
 [elixir-elm-tutorial.herokuapp.com](https://elixir-elm-tutorial.herokuapp.com),
 which is the demo application from the
