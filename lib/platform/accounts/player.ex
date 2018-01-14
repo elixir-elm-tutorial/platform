@@ -1,10 +1,16 @@
 defmodule Platform.Accounts.Player do
+  @moduledoc """
+  Players equate to users on the platform. The player module allows for
+  creating player accounts that are usable for authentication, and once
+  players are authenticated they can play through the Elm front-end games
+  and track scores.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   alias Platform.Accounts.Player
   alias Platform.Products.Game
   alias Platform.Products.Gameplay
-
 
   schema "players" do
     many_to_many :games, Game, join_through: Gameplay

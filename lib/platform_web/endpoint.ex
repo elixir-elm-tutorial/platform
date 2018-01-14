@@ -38,6 +38,7 @@ defmodule PlatformWeb.Endpoint do
     key: "_platform_key",
     signing_salt: "ZlLKP/TE"
 
+  use Appsignal.Phoenix
   plug PlatformWeb.Router
 
   @doc """

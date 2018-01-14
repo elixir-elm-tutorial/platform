@@ -1,5 +1,7 @@
 # Platform
 
+[![CircleCI](https://circleci.com/gh/elixir-elm-tutorial/platform.svg?style=svg)](https://circleci.com/gh/elixir-elm-tutorial/platform)
+
 This repository contains the source code for
 [elixir-elm-tutorial.herokuapp.com](https://elixir-elm-tutorial.herokuapp.com),
 which is the demo application from the
@@ -9,6 +11,7 @@ which is the demo application from the
 
 - Elixir 1.5
 - Phoenix 1.3
+- Elm 0.18
 
 ## Setup
 
@@ -24,6 +27,7 @@ which is the demo application from the
 
 - Run the test suite with `mix test`.
 - Check for outdated dependencies with `mix hex.outdated`.
+- Run static analysis with `mix credo --strict`.
 
 ## Deployment
 
@@ -33,4 +37,3 @@ This app is deployed to Heroku at https://elixir-elm-tutorial.herokuapp.com.
 
 - Open a [GitHub Issue](https://github.com/elixir-elm-tutorial/platform/issues).
 - Email me at `bijanbwb@gmail.com`.
-

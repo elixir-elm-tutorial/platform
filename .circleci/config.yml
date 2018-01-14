@@ -1,0 +1,20 @@
+# Elixir CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-elixir/ for more details
+version: 2
+jobs:
+  build:
+    docker:
+      - image: elixir:1.5.2
+      - image: postgres:9.4.1
+        environment:
+          POSTGRES_USER: postgres
+    steps:
+      - checkout
+
+      # specify any bash command here prefixed with `run: `
+      - run: mix local.hex --force
+      - run: mix local.rebar
+      - run: mix deps.get
+      - run: mix ecto.create
+      - run: mix test
