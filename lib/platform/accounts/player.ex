@@ -12,7 +12,6 @@ defmodule Platform.Accounts.Player do
   alias Platform.Products.Game
   alias Platform.Products.Gameplay
 
-
   schema "players" do
     many_to_many :games, Game, join_through: Gameplay
 
