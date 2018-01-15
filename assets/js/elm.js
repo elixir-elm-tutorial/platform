@@ -16695,8 +16695,8 @@ var _user$project$Platformer$ReceiveScoreChanges = function (a) {
 	return {ctor: 'ReceiveScoreChanges', _0: a};
 };
 var _user$project$Platformer$initialSocket = function (flags) {
-	var prodSocketServer = A2(_elm_lang$core$Basics_ops['++'], 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=', flags.token);
-	var devSocketServer = A2(_elm_lang$core$Basics_ops['++'], 'ws://localhost:4000/socket/websocket?token=', flags.token);
+	var prodSocketServer = _elm_lang$core$String$isEmpty(flags.token) ? 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket' : A2(_elm_lang$core$Basics_ops['++'], 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=', flags.token);
+	var devSocketServer = _elm_lang$core$String$isEmpty(flags.token) ? 'ws://localhost:4000/socket/websocket' : A2(_elm_lang$core$Basics_ops['++'], 'ws://localhost:4000/socket/websocket?token=', flags.token);
 	return A2(
 		_fbonetti$elm_phoenix_socket$Phoenix_Socket$join,
 		_user$project$Platformer$initialChannel,

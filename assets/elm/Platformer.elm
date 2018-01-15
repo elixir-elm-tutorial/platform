@@ -107,10 +107,16 @@ initialSocket : Flags -> ( Phoenix.Socket.Socket Msg, Cmd (Phoenix.Socket.Msg Ms
 initialSocket flags =
     let
         devSocketServer =
-            "ws://localhost:4000/socket/websocket?token=" ++ flags.token
+            if String.isEmpty flags.token then
+                "ws://localhost:4000/socket/websocket"
+            else
+                "ws://localhost:4000/socket/websocket?token=" ++ flags.token
 
         prodSocketServer =
-            "wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=" ++ flags.token
+            if String.isEmpty flags.token then
+                "wss://elixir-elm-tutorial.herokuapp.com/socket/websocket"
+            else
+                "wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=" ++ flags.token
     in
         Phoenix.Socket.init prodSocketServer
             |> Phoenix.Socket.withDebug
