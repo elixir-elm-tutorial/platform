@@ -18,8 +18,8 @@ jobs:
       - run: mix deps.get
       - run: mix ecto.create
       - run: mix test
-  deployment:
-    production:
-      branch: master
-      heroku:
-        appname: elixir-elm-tutorial
+deployment:
+  production:
+    branch: master
+    heroku:
+      appname: elixir-elm-tutorial
