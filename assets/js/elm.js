@@ -15518,7 +15518,14 @@ var _user$project$Main$playerGameplaysList = F2(
 				return _elm_lang$core$Native_Utils.eq(gameplay.playerId, player.id);
 			},
 			model.gameplaysList);
-		return A2(
+		return _elm_lang$core$List$isEmpty(gameplays) ? A2(
+			_elm_lang$html$Html$p,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('No gameplays to display yet!'),
+				_1: {ctor: '[]'}
+			}) : A2(
 			_elm_lang$html$Html$ul,
 			{ctor: '[]'},
 			A2(
@@ -15799,42 +15806,33 @@ var _user$project$Main$update = F2(
 		var _p2 = msg;
 		switch (_p2.ctor) {
 			case 'TogglePlayerGameplays':
+				var _p3 = _p2._0;
+				var newPlayersList = A2(
+					_elm_lang$core$List$map,
+					function (p) {
+						return _elm_lang$core$Native_Utils.eq(p.id, _p3.id) ? _elm_lang$core$Native_Utils.update(
+							_p3,
+							{
+								displayGameplays: _elm_lang$core$Maybe$Just(
+									!A2(_elm_lang$core$Maybe$withDefault, false, _p3.displayGameplays))
+							}) : p;
+					},
+					model.playersList);
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{displayPlayerGameplays: !model.displayPlayerGameplays}),
+						{playersList: newPlayersList}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'FetchGamesList':
-				var _p3 = _p2._0;
-				if (_p3.ctor === 'Ok') {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{gamesList: _p3._0}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								errors: _elm_lang$core$Basics$toString(_p3._0)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-			case 'FetchGameplaysList':
 				var _p4 = _p2._0;
 				if (_p4.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{gameplaysList: _p4._0}),
+							{gamesList: _p4._0}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -15848,14 +15846,14 @@ var _user$project$Main$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
-			default:
+			case 'FetchGameplaysList':
 				var _p5 = _p2._0;
 				if (_p5.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{playersList: _p5._0}),
+							{gameplaysList: _p5._0}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -15869,18 +15867,45 @@ var _user$project$Main$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
+			default:
+				var _p6 = _p2._0;
+				if (_p6.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{playersList: _p6._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errors: _elm_lang$core$Basics$toString(_p6._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
 		}
 	});
+var _user$project$Main$anonymousPlayer = {
+	displayGameplays: _elm_lang$core$Maybe$Just(false),
+	displayName: _elm_lang$core$Maybe$Just('Anonymous User'),
+	id: 0,
+	score: 0,
+	username: 'anonymous'
+};
 var _user$project$Main$initialModel = {
-	displayPlayerGameplays: false,
 	gamesList: {ctor: '[]'},
 	gameplaysList: {ctor: '[]'},
 	playersList: {ctor: '[]'},
 	errors: ''
 };
-var _user$project$Main$Model = F5(
-	function (a, b, c, d, e) {
-		return {displayPlayerGameplays: a, gamesList: b, gameplaysList: c, playersList: d, errors: e};
+var _user$project$Main$Model = F4(
+	function (a, b, c, d) {
+		return {gamesList: a, gameplaysList: b, playersList: c, errors: d};
 	});
 var _user$project$Main$Game = F6(
 	function (a, b, c, d, e, f) {
@@ -15921,13 +15946,15 @@ var _user$project$Main$decodeGameplaysList = A2(
 		_1: {ctor: '[]'}
 	},
 	_elm_lang$core$Json_Decode$list(_user$project$Main$decodeGameplay));
-var _user$project$Main$Player = F4(
-	function (a, b, c, d) {
-		return {displayName: a, id: b, score: c, username: d};
+var _user$project$Main$Player = F5(
+	function (a, b, c, d, e) {
+		return {displayGameplays: a, displayName: b, id: c, score: d, username: e};
 	});
-var _user$project$Main$decodePlayer = A5(
-	_elm_lang$core$Json_Decode$map4,
+var _user$project$Main$decodePlayer = A6(
+	_elm_lang$core$Json_Decode$map5,
 	_user$project$Main$Player,
+	_elm_lang$core$Json_Decode$maybe(
+		A2(_elm_lang$core$Json_Decode$field, 'display_gameplays', _elm_lang$core$Json_Decode$bool)),
 	_elm_lang$core$Json_Decode$maybe(
 		A2(_elm_lang$core$Json_Decode$field, 'display_name', _elm_lang$core$Json_Decode$string)),
 	A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int),
@@ -15977,13 +16004,17 @@ var _user$project$Main$initialCommand = _elm_lang$core$Platform_Cmd$batch(
 		}
 	});
 var _user$project$Main$init = {ctor: '_Tuple2', _0: _user$project$Main$initialModel, _1: _user$project$Main$initialCommand};
-var _user$project$Main$TogglePlayerGameplays = {ctor: 'TogglePlayerGameplays'};
+var _user$project$Main$TogglePlayerGameplays = function (a) {
+	return {ctor: 'TogglePlayerGameplays', _0: a};
+};
 var _user$project$Main$playersListItem = F2(
 	function (model, player) {
-		var playerLink = A2(
-			_elm_lang$core$Basics_ops['++'],
-			'players/',
-			_elm_lang$core$Basics$toString(player.id));
+		var displayGameplays = (_elm_lang$core$Native_Utils.eq(player.displayGameplays, _elm_lang$core$Maybe$Nothing) || _elm_lang$core$Native_Utils.eq(
+			player.displayGameplays,
+			_elm_lang$core$Maybe$Just(false))) ? A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{ctor: '[]'}) : A2(_user$project$Main$playerGameplaysList, model, player);
 		var displayName = _elm_lang$core$Native_Utils.eq(player.displayName, _elm_lang$core$Maybe$Nothing) ? player.username : A2(_elm_lang$core$Maybe$withDefault, '', player.displayName);
 		return A2(
 			_elm_lang$html$Html$li,
@@ -16003,7 +16034,8 @@ var _user$project$Main$playersListItem = F2(
 							_elm_lang$html$Html$a,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$TogglePlayerGameplays),
+								_0: _elm_lang$html$Html_Events$onClick(
+									_user$project$Main$TogglePlayerGameplays(player)),
 								_1: {ctor: '[]'}
 							},
 							{
@@ -16030,10 +16062,7 @@ var _user$project$Main$playersListItem = F2(
 						}),
 					_1: {
 						ctor: '::',
-						_0: _elm_lang$core$Native_Utils.eq(model.displayPlayerGameplays, true) ? A2(_user$project$Main$playerGameplaysList, model, player) : A2(
-							_elm_lang$html$Html$div,
-							{ctor: '[]'},
-							{ctor: '[]'}),
+						_0: displayGameplays,
 						_1: {ctor: '[]'}
 					}
 				}
@@ -17135,7 +17164,7 @@ var _user$project$Platformer$NoOp = {ctor: 'NoOp'};
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Main.Msg":{"args":[],"tags":{"FetchGameplaysList":["Result.Result Http.Error (List Main.Gameplay)"],"TogglePlayerGameplays":[],"FetchGamesList":["Result.Result Http.Error (List Main.Game)"],"FetchPlayersList":["Result.Result Http.Error (List Main.Player)"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Main.Player":{"args":[],"type":"{ displayName : Maybe.Maybe String , id : Int , score : Int , username : String }"},"Main.Gameplay":{"args":[],"type":"{ gameId : Int, playerId : Int, playerScore : Int }"},"Main.Game":{"args":[],"type":"{ description : String , featured : Bool , id : Int , slug : String , thumbnail : String , title : String }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Main.Msg":{"args":[],"tags":{"FetchGameplaysList":["Result.Result Http.Error (List Main.Gameplay)"],"TogglePlayerGameplays":["Main.Player"],"FetchGamesList":["Result.Result Http.Error (List Main.Game)"],"FetchPlayersList":["Result.Result Http.Error (List Main.Player)"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Main.Player":{"args":[],"type":"{ displayGameplays : Maybe.Maybe Bool , displayName : Maybe.Maybe String , id : Int , score : Int , username : String }"},"Main.Gameplay":{"args":[],"type":"{ gameId : Int, playerId : Int, playerScore : Int }"},"Main.Game":{"args":[],"type":"{ description : String , featured : Bool , id : Int , slug : String , thumbnail : String , title : String }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
 }
 Elm['Platformer'] = Elm['Platformer'] || {};
 if (typeof _user$project$Platformer$main !== 'undefined') {

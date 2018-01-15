@@ -25,8 +25,7 @@ main =
 
 
 type alias Model =
-    { displayPlayerGameplays : Bool
-    , gamesList : List Game
+    { gamesList : List Game
     , gameplaysList : List Gameplay
     , playersList : List Player
     , errors : String
@@ -51,7 +50,8 @@ type alias Gameplay =
 
 
 type alias Player =
-    { displayName : Maybe String
+    { displayGameplays : Maybe Bool
+    , displayName : Maybe String
     , id : Int
     , score : Int
     , username : String
@@ -60,8 +60,7 @@ type alias Player =
 
 initialModel : Model
 initialModel =
-    { displayPlayerGameplays = False
-    , gamesList = []
+    { gamesList = []
     , gameplaysList = []
     , playersList = []
     , errors = ""
@@ -146,11 +145,22 @@ decodePlayersList =
 
 decodePlayer : Decode.Decoder Player
 decodePlayer =
-    Decode.map4 Player
+    Decode.map5 Player
+        (Decode.maybe (Decode.field "display_gameplays" Decode.bool))
         (Decode.maybe (Decode.field "display_name" Decode.string))
         (Decode.field "id" Decode.int)
         (Decode.field "score" Decode.int)
         (Decode.field "username" Decode.string)
+
+
+anonymousPlayer : Player
+anonymousPlayer =
+    { displayGameplays = Just False
+    , displayName = Just "Anonymous User"
+    , id = 0
+    , score = 0
+    , username = "anonymous"
+    }
 
 
 
@@ -158,7 +168,7 @@ decodePlayer =
 
 
 type Msg
-    = TogglePlayerGameplays
+    = TogglePlayerGameplays Player
     | FetchGamesList (Result Http.Error (List Game))
     | FetchGameplaysList (Result Http.Error (List Gameplay))
     | FetchPlayersList (Result Http.Error (List Player))
@@ -167,8 +177,19 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        TogglePlayerGameplays ->
-            ( { model | displayPlayerGameplays = not model.displayPlayerGameplays }, Cmd.none )
+        TogglePlayerGameplays player ->
+            let
+                newPlayersList =
+                    List.map
+                        (\p ->
+                            if p.id == player.id then
+                                { player | displayGameplays = Just <| not <| Maybe.withDefault False player.displayGameplays }
+                            else
+                                p
+                        )
+                        model.playersList
+            in
+                ( { model | playersList = newPlayersList }, Cmd.none )
 
         FetchGamesList result ->
             case result of
@@ -311,16 +332,16 @@ playersListItem model player =
             else
                 Maybe.withDefault "" player.displayName
 
-        playerLink =
-            "players/" ++ (toString player.id)
+        displayGameplays =
+            if player.displayGameplays == Nothing || player.displayGameplays == Just False then
+                div [] []
+            else
+                (playerGameplaysList model) player
     in
         li [ class "player-item list-group-item" ]
-            [ strong [] [ a [ onClick TogglePlayerGameplays ] [ text displayName ] ]
+            [ strong [] [ a [ onClick <| TogglePlayerGameplays player ] [ text displayName ] ]
             , span [ class "badge" ] [ text (toString player.score) ]
-            , if model.displayPlayerGameplays == True then
-                (playerGameplaysList model) player
-              else
-                div [] []
+            , displayGameplays
             ]
 
 
@@ -330,7 +351,10 @@ playerGameplaysList model player =
         gameplays =
             List.filter (\gameplay -> gameplay.playerId == player.id) model.gameplaysList
     in
-        ul [] (List.map (playerGameplaysListItem model) gameplays)
+        if List.isEmpty gameplays then
+            p [] [ text "No gameplays to display yet!" ]
+        else
+            ul [] (List.map (playerGameplaysListItem model) gameplays)
 
 
 playerGameplaysListItem : Model -> Gameplay -> Html msg
