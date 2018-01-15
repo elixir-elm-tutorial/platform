@@ -15476,6 +15476,10 @@ var _fbonetti$elm_phoenix_socket$Phoenix_Socket$listen = F2(
 	});
 
 var _user$project$Main$playersListItem = function (player) {
+	var playerLink = A2(
+		_elm_lang$core$Basics_ops['++'],
+		'players/',
+		_elm_lang$core$Basics$toString(player.id));
 	var displayName = _elm_lang$core$Native_Utils.eq(player.displayName, _elm_lang$core$Maybe$Nothing) ? player.username : A2(_elm_lang$core$Maybe$withDefault, '', player.displayName);
 	return A2(
 		_elm_lang$html$Html$li,
@@ -15491,7 +15495,18 @@ var _user$project$Main$playersListItem = function (player) {
 				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text(displayName),
+					_0: A2(
+						_elm_lang$html$Html$a,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$href(playerLink),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(displayName),
+							_1: {ctor: '[]'}
+						}),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
