@@ -16823,6 +16823,14 @@ var _user$project$Platformer$update = F2(
 								{characterDirection: _user$project$Platformer$Left, characterVelocityX: -0.25}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					case 38:
+						return _elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing) ? {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{characterVelocityY: -0.25}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 39:
 						return _elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing) ? {
 							ctor: '_Tuple2',
@@ -16831,31 +16839,34 @@ var _user$project$Platformer$update = F2(
 								{characterDirection: _user$project$Platformer$Right, characterVelocityX: 0.25}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					case 65:
+						return _elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing) ? {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{characterDirection: _user$project$Platformer$Left, characterVelocityX: -0.35}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					case 68:
+						return _elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing) ? {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{characterDirection: _user$project$Platformer$Right, characterVelocityX: 0.35}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					default:
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			case 'KeyUp':
 				var _p6 = _p2._0;
-				switch (_p6) {
-					case 37:
-						return {
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Native_Utils.update(
-								model,
-								{characterVelocityX: 0}),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					case 39:
-						return {
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Native_Utils.update(
-								model,
-								{characterVelocityX: 0}),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					default:
-						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				}
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{characterVelocityX: 0, characterVelocityY: 0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'MoveCharacter':
 				return {
 					ctor: '_Tuple2',

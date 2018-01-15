@@ -264,7 +264,7 @@ update msg model =
 
         KeyDown keyCode ->
             case keyCode of
-                -- space bar
+                -- Space bar key to start game
                 32 ->
                     if model.gameState /= Playing then
                         ( { model
@@ -280,7 +280,7 @@ update msg model =
                     else
                         ( model, Cmd.none )
 
-                -- left arrow
+                -- Left arrow key to walk left
                 37 ->
                     if model.gameState == Playing then
                         ( { model
@@ -292,7 +292,16 @@ update msg model =
                     else
                         ( model, Cmd.none )
 
-                -- right arrow
+                -- Up arrow key to jump
+                38 ->
+                    if model.gameState == Playing then
+                        ( { model | characterVelocityY = -0.25 }
+                        , Cmd.none
+                        )
+                    else
+                        ( model, Cmd.none )
+
+                -- Right arrow key to walk right
                 39 ->
                     if model.gameState == Playing then
                         ( { model
@@ -304,19 +313,44 @@ update msg model =
                     else
                         ( model, Cmd.none )
 
+                -- A key to run left
+                65 ->
+                    if model.gameState == Playing then
+                        ( { model
+                            | characterDirection = Left
+                            , characterVelocityX = -0.35
+                          }
+                        , Cmd.none
+                        )
+                    else
+                        ( model, Cmd.none )
+
+                -- D key to run right
+                68 ->
+                    if model.gameState == Playing then
+                        ( { model
+                            | characterDirection = Right
+                            , characterVelocityX = 0.35
+                          }
+                        , Cmd.none
+                        )
+                    else
+                        ( model, Cmd.none )
+
+                -- any other key
                 _ ->
                     ( model, Cmd.none )
 
         KeyUp keyCode ->
             case keyCode of
-                37 ->
-                    ( { model | characterVelocityX = 0 }, Cmd.none )
-
-                39 ->
-                    ( { model | characterVelocityX = 0 }, Cmd.none )
-
+                -- key up to stop movement
                 _ ->
-                    ( model, Cmd.none )
+                    ( { model
+                        | characterVelocityX = 0
+                        , characterVelocityY = 0
+                      }
+                    , Cmd.none
+                    )
 
         MoveCharacter time ->
             ( { model | characterPositionX = model.characterPositionX + model.characterVelocityX * time }, Cmd.none )
