@@ -6,6 +6,7 @@ defmodule Platform.Products do
   import Ecto.Query, warn: false
   alias Platform.Repo
 
+  alias Platform.Accounts
   alias Platform.Products.Game
   alias Platform.Products.Gameplay
 
@@ -151,6 +152,13 @@ defmodule Platform.Products do
 
   """
   def create_gameplay(attrs \\ %{}) do
+    # Update player total score.
+    unless attrs[:player_id] == nil do
+      player = Accounts.get_player!(attrs[:player_id])
+      Accounts.update_player(player, %{score: player.score + attrs[:player_score]})
+    end
+
+    # Create gameplay record.
     %Gameplay{}
     |> Gameplay.changeset(attrs)
     |> Repo.insert()
