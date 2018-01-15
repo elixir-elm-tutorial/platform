@@ -32,6 +32,8 @@ defmodule PlatformWeb.GameplayControllerTest do
       conn = get conn, gameplay_path(conn, :show, id)
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
+        "game_id" => nil,
+        "player_id" => nil,
         "player_score" => 42}
     end
 
@@ -51,6 +53,8 @@ defmodule PlatformWeb.GameplayControllerTest do
       conn = get conn, gameplay_path(conn, :show, id)
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
+        "game_id" => nil,
+        "player_id" => nil,
         "player_score" => 43}
     end
 
