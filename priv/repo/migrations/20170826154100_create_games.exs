@@ -10,5 +10,13 @@ defmodule Platform.Repo.Migrations.CreateGames do
 
       timestamps()
     end
+
+    create table(:gameplays) do
+      add :game_id, references(:games, on_delete: :nothing), null: false
+      add :player_id, references(:players, on_delete: :nothing), null: false
+      add :player_score, :integer
+
+      timestamps()
+    end
   end
 end
