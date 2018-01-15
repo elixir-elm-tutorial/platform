@@ -16428,44 +16428,6 @@ var _user$project$Platformer$viewGame = function (model) {
 		},
 		_user$project$Platformer$viewGameState(model));
 };
-var _user$project$Platformer$playersListItem = function (player) {
-	var displayName = _elm_lang$core$Native_Utils.eq(player.displayName, _elm_lang$core$Maybe$Nothing) ? player.username : A2(_elm_lang$core$Maybe$withDefault, '', player.displayName);
-	return A2(
-		_elm_lang$html$Html$li,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('player-item list-group-item'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$strong,
-				{ctor: '[]'},
-				{
-					ctor: '::',
-					_0: _elm_lang$svg$Svg$text(displayName),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$span,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('badge'),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$svg$Svg$text(
-							_elm_lang$core$Basics$toString(player.score)),
-						_1: {ctor: '[]'}
-					}),
-				_1: {ctor: '[]'}
-			}
-		});
-};
 var _user$project$Platformer$characterFoundItem = function (model) {
 	var approximateItemUpperBound = model.itemPositionX;
 	var approximateItemLowerBound = model.itemPositionX - 35;
@@ -16606,12 +16568,20 @@ var _user$project$Platformer$Gameplay = F3(
 	function (a, b, c) {
 		return {gameId: a, playerId: b, playerScore: c};
 	});
-var _user$project$Platformer$scoreDecoder = A4(
+var _user$project$Platformer$decodeGameplay = A4(
 	_elm_lang$core$Json_Decode$map3,
 	_user$project$Platformer$Gameplay,
 	A2(_elm_lang$core$Json_Decode$field, 'game_id', _elm_lang$core$Json_Decode$int),
 	A2(_elm_lang$core$Json_Decode$field, 'player_id', _elm_lang$core$Json_Decode$int),
 	A2(_elm_lang$core$Json_Decode$field, 'player_score', _elm_lang$core$Json_Decode$int));
+var _user$project$Platformer$decodeGameplaysList = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'data',
+		_1: {ctor: '[]'}
+	},
+	_elm_lang$core$Json_Decode$list(_user$project$Platformer$decodeGameplay));
 var _user$project$Platformer$Player = F4(
 	function (a, b, c, d) {
 		return {displayName: a, id: b, score: c, username: d};
@@ -16786,14 +16756,14 @@ var _user$project$Platformer$update = F2(
 						{timeRemaining: model.timeRemaining - 1}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'FetchPlayersList':
+			case 'FetchGameplaysList':
 				var _p3 = _p2._0;
 				if (_p3.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{playersList: _p3._0}),
+							{gameplays: _p3._0}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -16807,9 +16777,30 @@ var _user$project$Platformer$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
-			case 'KeyDown':
+			case 'FetchPlayersList':
 				var _p4 = _p2._0;
-				switch (_p4) {
+				if (_p4.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{playersList: _p4._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errors: _elm_lang$core$Basics$toString(_p4._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'KeyDown':
+				var _p5 = _p2._0;
+				switch (_p5) {
 					case 32:
 						return (!_elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing)) ? {
 							ctor: '_Tuple2',
@@ -16838,9 +16829,9 @@ var _user$project$Platformer$update = F2(
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			case 'PhoenixMsg':
-				var _p5 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p2._0, model.phxSocket);
-				var phxSocket = _p5._0;
-				var phxCmd = _p5._1;
+				var _p6 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p2._0, model.phxSocket);
+				var phxSocket = _p6._0;
+				var phxCmd = _p6._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -16849,14 +16840,14 @@ var _user$project$Platformer$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Platformer$PhoenixMsg, phxCmd)
 				};
 			case 'ReceiveScoreChanges':
-				var _p6 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Platformer$scoreDecoder, _p2._0);
-				if (_p6.ctor === 'Ok') {
+				var _p7 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Platformer$decodeGameplay, _p2._0);
+				if (_p7.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								gameplays: {ctor: '::', _0: _p6._0, _1: model.gameplays}
+								gameplays: {ctor: '::', _0: _p7._0, _1: model.gameplays}
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -16865,7 +16856,7 @@ var _user$project$Platformer$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{errors: _p6._0}),
+							{errors: _p7._0}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
@@ -16897,9 +16888,9 @@ var _user$project$Platformer$update = F2(
 							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 							payload,
 							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'save_score', 'score:platformer'))));
-				var _p7 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
-				var phxSocket = _p7._0;
-				var phxCmd = _p7._1;
+				var _p8 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
+				var phxSocket = _p8._0;
+				var phxCmd = _p8._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -16950,6 +16941,13 @@ var _user$project$Platformer$fetchPlayersList = A2(
 	_elm_lang$http$Http$send,
 	_user$project$Platformer$FetchPlayersList,
 	A2(_elm_lang$http$Http$get, '/api/players', _user$project$Platformer$decodePlayersList));
+var _user$project$Platformer$FetchGameplaysList = function (a) {
+	return {ctor: 'FetchGameplaysList', _0: a};
+};
+var _user$project$Platformer$fetchGameplaysList = A2(
+	_elm_lang$http$Http$send,
+	_user$project$Platformer$FetchGameplaysList,
+	A2(_elm_lang$http$Http$get, '/api/gameplays', _user$project$Platformer$decodeGameplaysList));
 var _user$project$Platformer$init = function (flags) {
 	return {
 		ctor: '_Tuple2',
@@ -16957,14 +16955,18 @@ var _user$project$Platformer$init = function (flags) {
 		_1: _elm_lang$core$Platform_Cmd$batch(
 			{
 				ctor: '::',
-				_0: _user$project$Platformer$fetchPlayersList,
+				_0: _user$project$Platformer$fetchGameplaysList,
 				_1: {
 					ctor: '::',
-					_0: A2(
-						_elm_lang$core$Platform_Cmd$map,
-						_user$project$Platformer$PhoenixMsg,
-						_user$project$Platformer$initialSocketCommand(flags)),
-					_1: {ctor: '[]'}
+					_0: _user$project$Platformer$fetchPlayersList,
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$core$Platform_Cmd$map,
+							_user$project$Platformer$PhoenixMsg,
+							_user$project$Platformer$initialSocketCommand(flags)),
+						_1: {ctor: '[]'}
+					}
 				}
 			})
 	};
@@ -17010,7 +17012,7 @@ if (typeof _user$project$Main$main !== 'undefined') {
 }
 Elm['Platformer'] = Elm['Platformer'] || {};
 if (typeof _user$project$Platformer$main !== 'undefined') {
-    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Platformer.Msg":{"args":[],"tags":{"SetNewItemPositionX":["Int"],"SaveScoreRequest":[],"CountdownTimer":["Time.Time"],"FetchPlayersList":["Result.Result Http.Error (List Platformer.Player)"],"SaveScore":["Json.Encode.Value"],"PhoenixMsg":["Phoenix.Socket.Msg Platformer.Msg"],"TimeUpdate":["Time.Time"],"KeyDown":["Keyboard.KeyCode"],"ReceiveScoreChanges":["Json.Encode.Value"],"NoOp":[],"SaveScoreError":["Json.Encode.Value"]}},"Json.Encode.Value":{"args":[],"tags":{"Value":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Phoenix.Socket.Msg":{"args":["msg"],"tags":{"ChannelErrored":["String"],"ChannelClosed":["String"],"ExternalMsg":["msg"],"ChannelJoined":["String"],"Heartbeat":["Time.Time"],"NoOp":[],"ReceiveReply":["String","Int"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Keyboard.KeyCode":{"args":[],"type":"Int"},"Platformer.Player":{"args":[],"type":"{ displayName : Maybe.Maybe String , id : Int , score : Int , username : String }"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Platformer.Msg":{"args":[],"tags":{"FetchGameplaysList":["Result.Result Http.Error (List Platformer.Gameplay)"],"SetNewItemPositionX":["Int"],"SaveScoreRequest":[],"CountdownTimer":["Time.Time"],"FetchPlayersList":["Result.Result Http.Error (List Platformer.Player)"],"SaveScore":["Json.Encode.Value"],"PhoenixMsg":["Phoenix.Socket.Msg Platformer.Msg"],"TimeUpdate":["Time.Time"],"KeyDown":["Keyboard.KeyCode"],"ReceiveScoreChanges":["Json.Encode.Value"],"NoOp":[],"SaveScoreError":["Json.Encode.Value"]}},"Json.Encode.Value":{"args":[],"tags":{"Value":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Phoenix.Socket.Msg":{"args":["msg"],"tags":{"ChannelErrored":["String"],"ChannelClosed":["String"],"ExternalMsg":["msg"],"ChannelJoined":["String"],"Heartbeat":["Time.Time"],"NoOp":[],"ReceiveReply":["String","Int"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Keyboard.KeyCode":{"args":[],"type":"Int"},"Platformer.Gameplay":{"args":[],"type":"{ gameId : Int, playerId : Int, playerScore : Int }"},"Platformer.Player":{"args":[],"type":"{ displayName : Maybe.Maybe String , id : Int , score : Int , username : String }"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

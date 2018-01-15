@@ -140,7 +140,8 @@ init : Flags -> ( Model, Cmd Msg )
 init flags =
     ( initialModel flags
     , Cmd.batch
-        [ fetchPlayersList
+        [ fetchGameplaysList
+        , fetchPlayersList
         , Cmd.map PhoenixMsg (initialSocketCommand flags)
         ]
     )
@@ -172,6 +173,27 @@ decodePlayer =
         (Decode.field "username" Decode.string)
 
 
+fetchGameplaysList : Cmd Msg
+fetchGameplaysList =
+    Http.get "/api/gameplays" decodeGameplaysList
+        |> Http.send FetchGameplaysList
+
+
+decodeGameplaysList : Decode.Decoder (List Gameplay)
+decodeGameplaysList =
+    decodeGameplay
+        |> Decode.list
+        |> Decode.at [ "data" ]
+
+
+decodeGameplay : Decode.Decoder Gameplay
+decodeGameplay =
+    Decode.map3 Gameplay
+        (Decode.field "game_id" Decode.int)
+        (Decode.field "player_id" Decode.int)
+        (Decode.field "player_score" Decode.int)
+
+
 anonymousPlayer : Player
 anonymousPlayer =
     { displayName = Just "Anonymous User"
@@ -181,14 +203,6 @@ anonymousPlayer =
     }
 
 
-scoreDecoder : Decode.Decoder Gameplay
-scoreDecoder =
-    Decode.map3 Gameplay
-        (Decode.field "game_id" Decode.int)
-        (Decode.field "player_id" Decode.int)
-        (Decode.field "player_score" Decode.int)
-
-
 
 -- UPDATE
 
@@ -196,6 +210,7 @@ scoreDecoder =
 type Msg
     = NoOp
     | CountdownTimer Time
+    | FetchGameplaysList (Result Http.Error (List Gameplay))
     | FetchPlayersList (Result Http.Error (List Player))
     | KeyDown KeyCode
     | PhoenixMsg (Phoenix.Socket.Msg Msg)
@@ -218,6 +233,14 @@ update msg model =
                 ( { model | timeRemaining = model.timeRemaining - 1 }, Cmd.none )
             else
                 ( model, Cmd.none )
+
+        FetchGameplaysList result ->
+            case result of
+                Ok gameplays ->
+                    ( { model | gameplays = gameplays }, Cmd.none )
+
+                Err message ->
+                    ( { model | errors = toString message }, Cmd.none )
 
         FetchPlayersList result ->
             case result of
@@ -279,7 +302,7 @@ update msg model =
                 )
 
         ReceiveScoreChanges raw ->
-            case Decode.decodeValue scoreDecoder raw of
+            case Decode.decodeValue decodeGameplay raw of
                 Ok scoreChange ->
                     ( { model | gameplays = scoreChange :: model.gameplays }, Cmd.none )
 
@@ -417,21 +440,6 @@ viewGameplayItem model gameplay =
         li [ Html.Attributes.class "player-item list-group-item" ]
             [ strong [] [ text displayName ]
             , span [ Html.Attributes.class "badge" ] [ text (toString gameplay.playerScore) ]
-            ]
-
-
-playersListItem : Player -> Html msg
-playersListItem player =
-    let
-        displayName =
-            if player.displayName == Nothing then
-                player.username
-            else
-                Maybe.withDefault "" player.displayName
-    in
-        li [ Html.Attributes.class "player-item list-group-item" ]
-            [ strong [] [ text displayName ]
-            , span [ Html.Attributes.class "badge" ] [ text (toString player.score) ]
             ]
 
 

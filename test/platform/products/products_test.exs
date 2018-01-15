@@ -68,4 +68,64 @@ defmodule Platform.ProductsTest do
       assert %Ecto.Changeset{} = Products.change_game(game)
     end
   end
+
+  describe "gameplays" do
+    alias Platform.Products.Gameplay
+
+    @valid_attrs %{player_score: 42}
+    @update_attrs %{player_score: 43}
+    @invalid_attrs %{player_score: nil}
+
+    def gameplay_fixture(attrs \\ %{}) do
+      {:ok, gameplay} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Products.create_gameplay()
+
+      gameplay
+    end
+
+    test "list_gameplays/0 returns all gameplays" do
+      gameplay = gameplay_fixture()
+      assert Products.list_gameplays() == [gameplay]
+    end
+
+    test "get_gameplay!/1 returns the gameplay with given id" do
+      gameplay = gameplay_fixture()
+      assert Products.get_gameplay!(gameplay.id) == gameplay
+    end
+
+    test "create_gameplay/1 with valid data creates a gameplay" do
+      assert {:ok, %Gameplay{} = gameplay} = Products.create_gameplay(@valid_attrs)
+      assert gameplay.player_score == 42
+    end
+
+    test "create_gameplay/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Products.create_gameplay(@invalid_attrs)
+    end
+
+    test "update_gameplay/2 with valid data updates the gameplay" do
+      gameplay = gameplay_fixture()
+      assert {:ok, gameplay} = Products.update_gameplay(gameplay, @update_attrs)
+      assert %Gameplay{} = gameplay
+      assert gameplay.player_score == 43
+    end
+
+    test "update_gameplay/2 with invalid data returns error changeset" do
+      gameplay = gameplay_fixture()
+      assert {:error, %Ecto.Changeset{}} = Products.update_gameplay(gameplay, @invalid_attrs)
+      assert gameplay == Products.get_gameplay!(gameplay.id)
+    end
+
+    test "delete_gameplay/1 deletes the gameplay" do
+      gameplay = gameplay_fixture()
+      assert {:ok, %Gameplay{}} = Products.delete_gameplay(gameplay)
+      assert_raise Ecto.NoResultsError, fn -> Products.get_gameplay!(gameplay.id) end
+    end
+
+    test "change_gameplay/1 returns a gameplay changeset" do
+      gameplay = gameplay_fixture()
+      assert %Ecto.Changeset{} = Products.change_gameplay(gameplay)
+    end
+  end
 end

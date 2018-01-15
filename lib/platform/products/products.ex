@@ -6,6 +6,7 @@ defmodule Platform.Products do
   import Ecto.Query, warn: false
   alias Platform.Repo
 
+  alias Platform.Accounts
   alias Platform.Products.Game
   alias Platform.Products.Gameplay
 
@@ -20,10 +21,6 @@ defmodule Platform.Products do
   """
   def list_games do
     Repo.all(Game)
-  end
-
-  def list_gameplays do
-    Repo.all(Gameplay)
   end
 
   @doc """
@@ -43,11 +40,6 @@ defmodule Platform.Products do
   def get_game!(id), do: Repo.get!(Game, id)
   def get_game_by_slug!(slug), do: Repo.get_by!(Game, slug: slug)
 
-  def get_gameplays_by_id!(id) do
-    query = from gp in "gameplays", where: gp.game_id == ^id, select: [:player_id, :player_score]
-    Repo.all(query)
-  end
-
   @doc """
   Creates a game.
 
@@ -63,12 +55,6 @@ defmodule Platform.Products do
   def create_game(attrs \\ %{}) do
     %Game{}
     |> Game.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  def create_gameplay(attrs \\ %{}) do
-    %Gameplay{}
-    |> Gameplay.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -117,5 +103,111 @@ defmodule Platform.Products do
   """
   def change_game(%Game{} = game) do
     Game.changeset(game, %{})
+  end
+
+  @doc """
+  Returns the list of gameplays.
+
+  ## Examples
+
+      iex> list_gameplays()
+      [%Gameplay{}, ...]
+
+  """
+  def list_gameplays do
+    Repo.all(Gameplay)
+  end
+
+  @doc """
+  Gets a single gameplay.
+
+  Raises `Ecto.NoResultsError` if the Gameplay does not exist.
+
+  ## Examples
+
+      iex> get_gameplay!(123)
+      %Gameplay{}
+
+      iex> get_gameplay!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_gameplay!(id), do: Repo.get!(Gameplay, id)
+
+  def get_gameplays_by_id!(id) do
+    query = from gp in "gameplays", where: gp.game_id == ^id, select: [:player_id, :player_score]
+    Repo.all(query)
+  end
+
+  @doc """
+  Creates a gameplay.
+
+  ## Examples
+
+      iex> create_gameplay(%{field: value})
+      {:ok, %Gameplay{}}
+
+      iex> create_gameplay(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_gameplay(attrs \\ %{}) do
+    # Update player total score.
+    unless attrs[:player_id] == nil do
+      player = Accounts.get_player!(attrs[:player_id])
+      Accounts.update_player(player, %{score: player.score + attrs[:player_score]})
+    end
+
+    # Create gameplay record.
+    %Gameplay{}
+    |> Gameplay.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a gameplay.
+
+  ## Examples
+
+      iex> update_gameplay(gameplay, %{field: new_value})
+      {:ok, %Gameplay{}}
+
+      iex> update_gameplay(gameplay, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_gameplay(%Gameplay{} = gameplay, attrs) do
+    gameplay
+    |> Gameplay.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a Gameplay.
+
+  ## Examples
+
+      iex> delete_gameplay(gameplay)
+      {:ok, %Gameplay{}}
+
+      iex> delete_gameplay(gameplay)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_gameplay(%Gameplay{} = gameplay) do
+    Repo.delete(gameplay)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking gameplay changes.
+
+  ## Examples
+
+      iex> change_gameplay(gameplay)
+      %Ecto.Changeset{source: %Gameplay{}}
+
+  """
+  def change_gameplay(%Gameplay{} = gameplay) do
+    Gameplay.changeset(gameplay, %{})
   end
 end
