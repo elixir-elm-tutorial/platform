@@ -15476,6 +15476,10 @@ var _fbonetti$elm_phoenix_socket$Phoenix_Socket$listen = F2(
 	});
 
 var _user$project$Main$playersListItem = function (player) {
+	var playerLink = A2(
+		_elm_lang$core$Basics_ops['++'],
+		'players/',
+		_elm_lang$core$Basics$toString(player.id));
 	var displayName = _elm_lang$core$Native_Utils.eq(player.displayName, _elm_lang$core$Maybe$Nothing) ? player.username : A2(_elm_lang$core$Maybe$withDefault, '', player.displayName);
 	return A2(
 		_elm_lang$html$Html$li,
@@ -15491,7 +15495,18 @@ var _user$project$Main$playersListItem = function (player) {
 				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text(displayName),
+					_0: A2(
+						_elm_lang$html$Html$a,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$href(playerLink),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(displayName),
+							_1: {ctor: '[]'}
+						}),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
@@ -16139,11 +16154,19 @@ var _user$project$Platformer$viewItem = function (model) {
 		{ctor: '[]'});
 };
 var _user$project$Platformer$viewCharacter = function (model) {
+	var characterImage = function () {
+		var _p0 = model.characterDirection;
+		if (_p0.ctor === 'Left') {
+			return '/images/character-left.gif';
+		} else {
+			return '/images/character-right.gif';
+		}
+	}();
 	return A2(
 		_elm_lang$svg$Svg$image,
 		{
 			ctor: '::',
-			_0: _elm_lang$svg$Svg_Attributes$xlinkHref('/images/character.gif'),
+			_0: _elm_lang$svg$Svg_Attributes$xlinkHref(characterImage),
 			_1: {
 				ctor: '::',
 				_0: _elm_lang$svg$Svg_Attributes$x(
@@ -16271,8 +16294,8 @@ var _user$project$Platformer$viewStartScreenText = A2(
 		}
 	});
 var _user$project$Platformer$viewGameState = function (model) {
-	var _p0 = model.gameState;
-	switch (_p0.ctor) {
+	var _p1 = model.gameState;
+	switch (_p1.ctor) {
 		case 'StartScreen':
 			return {
 				ctor: '::',
@@ -16405,7 +16428,8 @@ var _user$project$Platformer$viewGame = function (model) {
 		},
 		_user$project$Platformer$viewGameState(model));
 };
-var _user$project$Platformer$viewPlayerScoreItem = function (score) {
+var _user$project$Platformer$playersListItem = function (player) {
+	var displayName = _elm_lang$core$Native_Utils.eq(player.displayName, _elm_lang$core$Maybe$Nothing) ? player.username : A2(_elm_lang$core$Maybe$withDefault, '', player.displayName);
 	return A2(
 		_elm_lang$html$Html$li,
 		{
@@ -16420,8 +16444,7 @@ var _user$project$Platformer$viewPlayerScoreItem = function (score) {
 				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: _elm_lang$svg$Svg$text(
-						_elm_lang$core$Basics$toString(score.playerId)),
+					_0: _elm_lang$svg$Svg$text(displayName),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
@@ -16436,14 +16459,75 @@ var _user$project$Platformer$viewPlayerScoreItem = function (score) {
 					{
 						ctor: '::',
 						_0: _elm_lang$svg$Svg$text(
-							_elm_lang$core$Basics$toString(score.playerScore)),
+							_elm_lang$core$Basics$toString(player.score)),
 						_1: {ctor: '[]'}
 					}),
 				_1: {ctor: '[]'}
 			}
 		});
 };
-var _user$project$Platformer$viewPlayerScoresList = function (scores) {
+var _user$project$Platformer$characterFoundItem = function (model) {
+	var approximateItemUpperBound = model.itemPositionX;
+	var approximateItemLowerBound = model.itemPositionX - 35;
+	var approximateItemRange = A2(_elm_lang$core$List$range, approximateItemLowerBound, approximateItemUpperBound);
+	return A2(_elm_lang$core$List$member, model.characterPositionX, approximateItemRange);
+};
+var _user$project$Platformer$anonymousPlayer = {
+	displayName: _elm_lang$core$Maybe$Just('Anonymous User'),
+	id: 0,
+	score: 0,
+	username: 'anonymous'
+};
+var _user$project$Platformer$viewGameplayItem = F2(
+	function (model, gameplay) {
+		var currentPlayer = A2(
+			_elm_lang$core$Maybe$withDefault,
+			_user$project$Platformer$anonymousPlayer,
+			_elm_lang$core$List$head(
+				A2(
+					_elm_lang$core$List$filter,
+					function (player) {
+						return _elm_lang$core$Native_Utils.eq(player.id, gameplay.playerId);
+					},
+					model.playersList)));
+		var displayName = A2(_elm_lang$core$Maybe$withDefault, currentPlayer.username, currentPlayer.displayName);
+		return A2(
+			_elm_lang$html$Html$li,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('player-item list-group-item'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$strong,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$svg$Svg$text(displayName),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$span,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('badge'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$svg$Svg$text(
+								_elm_lang$core$Basics$toString(gameplay.playerScore)),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _user$project$Platformer$viewGameplaysList = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		{
@@ -16462,7 +16546,7 @@ var _user$project$Platformer$viewPlayerScoresList = function (scores) {
 				},
 				{
 					ctor: '::',
-					_0: _elm_lang$svg$Svg$text('Leaderboard'),
+					_0: _elm_lang$svg$Svg$text('Scores'),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
@@ -16474,13 +16558,16 @@ var _user$project$Platformer$viewPlayerScoresList = function (scores) {
 						_0: _elm_lang$html$Html_Attributes$class('list-group'),
 						_1: {ctor: '[]'}
 					},
-					A2(_elm_lang$core$List$map, _user$project$Platformer$viewPlayerScoreItem, scores)),
+					A2(
+						_elm_lang$core$List$map,
+						_user$project$Platformer$viewGameplayItem(model),
+						model.gameplays)),
 				_1: {ctor: '[]'}
 			}
 		});
 };
-var _user$project$Platformer$viewPlayerScoresIndex = function (model) {
-	return _elm_lang$core$List$isEmpty(model.playerScores) ? A2(
+var _user$project$Platformer$viewGameplaysIndex = function (model) {
+	return _elm_lang$core$List$isEmpty(model.gameplays) ? A2(
 		_elm_lang$html$Html$div,
 		{ctor: '[]'},
 		{ctor: '[]'}) : A2(
@@ -16506,21 +16593,25 @@ var _user$project$Platformer$viewPlayerScoresIndex = function (model) {
 				}),
 			_1: {
 				ctor: '::',
-				_0: _user$project$Platformer$viewPlayerScoresList(model.playerScores),
+				_0: _user$project$Platformer$viewGameplaysList(model),
 				_1: {ctor: '[]'}
 			}
 		});
-};
-var _user$project$Platformer$characterFoundItem = function (model) {
-	var approximateItemUpperBound = model.itemPositionX;
-	var approximateItemLowerBound = model.itemPositionX - 35;
-	var approximateItemRange = A2(_elm_lang$core$List$range, approximateItemLowerBound, approximateItemUpperBound);
-	return A2(_elm_lang$core$List$member, model.characterPositionX, approximateItemRange);
 };
 var _user$project$Platformer$initialChannel = _fbonetti$elm_phoenix_socket$Phoenix_Channel$init('score:platformer');
 var _user$project$Platformer$Flags = function (a) {
 	return {token: a};
 };
+var _user$project$Platformer$Gameplay = F3(
+	function (a, b, c) {
+		return {gameId: a, playerId: b, playerScore: c};
+	});
+var _user$project$Platformer$scoreDecoder = A4(
+	_elm_lang$core$Json_Decode$map3,
+	_user$project$Platformer$Gameplay,
+	A2(_elm_lang$core$Json_Decode$field, 'game_id', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'player_id', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'player_score', _elm_lang$core$Json_Decode$int));
 var _user$project$Platformer$Player = F4(
 	function (a, b, c, d) {
 		return {displayName: a, id: b, score: c, username: d};
@@ -16554,7 +16645,9 @@ var _user$project$Platformer$Model = function (a) {
 										return function (k) {
 											return function (l) {
 												return function (m) {
-													return {errors: a, gameId: b, gameState: c, characterPositionX: d, characterPositionY: e, itemPositionX: f, itemPositionY: g, itemsCollected: h, phxSocket: i, playersList: j, playerScore: k, playerScores: l, timeRemaining: m};
+													return function (n) {
+														return {characterDirection: a, characterPositionX: b, characterPositionY: c, errors: d, gameId: e, gameplays: f, gameState: g, itemPositionX: h, itemPositionY: i, itemsCollected: j, phxSocket: k, playersList: l, playerScore: m, timeRemaining: n};
+													};
 												};
 											};
 										};
@@ -16568,16 +16661,8 @@ var _user$project$Platformer$Model = function (a) {
 		};
 	};
 };
-var _user$project$Platformer$Score = F3(
-	function (a, b, c) {
-		return {gameId: a, playerId: b, playerScore: c};
-	});
-var _user$project$Platformer$scoreDecoder = A4(
-	_elm_lang$core$Json_Decode$map3,
-	_user$project$Platformer$Score,
-	A2(_elm_lang$core$Json_Decode$field, 'game_id', _elm_lang$core$Json_Decode$int),
-	A2(_elm_lang$core$Json_Decode$field, 'player_id', _elm_lang$core$Json_Decode$int),
-	A2(_elm_lang$core$Json_Decode$field, 'player_score', _elm_lang$core$Json_Decode$int));
+var _user$project$Platformer$Right = {ctor: 'Right'};
+var _user$project$Platformer$Left = {ctor: 'Left'};
 var _user$project$Platformer$GameOver = {ctor: 'GameOver'};
 var _user$project$Platformer$Success = {ctor: 'Success'};
 var _user$project$Platformer$Playing = {ctor: 'Playing'};
@@ -16587,36 +16672,6 @@ var _user$project$Platformer$TimeUpdate = function (a) {
 };
 var _user$project$Platformer$SetNewItemPositionX = function (a) {
 	return {ctor: 'SetNewItemPositionX', _0: a};
-};
-var _user$project$Platformer$SendScoreRequest = {ctor: 'SendScoreRequest'};
-var _user$project$Platformer$viewSendScoreButton = A2(
-	_elm_lang$html$Html$div,
-	{ctor: '[]'},
-	{
-		ctor: '::',
-		_0: A2(
-			_elm_lang$html$Html$button,
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html_Events$onClick(_user$project$Platformer$SendScoreRequest),
-				_1: {
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('btn btn-primary'),
-					_1: {ctor: '[]'}
-				}
-			},
-			{
-				ctor: '::',
-				_0: _elm_lang$svg$Svg$text('Send Score'),
-				_1: {ctor: '[]'}
-			}),
-		_1: {ctor: '[]'}
-	});
-var _user$project$Platformer$SendScoreError = function (a) {
-	return {ctor: 'SendScoreError', _0: a};
-};
-var _user$project$Platformer$SendScore = function (a) {
-	return {ctor: 'SendScore', _0: a};
 };
 var _user$project$Platformer$SaveScoreRequest = {ctor: 'SaveScoreRequest'};
 var _user$project$Platformer$viewSaveScoreButton = A2(
@@ -16651,15 +16706,11 @@ var _user$project$Platformer$view = function (model) {
 			_0: _user$project$Platformer$viewGame(model),
 			_1: {
 				ctor: '::',
-				_0: _user$project$Platformer$viewSendScoreButton,
+				_0: _user$project$Platformer$viewSaveScoreButton,
 				_1: {
 					ctor: '::',
-					_0: _user$project$Platformer$viewSaveScoreButton,
-					_1: {
-						ctor: '::',
-						_0: _user$project$Platformer$viewPlayerScoresIndex(model),
-						_1: {ctor: '[]'}
-					}
+					_0: _user$project$Platformer$viewGameplaysIndex(model),
+					_1: {ctor: '[]'}
 				}
 			}
 		});
@@ -16686,9 +16737,9 @@ var _user$project$Platformer$initialSocket = function (flags) {
 			_user$project$Platformer$ReceiveScoreChanges,
 			A4(
 				_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
-				'shout',
+				'save_score',
 				'score:platformer',
-				_user$project$Platformer$SendScore,
+				_user$project$Platformer$SaveScore,
 				_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
 					_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(prodSocketServer)))));
 };
@@ -16698,18 +16749,19 @@ var _user$project$Platformer$initialSocketJoin = function (flags) {
 };
 var _user$project$Platformer$initialModel = function (flags) {
 	return {
-		errors: '',
-		gameId: 1,
-		gameState: _user$project$Platformer$StartScreen,
+		characterDirection: _user$project$Platformer$Right,
 		characterPositionX: 50,
 		characterPositionY: 300,
+		errors: '',
+		gameId: 1,
+		gameplays: {ctor: '[]'},
+		gameState: _user$project$Platformer$StartScreen,
 		itemPositionX: 150,
 		itemPositionY: 300,
 		itemsCollected: 0,
 		phxSocket: _user$project$Platformer$initialSocketJoin(flags),
 		playersList: {ctor: '[]'},
 		playerScore: 0,
-		playerScores: {ctor: '[]'},
 		timeRemaining: 10
 	};
 };
@@ -16720,20 +16772,10 @@ var _user$project$Platformer$initialSocketCommand = function (flags) {
 var _user$project$Platformer$PhoenixMsg = function (a) {
 	return {ctor: 'PhoenixMsg', _0: a};
 };
-var _user$project$Platformer$init = function (flags) {
-	return {
-		ctor: '_Tuple2',
-		_0: _user$project$Platformer$initialModel(flags),
-		_1: A2(
-			_elm_lang$core$Platform_Cmd$map,
-			_user$project$Platformer$PhoenixMsg,
-			_user$project$Platformer$initialSocketCommand(flags))
-	};
-};
 var _user$project$Platformer$update = F2(
 	function (msg, model) {
-		var _p1 = msg;
-		switch (_p1.ctor) {
+		var _p2 = msg;
+		switch (_p2.ctor) {
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'CountdownTimer':
@@ -16745,13 +16787,13 @@ var _user$project$Platformer$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'FetchPlayersList':
-				var _p2 = _p1._0;
-				if (_p2.ctor === 'Ok') {
+				var _p3 = _p2._0;
+				if (_p3.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{playersList: _p2._0}),
+							{playersList: _p3._0}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -16760,20 +16802,20 @@ var _user$project$Platformer$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								errors: _elm_lang$core$Basics$toString(_p2._0)
+								errors: _elm_lang$core$Basics$toString(_p3._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
 			case 'KeyDown':
-				var _p3 = _p1._0;
-				switch (_p3) {
+				var _p4 = _p2._0;
+				switch (_p4) {
 					case 32:
 						return (!_elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing)) ? {
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{gameState: _user$project$Platformer$Playing, characterPositionX: 50, playerScore: 0, itemsCollected: 0, timeRemaining: 10}),
+								{characterDirection: _user$project$Platformer$Right, characterPositionX: 50, itemsCollected: 0, gameState: _user$project$Platformer$Playing, playerScore: 0, timeRemaining: 10}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 37:
@@ -16781,7 +16823,7 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterPositionX: model.characterPositionX - 15}),
+								{characterDirection: _user$project$Platformer$Left, characterPositionX: model.characterPositionX - 15}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 39:
@@ -16789,16 +16831,16 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterPositionX: model.characterPositionX + 15}),
+								{characterDirection: _user$project$Platformer$Right, characterPositionX: model.characterPositionX + 15}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					default:
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			case 'PhoenixMsg':
-				var _p4 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p1._0, model.phxSocket);
-				var phxSocket = _p4._0;
-				var phxCmd = _p4._1;
+				var _p5 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p2._0, model.phxSocket);
+				var phxSocket = _p5._0;
+				var phxCmd = _p5._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -16807,14 +16849,14 @@ var _user$project$Platformer$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Platformer$PhoenixMsg, phxCmd)
 				};
 			case 'ReceiveScoreChanges':
-				var _p5 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Platformer$scoreDecoder, _p1._0);
-				if (_p5.ctor === 'Ok') {
+				var _p6 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Platformer$scoreDecoder, _p2._0);
+				if (_p6.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								playerScores: {ctor: '::', _0: _p5._0, _1: model.playerScores}
+								gameplays: {ctor: '::', _0: _p6._0, _1: model.gameplays}
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -16823,7 +16865,7 @@ var _user$project$Platformer$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{errors: _p5._0}),
+							{errors: _p6._0}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
@@ -16832,7 +16874,7 @@ var _user$project$Platformer$update = F2(
 			case 'SaveScoreError':
 				return A2(
 					_elm_lang$core$Debug$log,
-					'Error saveing score over socket.',
+					'Error saving score over socket.',
 					{ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none});
 			case 'SaveScoreRequest':
 				var payload = _elm_lang$core$Json_Encode$object(
@@ -16855,44 +16897,6 @@ var _user$project$Platformer$update = F2(
 							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 							payload,
 							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'save_score', 'score:platformer'))));
-				var _p6 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
-				var phxSocket = _p6._0;
-				var phxCmd = _p6._1;
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{phxSocket: phxSocket}),
-					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Platformer$PhoenixMsg, phxCmd)
-				};
-			case 'SendScore':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'SendScoreError':
-				return A2(
-					_elm_lang$core$Debug$log,
-					'Error sending score over socket.',
-					{ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none});
-			case 'SendScoreRequest':
-				var payload = _elm_lang$core$Json_Encode$object(
-					{
-						ctor: '::',
-						_0: {
-							ctor: '_Tuple2',
-							_0: 'player_score',
-							_1: _elm_lang$core$Json_Encode$int(model.playerScore)
-						},
-						_1: {ctor: '[]'}
-					});
-				var phxPush = A2(
-					_fbonetti$elm_phoenix_socket$Phoenix_Push$onError,
-					_user$project$Platformer$SendScoreError,
-					A2(
-						_fbonetti$elm_phoenix_socket$Phoenix_Push$onOk,
-						_user$project$Platformer$SendScore,
-						A2(
-							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
-							payload,
-							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'shout', 'score:platformer'))));
 				var _p7 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
 				var phxSocket = _p7._0;
 				var phxCmd = _p7._1;
@@ -16908,7 +16912,7 @@ var _user$project$Platformer$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{itemPositionX: _p1._0}),
+						{itemPositionX: _p2._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
@@ -16946,6 +16950,25 @@ var _user$project$Platformer$fetchPlayersList = A2(
 	_elm_lang$http$Http$send,
 	_user$project$Platformer$FetchPlayersList,
 	A2(_elm_lang$http$Http$get, '/api/players', _user$project$Platformer$decodePlayersList));
+var _user$project$Platformer$init = function (flags) {
+	return {
+		ctor: '_Tuple2',
+		_0: _user$project$Platformer$initialModel(flags),
+		_1: _elm_lang$core$Platform_Cmd$batch(
+			{
+				ctor: '::',
+				_0: _user$project$Platformer$fetchPlayersList,
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$core$Platform_Cmd$map,
+						_user$project$Platformer$PhoenixMsg,
+						_user$project$Platformer$initialSocketCommand(flags)),
+					_1: {ctor: '[]'}
+				}
+			})
+	};
+};
 var _user$project$Platformer$CountdownTimer = function (a) {
 	return {ctor: 'CountdownTimer', _0: a};
 };
@@ -16987,7 +17010,7 @@ if (typeof _user$project$Main$main !== 'undefined') {
 }
 Elm['Platformer'] = Elm['Platformer'] || {};
 if (typeof _user$project$Platformer$main !== 'undefined') {
-    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Platformer.Msg":{"args":[],"tags":{"SetNewItemPositionX":["Int"],"SendScoreRequest":[],"SaveScoreRequest":[],"CountdownTimer":["Time.Time"],"FetchPlayersList":["Result.Result Http.Error (List Platformer.Player)"],"SaveScore":["Json.Encode.Value"],"SendScore":["Json.Encode.Value"],"PhoenixMsg":["Phoenix.Socket.Msg Platformer.Msg"],"TimeUpdate":["Time.Time"],"SendScoreError":["Json.Encode.Value"],"KeyDown":["Keyboard.KeyCode"],"ReceiveScoreChanges":["Json.Encode.Value"],"NoOp":[],"SaveScoreError":["Json.Encode.Value"]}},"Json.Encode.Value":{"args":[],"tags":{"Value":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Phoenix.Socket.Msg":{"args":["msg"],"tags":{"ChannelErrored":["String"],"ChannelClosed":["String"],"ExternalMsg":["msg"],"ChannelJoined":["String"],"Heartbeat":["Time.Time"],"NoOp":[],"ReceiveReply":["String","Int"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Keyboard.KeyCode":{"args":[],"type":"Int"},"Platformer.Player":{"args":[],"type":"{ displayName : Maybe.Maybe String , id : Int , score : Int , username : String }"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Platformer.Msg":{"args":[],"tags":{"SetNewItemPositionX":["Int"],"SaveScoreRequest":[],"CountdownTimer":["Time.Time"],"FetchPlayersList":["Result.Result Http.Error (List Platformer.Player)"],"SaveScore":["Json.Encode.Value"],"PhoenixMsg":["Phoenix.Socket.Msg Platformer.Msg"],"TimeUpdate":["Time.Time"],"KeyDown":["Keyboard.KeyCode"],"ReceiveScoreChanges":["Json.Encode.Value"],"NoOp":[],"SaveScoreError":["Json.Encode.Value"]}},"Json.Encode.Value":{"args":[],"tags":{"Value":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Phoenix.Socket.Msg":{"args":["msg"],"tags":{"ChannelErrored":["String"],"ChannelClosed":["String"],"ExternalMsg":["msg"],"ChannelJoined":["String"],"Heartbeat":["Time.Time"],"NoOp":[],"ReceiveReply":["String","Int"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Keyboard.KeyCode":{"args":[],"type":"Int"},"Platformer.Player":{"args":[],"type":"{ displayName : Maybe.Maybe String , id : Int , score : Int , username : String }"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

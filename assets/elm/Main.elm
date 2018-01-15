@@ -265,8 +265,11 @@ playersListItem player =
                 player.username
             else
                 Maybe.withDefault "" player.displayName
+
+        playerLink =
+            "players/" ++ (toString player.id)
     in
         li [ class "player-item list-group-item" ]
-            [ strong [] [ text displayName ]
+            [ strong [] [ a [ href playerLink ] [ text displayName ] ]
             , span [ class "badge" ] [ text (toString player.score) ]
             ]
