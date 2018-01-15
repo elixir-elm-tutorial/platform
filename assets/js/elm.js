@@ -16867,7 +16867,7 @@ var _user$project$Platformer$initialSocket = function (flags) {
 				'score:platformer',
 				_user$project$Platformer$SaveScore,
 				_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
-					_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer)))));
+					_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(prodSocketServer)))));
 };
 var _user$project$Platformer$initialSocketJoin = function (flags) {
 	return _elm_lang$core$Tuple$first(
