@@ -29,6 +29,7 @@ defmodule PlatformWeb.Router do
 
     resources "/players", PlayerApiController, except: [:new, :edit]
     resources "/games", GameController, except: [:new, :edit]
+    resources "/gameplays", GameplayController, except: [:new, :edit]
   end
 
   defp put_user_token(conn, _) do
