@@ -25,11 +25,11 @@ config :logger, :console,
 
 # AppSignal
 config :phoenix, :template_engines,
-eex: Appsignal.Phoenix.Template.EExEngine,
-exs: Appsignal.Phoenix.Template.ExsEngine
+  eex: Appsignal.Phoenix.Template.EExEngine,
+  exs: Appsignal.Phoenix.Template.ExsEngine
 
 config :platform, Platform.Repo,
-loggers: [Appsignal.Ecto, Ecto.LogEntry]
+  loggers: [Appsignal.Ecto, Ecto.LogEntry]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
