@@ -118,7 +118,7 @@ initialSocket flags =
             else
                 "wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=" ++ flags.token
     in
-        Phoenix.Socket.init prodSocketServer
+        Phoenix.Socket.init devSocketServer
             |> Phoenix.Socket.withDebug
             |> Phoenix.Socket.on "save_score" "score:platformer" SaveScore
             |> Phoenix.Socket.on "save_score" "score:platformer" ReceiveScoreChanges

@@ -25,7 +25,9 @@ main =
 
 
 type alias Model =
-    { gamesList : List Game
+    { displayPlayerGameplays : Bool
+    , gamesList : List Game
+    , gameplaysList : List Gameplay
     , playersList : List Player
     , errors : String
     }
@@ -41,6 +43,13 @@ type alias Game =
     }
 
 
+type alias Gameplay =
+    { gameId : Int
+    , playerId : Int
+    , playerScore : Int
+    }
+
+
 type alias Player =
     { displayName : Maybe String
     , id : Int
@@ -51,7 +60,9 @@ type alias Player =
 
 initialModel : Model
 initialModel =
-    { gamesList = []
+    { displayPlayerGameplays = False
+    , gamesList = []
+    , gameplaysList = []
     , playersList = []
     , errors = ""
     }
@@ -61,6 +72,7 @@ initialCommand : Cmd Msg
 initialCommand =
     Cmd.batch
         [ fetchGamesList
+        , fetchGameplaysList
         , fetchPlayersList
         ]
 
@@ -98,6 +110,27 @@ decodeGame =
         (Decode.field "title" Decode.string)
 
 
+fetchGameplaysList : Cmd Msg
+fetchGameplaysList =
+    Http.get "/api/gameplays" decodeGameplaysList
+        |> Http.send FetchGameplaysList
+
+
+decodeGameplaysList : Decode.Decoder (List Gameplay)
+decodeGameplaysList =
+    decodeGameplay
+        |> Decode.list
+        |> Decode.at [ "data" ]
+
+
+decodeGameplay : Decode.Decoder Gameplay
+decodeGameplay =
+    Decode.map3 Gameplay
+        (Decode.field "game_id" Decode.int)
+        (Decode.field "player_id" Decode.int)
+        (Decode.field "player_score" Decode.int)
+
+
 fetchPlayersList : Cmd Msg
 fetchPlayersList =
     Http.get "/api/players" decodePlayersList
@@ -125,17 +158,30 @@ decodePlayer =
 
 
 type Msg
-    = FetchGamesList (Result Http.Error (List Game))
+    = TogglePlayerGameplays
+    | FetchGamesList (Result Http.Error (List Game))
+    | FetchGameplaysList (Result Http.Error (List Gameplay))
     | FetchPlayersList (Result Http.Error (List Player))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        TogglePlayerGameplays ->
+            ( { model | displayPlayerGameplays = not model.displayPlayerGameplays }, Cmd.none )
+
         FetchGamesList result ->
             case result of
                 Ok games ->
                     ( { model | gamesList = games }, Cmd.none )
+
+                Err message ->
+                    ( { model | errors = toString message }, Cmd.none )
+
+        FetchGameplaysList result ->
+            case result of
+                Ok gameplays ->
+                    ( { model | gameplaysList = gameplays }, Cmd.none )
 
                 Err message ->
                     ( { model | errors = toString message }, Cmd.none )
@@ -230,15 +276,14 @@ gamesListItem game =
         ]
 
 
-playersIndex : Model -> Html msg
+playersIndex : Model -> Html Msg
 playersIndex model =
     if List.isEmpty model.playersList then
         div [] []
     else
         div [ class "players-index" ]
             [ h1 [ class "players-section" ] [ text "Players" ]
-            , playersList <|
-                playersSortedByScore model.playersList
+            , (playersList model) <| playersSortedByScore model.playersList
             ]
 
 
@@ -249,16 +294,16 @@ playersSortedByScore players =
         |> List.reverse
 
 
-playersList : List Player -> Html msg
-playersList players =
+playersList : Model -> List Player -> Html Msg
+playersList model players =
     div [ class "players-list panel panel-info" ]
         [ div [ class "panel-heading" ] [ text "Leaderboard" ]
-        , ul [ class "list-group" ] (List.map playersListItem players)
+        , ul [ class "list-group" ] (List.map (playersListItem model) players)
         ]
 
 
-playersListItem : Player -> Html msg
-playersListItem player =
+playersListItem : Model -> Player -> Html Msg
+playersListItem model player =
     let
         displayName =
             if player.displayName == Nothing then
@@ -270,6 +315,34 @@ playersListItem player =
             "players/" ++ (toString player.id)
     in
         li [ class "player-item list-group-item" ]
-            [ strong [] [ a [ href playerLink ] [ text displayName ] ]
+            [ strong [] [ a [ onClick TogglePlayerGameplays ] [ text displayName ] ]
             , span [ class "badge" ] [ text (toString player.score) ]
+            , if model.displayPlayerGameplays == True then
+                (playerGameplaysList model) player
+              else
+                div [] []
+            ]
+
+
+playerGameplaysList : Model -> Player -> Html msg
+playerGameplaysList model player =
+    let
+        gameplays =
+            List.filter (\gameplay -> gameplay.playerId == player.id) model.gameplaysList
+    in
+        ul [] (List.map (playerGameplaysListItem model) gameplays)
+
+
+playerGameplaysListItem : Model -> Gameplay -> Html msg
+playerGameplaysListItem model gameplay =
+    let
+        gameTitle =
+            if gameplay.gameId == 1 then
+                "Platformer   "
+            else
+                toString gameplay.gameId
+    in
+        li []
+            [ span [] [ text gameTitle ]
+            , span [ class "badge" ] [ text <| toString <| gameplay.playerScore ]
             ]

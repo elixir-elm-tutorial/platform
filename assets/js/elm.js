@@ -15475,95 +15475,57 @@ var _fbonetti$elm_phoenix_socket$Phoenix_Socket$listen = F2(
 			});
 	});
 
-var _user$project$Main$playersListItem = function (player) {
-	var playerLink = A2(
-		_elm_lang$core$Basics_ops['++'],
-		'players/',
-		_elm_lang$core$Basics$toString(player.id));
-	var displayName = _elm_lang$core$Native_Utils.eq(player.displayName, _elm_lang$core$Maybe$Nothing) ? player.username : A2(_elm_lang$core$Maybe$withDefault, '', player.displayName);
-	return A2(
-		_elm_lang$html$Html$li,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('player-item list-group-item'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$strong,
-				{ctor: '[]'},
-				{
+var _user$project$Main$playerGameplaysListItem = F2(
+	function (model, gameplay) {
+		var gameTitle = _elm_lang$core$Native_Utils.eq(gameplay.gameId, 1) ? 'Platformer   ' : _elm_lang$core$Basics$toString(gameplay.gameId);
+		return A2(
+			_elm_lang$html$Html$li,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$span,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(gameTitle),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$a,
+						_elm_lang$html$Html$span,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$href(playerLink),
+							_0: _elm_lang$html$Html_Attributes$class('badge'),
 							_1: {ctor: '[]'}
 						},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(displayName),
+							_0: _elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(gameplay.playerScore)),
 							_1: {ctor: '[]'}
 						}),
 					_1: {ctor: '[]'}
-				}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$span,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('badge'),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(
-							_elm_lang$core$Basics$toString(player.score)),
-						_1: {ctor: '[]'}
-					}),
-				_1: {ctor: '[]'}
-			}
-		});
-};
-var _user$project$Main$playersList = function (players) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('players-list panel panel-info'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$div,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('panel-heading'),
-					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text('Leaderboard'),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$ul,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('list-group'),
-						_1: {ctor: '[]'}
-					},
-					A2(_elm_lang$core$List$map, _user$project$Main$playersListItem, players)),
-				_1: {ctor: '[]'}
-			}
-		});
-};
+				}
+			});
+	});
+var _user$project$Main$playerGameplaysList = F2(
+	function (model, player) {
+		var gameplays = A2(
+			_elm_lang$core$List$filter,
+			function (gameplay) {
+				return _elm_lang$core$Native_Utils.eq(gameplay.playerId, player.id);
+			},
+			model.gameplaysList);
+		return A2(
+			_elm_lang$html$Html$ul,
+			{ctor: '[]'},
+			A2(
+				_elm_lang$core$List$map,
+				_user$project$Main$playerGameplaysListItem(model),
+				gameplays));
+	});
 var _user$project$Main$playersSortedByScore = function (players) {
 	return _elm_lang$core$List$reverse(
 		A2(
@@ -15572,39 +15534,6 @@ var _user$project$Main$playersSortedByScore = function (players) {
 				return _.score;
 			},
 			players));
-};
-var _user$project$Main$playersIndex = function (model) {
-	return _elm_lang$core$List$isEmpty(model.playersList) ? A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{ctor: '[]'}) : A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('players-index'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$h1,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('players-section'),
-					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text('Players'),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
-				ctor: '::',
-				_0: _user$project$Main$playersList(
-					_user$project$Main$playersSortedByScore(model.playersList)),
-				_1: {ctor: '[]'}
-			}
-		});
 };
 var _user$project$Main$gamesListItem = function (game) {
 	return A2(
@@ -15862,82 +15791,96 @@ var _user$project$Main$featured = function (model) {
 			{ctor: '[]'});
 	}
 };
-var _user$project$Main$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: _user$project$Main$featured(model),
-			_1: {
-				ctor: '::',
-				_0: _user$project$Main$gamesIndex(model),
-				_1: {
-					ctor: '::',
-					_0: _user$project$Main$playersIndex(model),
-					_1: {ctor: '[]'}
-				}
-			}
-		});
-};
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p2 = msg;
-		if (_p2.ctor === 'FetchGamesList') {
-			var _p3 = _p2._0;
-			if (_p3.ctor === 'Ok') {
+		switch (_p2.ctor) {
+			case 'TogglePlayerGameplays':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{gamesList: _p3._0}),
+						{displayPlayerGameplays: !model.displayPlayerGameplays}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			} else {
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							errors: _elm_lang$core$Basics$toString(_p3._0)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			}
-		} else {
-			var _p4 = _p2._0;
-			if (_p4.ctor === 'Ok') {
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{playersList: _p4._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			} else {
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							errors: _elm_lang$core$Basics$toString(_p4._0)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			}
+			case 'FetchGamesList':
+				var _p3 = _p2._0;
+				if (_p3.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{gamesList: _p3._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errors: _elm_lang$core$Basics$toString(_p3._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'FetchGameplaysList':
+				var _p4 = _p2._0;
+				if (_p4.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{gameplaysList: _p4._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errors: _elm_lang$core$Basics$toString(_p4._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			default:
+				var _p5 = _p2._0;
+				if (_p5.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{playersList: _p5._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errors: _elm_lang$core$Basics$toString(_p5._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
 		}
 	});
 var _user$project$Main$initialModel = {
+	displayPlayerGameplays: false,
 	gamesList: {ctor: '[]'},
+	gameplaysList: {ctor: '[]'},
 	playersList: {ctor: '[]'},
 	errors: ''
 };
-var _user$project$Main$Model = F3(
-	function (a, b, c) {
-		return {gamesList: a, playersList: b, errors: c};
+var _user$project$Main$Model = F5(
+	function (a, b, c, d, e) {
+		return {displayPlayerGameplays: a, gamesList: b, gameplaysList: c, playersList: d, errors: e};
 	});
 var _user$project$Main$Game = F6(
 	function (a, b, c, d, e, f) {
@@ -15960,6 +15903,24 @@ var _user$project$Main$decodeGamesList = A2(
 		_1: {ctor: '[]'}
 	},
 	_elm_lang$core$Json_Decode$list(_user$project$Main$decodeGame));
+var _user$project$Main$Gameplay = F3(
+	function (a, b, c) {
+		return {gameId: a, playerId: b, playerScore: c};
+	});
+var _user$project$Main$decodeGameplay = A4(
+	_elm_lang$core$Json_Decode$map3,
+	_user$project$Main$Gameplay,
+	A2(_elm_lang$core$Json_Decode$field, 'game_id', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'player_id', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'player_score', _elm_lang$core$Json_Decode$int));
+var _user$project$Main$decodeGameplaysList = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'data',
+		_1: {ctor: '[]'}
+	},
+	_elm_lang$core$Json_Decode$list(_user$project$Main$decodeGameplay));
 var _user$project$Main$Player = F4(
 	function (a, b, c, d) {
 		return {displayName: a, id: b, score: c, username: d};
@@ -15987,6 +15948,13 @@ var _user$project$Main$fetchPlayersList = A2(
 	_elm_lang$http$Http$send,
 	_user$project$Main$FetchPlayersList,
 	A2(_elm_lang$http$Http$get, '/api/players', _user$project$Main$decodePlayersList));
+var _user$project$Main$FetchGameplaysList = function (a) {
+	return {ctor: 'FetchGameplaysList', _0: a};
+};
+var _user$project$Main$fetchGameplaysList = A2(
+	_elm_lang$http$Http$send,
+	_user$project$Main$FetchGameplaysList,
+	A2(_elm_lang$http$Http$get, '/api/gameplays', _user$project$Main$decodeGameplaysList));
 var _user$project$Main$FetchGamesList = function (a) {
 	return {ctor: 'FetchGamesList', _0: a};
 };
@@ -16000,11 +15968,170 @@ var _user$project$Main$initialCommand = _elm_lang$core$Platform_Cmd$batch(
 		_0: _user$project$Main$fetchGamesList,
 		_1: {
 			ctor: '::',
-			_0: _user$project$Main$fetchPlayersList,
-			_1: {ctor: '[]'}
+			_0: _user$project$Main$fetchGameplaysList,
+			_1: {
+				ctor: '::',
+				_0: _user$project$Main$fetchPlayersList,
+				_1: {ctor: '[]'}
+			}
 		}
 	});
 var _user$project$Main$init = {ctor: '_Tuple2', _0: _user$project$Main$initialModel, _1: _user$project$Main$initialCommand};
+var _user$project$Main$TogglePlayerGameplays = {ctor: 'TogglePlayerGameplays'};
+var _user$project$Main$playersListItem = F2(
+	function (model, player) {
+		var playerLink = A2(
+			_elm_lang$core$Basics_ops['++'],
+			'players/',
+			_elm_lang$core$Basics$toString(player.id));
+		var displayName = _elm_lang$core$Native_Utils.eq(player.displayName, _elm_lang$core$Maybe$Nothing) ? player.username : A2(_elm_lang$core$Maybe$withDefault, '', player.displayName);
+		return A2(
+			_elm_lang$html$Html$li,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('player-item list-group-item'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$strong,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$a,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$TogglePlayerGameplays),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(displayName),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$span,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('badge'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(player.score)),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$core$Native_Utils.eq(model.displayPlayerGameplays, true) ? A2(_user$project$Main$playerGameplaysList, model, player) : A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}
+				}
+			});
+	});
+var _user$project$Main$playersList = F2(
+	function (model, players) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('players-list panel panel-info'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('panel-heading'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Leaderboard'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$ul,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('list-group'),
+							_1: {ctor: '[]'}
+						},
+						A2(
+							_elm_lang$core$List$map,
+							_user$project$Main$playersListItem(model),
+							players)),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _user$project$Main$playersIndex = function (model) {
+	return _elm_lang$core$List$isEmpty(model.playersList) ? A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{ctor: '[]'}) : A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('players-index'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h1,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('players-section'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Players'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_user$project$Main$playersList,
+					model,
+					_user$project$Main$playersSortedByScore(model.playersList)),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _user$project$Main$featured(model),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Main$gamesIndex(model),
+				_1: {
+					ctor: '::',
+					_0: _user$project$Main$playersIndex(model),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
 var _user$project$Main$main = _elm_lang$html$Html$program(
 	{init: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})();
 
@@ -16711,7 +16838,7 @@ var _user$project$Platformer$initialSocket = function (flags) {
 				'score:platformer',
 				_user$project$Platformer$SaveScore,
 				_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
-					_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(prodSocketServer)))));
+					_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer)))));
 };
 var _user$project$Platformer$initialSocketJoin = function (flags) {
 	return _elm_lang$core$Tuple$first(
@@ -17008,7 +17135,7 @@ var _user$project$Platformer$NoOp = {ctor: 'NoOp'};
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Main.Msg":{"args":[],"tags":{"FetchGamesList":["Result.Result Http.Error (List Main.Game)"],"FetchPlayersList":["Result.Result Http.Error (List Main.Player)"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Main.Player":{"args":[],"type":"{ displayName : Maybe.Maybe String , id : Int , score : Int , username : String }"},"Main.Game":{"args":[],"type":"{ description : String , featured : Bool , id : Int , slug : String , thumbnail : String , title : String }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Main.Msg":{"args":[],"tags":{"FetchGameplaysList":["Result.Result Http.Error (List Main.Gameplay)"],"TogglePlayerGameplays":[],"FetchGamesList":["Result.Result Http.Error (List Main.Game)"],"FetchPlayersList":["Result.Result Http.Error (List Main.Player)"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Main.Player":{"args":[],"type":"{ displayName : Maybe.Maybe String , id : Int , score : Int , username : String }"},"Main.Gameplay":{"args":[],"type":"{ gameId : Int, playerId : Int, playerScore : Int }"},"Main.Game":{"args":[],"type":"{ description : String , featured : Bool , id : Int , slug : String , thumbnail : String , title : String }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
 }
 Elm['Platformer'] = Elm['Platformer'] || {};
 if (typeof _user$project$Platformer$main !== 'undefined') {
