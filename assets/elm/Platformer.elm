@@ -7,7 +7,7 @@ import Html.Events exposing (onClick)
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
-import Keyboard exposing (KeyCode, downs)
+import Keyboard exposing (KeyCode, downs, ups)
 import Phoenix.Channel
 import Phoenix.Push
 import Phoenix.Socket
@@ -68,14 +68,16 @@ type alias Player =
 
 type alias Model =
     { characterDirection : Direction
-    , characterPositionX : Int
-    , characterPositionY : Int
+    , characterPositionX : Float
+    , characterPositionY : Float
+    , characterVelocityX : Float
+    , characterVelocityY : Float
     , errors : String
     , gameId : Int
     , gameplays : List Gameplay
     , gameState : GameState
-    , itemPositionX : Int
-    , itemPositionY : Int
+    , itemPositionX : Float
+    , itemPositionY : Float
     , itemsCollected : Int
     , phxSocket : Phoenix.Socket.Socket Msg
     , playersList : List Player
@@ -87,14 +89,16 @@ type alias Model =
 initialModel : Flags -> Model
 initialModel flags =
     { characterDirection = Right
-    , characterPositionX = 50
-    , characterPositionY = 300
+    , characterPositionX = 50.0
+    , characterPositionY = 300.0
+    , characterVelocityX = 0.0
+    , characterVelocityY = 0.0
     , errors = ""
     , gameId = 1
     , gameplays = []
     , gameState = StartScreen
-    , itemPositionX = 150
-    , itemPositionY = 300
+    , itemPositionX = 150.0
+    , itemPositionY = 300.0
     , itemsCollected = 0
     , phxSocket = initialSocketJoin flags
     , playersList = []
@@ -219,12 +223,14 @@ type Msg
     | FetchGameplaysList (Result Http.Error (List Gameplay))
     | FetchPlayersList (Result Http.Error (List Player))
     | KeyDown KeyCode
+    | KeyUp KeyCode
+    | MoveCharacter Time
     | PhoenixMsg (Phoenix.Socket.Msg Msg)
     | ReceiveScoreChanges Encode.Value
     | SaveScore Encode.Value
     | SaveScoreError Encode.Value
     | SaveScoreRequest
-    | SetNewItemPositionX Int
+    | SetNewItemPositionX Float
     | TimeUpdate Time
 
 
@@ -258,6 +264,7 @@ update msg model =
 
         KeyDown keyCode ->
             case keyCode of
+                -- space bar
                 32 ->
                     if model.gameState /= Playing then
                         ( { model
@@ -273,22 +280,24 @@ update msg model =
                     else
                         ( model, Cmd.none )
 
+                -- left arrow
                 37 ->
                     if model.gameState == Playing then
                         ( { model
                             | characterDirection = Left
-                            , characterPositionX = model.characterPositionX - 15
+                            , characterVelocityX = -0.25
                           }
                         , Cmd.none
                         )
                     else
                         ( model, Cmd.none )
 
+                -- right arrow
                 39 ->
                     if model.gameState == Playing then
                         ( { model
                             | characterDirection = Right
-                            , characterPositionX = model.characterPositionX + 15
+                            , characterVelocityX = 0.25
                           }
                         , Cmd.none
                         )
@@ -297,6 +306,20 @@ update msg model =
 
                 _ ->
                     ( model, Cmd.none )
+
+        KeyUp keyCode ->
+            case keyCode of
+                37 ->
+                    ( { model | characterVelocityX = 0 }, Cmd.none )
+
+                39 ->
+                    ( { model | characterVelocityX = 0 }, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        MoveCharacter time ->
+            ( { model | characterPositionX = model.characterPositionX + model.characterVelocityX * time }, Cmd.none )
 
         PhoenixMsg msg ->
             let
@@ -349,7 +372,7 @@ update msg model =
                     | itemsCollected = model.itemsCollected + 1
                     , playerScore = model.playerScore + 100
                   }
-                , Random.generate SetNewItemPositionX (Random.int 50 500)
+                , Random.generate SetNewItemPositionX (Random.float 50 500)
                 )
             else if model.itemsCollected >= 10 then
                 ( { model | gameState = Success }, Cmd.none )
@@ -363,15 +386,18 @@ characterFoundItem : Model -> Bool
 characterFoundItem model =
     let
         approximateItemLowerBound =
-            model.itemPositionX - 35
+            model.itemPositionX - 35.0
 
         approximateItemUpperBound =
             model.itemPositionX
 
-        approximateItemRange =
-            List.range approximateItemLowerBound approximateItemUpperBound
+        currentCharacterPosition =
+            model.characterPositionX
     in
-        List.member model.characterPositionX approximateItemRange
+        currentCharacterPosition
+            >= approximateItemLowerBound
+            && currentCharacterPosition
+            <= approximateItemUpperBound
 
 
 
@@ -382,6 +408,8 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ downs KeyDown
+        , ups KeyUp
+        , diffs MoveCharacter
         , diffs TimeUpdate
         , every second CountdownTimer
         , Phoenix.Socket.listen model.phxSocket PhoenixMsg
