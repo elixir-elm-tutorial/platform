@@ -28,3 +28,10 @@ const platformer = document.querySelector("#platformer");
 
 if (elmContainer) Elm.Main.embed(elmContainer);
 if (platformer) Elm.Platformer.embed(platformer, { token: window.userToken });
+
+// Disable scroll to use space bar for game start
+document.documentElement.addEventListener("keydown", function (e) {
+    if ((e.keycode || e.which) == 32) {
+        e.preventDefault();
+    }
+}, false);
