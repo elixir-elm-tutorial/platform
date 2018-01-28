@@ -16869,7 +16869,7 @@ var _user$project$Platformer$update = F2(
 				};
 			case 'MoveCharacter':
 				var _p7 = _p2._0;
-				var newCharacterVelocityY = (_elm_lang$core$Native_Utils.cmp(model.characterPositionY, 300.0) > 0) ? (model.characterVelocityY - (_p7 / 4)) : 0;
+				var newCharacterVelocityY = (_elm_lang$core$Native_Utils.cmp(model.characterPositionY, 300.0) < 0) ? (model.characterVelocityY - (_p7 / 2)) : 0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -16877,7 +16877,7 @@ var _user$project$Platformer$update = F2(
 						{
 							characterVelocityY: newCharacterVelocityY,
 							characterPositionX: model.characterPositionX + (model.characterVelocityX * (_p7 / 10)),
-							characterPositionY: A2(_elm_lang$core$Basics$max, 300.0, model.characterPositionY + (model.characterVelocityY * (_p7 / 10)))
+							characterPositionY: A2(_elm_lang$core$Basics$min, 300.0, model.characterPositionY - (model.characterVelocityY * (_p7 / 10)))
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};

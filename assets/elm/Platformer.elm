@@ -356,15 +356,15 @@ update msg model =
             let
                 newCharacterVelocityY =
                     -- apply gravity if character position is above ground
-                    if model.characterPositionY > 300.0 then
-                        model.characterVelocityY - time / 4
+                    if model.characterPositionY < 300.0 then
+                        model.characterVelocityY - time / 2
                     else
                         0
             in
                 ( { model
                     | characterVelocityY = newCharacterVelocityY
                     , characterPositionX = model.characterPositionX + model.characterVelocityX * (time / 10)
-                    , characterPositionY = Basics.max 300.0 (model.characterPositionY + model.characterVelocityY * (time / 10))
+                    , characterPositionY = Basics.min 300.0 (model.characterPositionY - model.characterVelocityY * (time / 10))
                   }
                 , Cmd.none
                 )
