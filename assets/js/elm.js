@@ -16820,15 +16820,15 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterDirection: _user$project$Platformer$Left, characterVelocityX: -0.25}),
+								{characterDirection: _user$project$Platformer$Left, characterVelocityX: -2.0}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 38:
-						return _elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing) ? {
+						return (_elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing) && _elm_lang$core$Native_Utils.eq(model.characterVelocityY, 0)) ? {
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterVelocityY: -0.25}),
+								{characterVelocityY: 8.0}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 39:
@@ -16836,7 +16836,7 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterDirection: _user$project$Platformer$Right, characterVelocityX: 0.25}),
+								{characterDirection: _user$project$Platformer$Right, characterVelocityX: 2.0}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 65:
@@ -16844,7 +16844,7 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterDirection: _user$project$Platformer$Left, characterVelocityX: -0.35}),
+								{characterDirection: _user$project$Platformer$Left, characterVelocityX: -3.5}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 68:
@@ -16852,7 +16852,7 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterDirection: _user$project$Platformer$Right, characterVelocityX: 0.35}),
+								{characterDirection: _user$project$Platformer$Right, characterVelocityX: 3.5}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					default:
@@ -16868,17 +16868,23 @@ var _user$project$Platformer$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'MoveCharacter':
+				var _p7 = _p2._0;
+				var newCharacterVelocityY = (_elm_lang$core$Native_Utils.cmp(model.characterPositionY, 300.0) > 0) ? (model.characterVelocityY - (_p7 / 4)) : 0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{characterPositionX: model.characterPositionX + (model.characterVelocityX * _p2._0)}),
+						{
+							characterVelocityY: newCharacterVelocityY,
+							characterPositionX: model.characterPositionX + (model.characterVelocityX * (_p7 / 10)),
+							characterPositionY: A2(_elm_lang$core$Basics$max, 300.0, model.characterPositionY + (model.characterVelocityY * (_p7 / 10)))
+						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'PhoenixMsg':
-				var _p7 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p2._0, model.phxSocket);
-				var phxSocket = _p7._0;
-				var phxCmd = _p7._1;
+				var _p8 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p2._0, model.phxSocket);
+				var phxSocket = _p8._0;
+				var phxCmd = _p8._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -16887,14 +16893,14 @@ var _user$project$Platformer$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Platformer$PhoenixMsg, phxCmd)
 				};
 			case 'ReceiveScoreChanges':
-				var _p8 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Platformer$decodeGameplay, _p2._0);
-				if (_p8.ctor === 'Ok') {
+				var _p9 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Platformer$decodeGameplay, _p2._0);
+				if (_p9.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								gameplays: {ctor: '::', _0: _p8._0, _1: model.gameplays}
+								gameplays: {ctor: '::', _0: _p9._0, _1: model.gameplays}
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -16903,7 +16909,7 @@ var _user$project$Platformer$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{errors: _p8._0}),
+							{errors: _p9._0}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
@@ -16935,9 +16941,9 @@ var _user$project$Platformer$update = F2(
 							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 							payload,
 							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'save_score', 'score:platformer'))));
-				var _p9 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
-				var phxSocket = _p9._0;
-				var phxCmd = _p9._1;
+				var _p10 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
+				var phxSocket = _p10._0;
+				var phxCmd = _p10._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(

@@ -285,7 +285,7 @@ update msg model =
                     if model.gameState == Playing then
                         ( { model
                             | characterDirection = Left
-                            , characterVelocityX = -0.25
+                            , characterVelocityX = -2.0
                           }
                         , Cmd.none
                         )
@@ -294,8 +294,8 @@ update msg model =
 
                 -- Up arrow key to jump
                 38 ->
-                    if model.gameState == Playing then
-                        ( { model | characterVelocityY = -0.25 }
+                    if model.gameState == Playing && model.characterVelocityY == 0 then
+                        ( { model | characterVelocityY = 8.0 }
                         , Cmd.none
                         )
                     else
@@ -306,7 +306,7 @@ update msg model =
                     if model.gameState == Playing then
                         ( { model
                             | characterDirection = Right
-                            , characterVelocityX = 0.25
+                            , characterVelocityX = 2.0
                           }
                         , Cmd.none
                         )
@@ -318,7 +318,7 @@ update msg model =
                     if model.gameState == Playing then
                         ( { model
                             | characterDirection = Left
-                            , characterVelocityX = -0.35
+                            , characterVelocityX = -3.5
                           }
                         , Cmd.none
                         )
@@ -330,7 +330,7 @@ update msg model =
                     if model.gameState == Playing then
                         ( { model
                             | characterDirection = Right
-                            , characterVelocityX = 0.35
+                            , characterVelocityX = 3.5
                           }
                         , Cmd.none
                         )
@@ -353,7 +353,21 @@ update msg model =
                     )
 
         MoveCharacter time ->
-            ( { model | characterPositionX = model.characterPositionX + model.characterVelocityX * time }, Cmd.none )
+            let
+                newCharacterVelocityY =
+                    -- apply gravity if character position is above ground
+                    if model.characterPositionY > 300.0 then
+                        model.characterVelocityY - time / 4
+                    else
+                        0
+            in
+                ( { model
+                    | characterVelocityY = newCharacterVelocityY
+                    , characterPositionX = model.characterPositionX + model.characterVelocityX * (time / 10)
+                    , characterPositionY = Basics.max 300.0 (model.characterPositionY + model.characterVelocityY * (time / 10))
+                  }
+                , Cmd.none
+                )
 
         PhoenixMsg msg ->
             let
