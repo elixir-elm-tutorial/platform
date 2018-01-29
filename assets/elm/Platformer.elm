@@ -265,13 +265,13 @@ update msg model =
         KeyDown keyCode ->
             let
                 walkSpeed =
-                    8.0
+                    3.0
 
                 runSpeed =
-                    12.0
+                    5.0
 
                 jumpSpeed =
-                    15.0
+                    6.0
             in
                 case keyCode of
                     -- Space bar key to start game
@@ -373,8 +373,8 @@ update msg model =
             in
                 ( { model
                     | characterVelocityY = newCharacterVelocityY
-                    , characterPositionX = model.characterPositionX + model.characterVelocityX * (time / 50)
-                    , characterPositionY = Basics.min 300.0 (model.characterPositionY - model.characterVelocityY * (time / 50))
+                    , characterPositionX = model.characterPositionX + model.characterVelocityX * (time / 10)
+                    , characterPositionY = Basics.min 300.0 (model.characterPositionY - model.characterVelocityY * (time / 10))
                   }
                 , Cmd.none
                 )
@@ -442,20 +442,14 @@ update msg model =
 
 characterFoundItem : Model -> Bool
 characterFoundItem model =
-    let
-        approximateItemLowerBound =
-            model.itemPositionX - 35.0
-
-        approximateItemUpperBound =
-            model.itemPositionX
-
-        currentCharacterPosition =
-            model.characterPositionX
-    in
-        currentCharacterPosition
-            >= approximateItemLowerBound
-            && currentCharacterPosition
-            <= approximateItemUpperBound
+    model.characterPositionX
+        >= (model.itemPositionX - 35.0)
+        && model.characterPositionX
+        <= model.itemPositionX
+        && model.characterPositionY
+        >= model.itemPositionY
+        && model.characterPositionY
+        <= model.itemPositionY
 
 
 

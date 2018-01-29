@@ -16585,10 +16585,7 @@ var _user$project$Platformer$viewGame = function (model) {
 		_user$project$Platformer$viewGameState(model));
 };
 var _user$project$Platformer$characterFoundItem = function (model) {
-	var currentCharacterPosition = model.characterPositionX;
-	var approximateItemUpperBound = model.itemPositionX;
-	var approximateItemLowerBound = model.itemPositionX - 35.0;
-	return (_elm_lang$core$Native_Utils.cmp(currentCharacterPosition, approximateItemLowerBound) > -1) && (_elm_lang$core$Native_Utils.cmp(currentCharacterPosition, approximateItemUpperBound) < 1);
+	return (_elm_lang$core$Native_Utils.cmp(model.characterPositionX, model.itemPositionX - 35.0) > -1) && ((_elm_lang$core$Native_Utils.cmp(model.characterPositionX, model.itemPositionX) < 1) && ((_elm_lang$core$Native_Utils.cmp(model.characterPositionY, model.itemPositionY) > -1) && (_elm_lang$core$Native_Utils.cmp(model.characterPositionY, model.itemPositionY) < 1)));
 };
 var _user$project$Platformer$anonymousPlayer = {
 	displayName: _elm_lang$core$Maybe$Just('Anonymous User'),
@@ -16961,9 +16958,9 @@ var _user$project$Platformer$update = F2(
 					};
 				}
 			case 'KeyDown':
-				var jumpSpeed = 15.0;
-				var runSpeed = 12.0;
-				var walkSpeed = 8.0;
+				var jumpSpeed = 6.0;
+				var runSpeed = 5.0;
+				var walkSpeed = 3.0;
 				var _p5 = _p2._0;
 				switch (_p5) {
 					case 32:
@@ -17035,8 +17032,8 @@ var _user$project$Platformer$update = F2(
 						model,
 						{
 							characterVelocityY: newCharacterVelocityY,
-							characterPositionX: model.characterPositionX + (model.characterVelocityX * (_p7 / 50)),
-							characterPositionY: A2(_elm_lang$core$Basics$min, 300.0, model.characterPositionY - (model.characterVelocityY * (_p7 / 50)))
+							characterPositionX: model.characterPositionX + (model.characterVelocityX * (_p7 / 10)),
+							characterPositionY: A2(_elm_lang$core$Basics$min, 300.0, model.characterPositionY - (model.characterVelocityY * (_p7 / 10)))
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
