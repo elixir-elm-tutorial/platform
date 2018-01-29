@@ -263,83 +263,93 @@ update msg model =
                     ( { model | errors = toString message }, Cmd.none )
 
         KeyDown keyCode ->
-            case keyCode of
-                -- Space bar key to start game
-                32 ->
-                    if model.gameState /= Playing then
-                        ( { model
-                            | characterDirection = Right
-                            , characterPositionX = 50
-                            , itemsCollected = 0
-                            , gameState = Playing
-                            , playerScore = 0
-                            , timeRemaining = 10
-                          }
-                        , Cmd.none
-                        )
-                    else
-                        ( model, Cmd.none )
+            let
+                walkSpeed =
+                    8.0
 
-                -- Left arrow key to walk left
-                37 ->
-                    if model.gameState == Playing then
-                        ( { model
-                            | characterDirection = Left
-                            , characterVelocityX = -2.0
-                          }
-                        , Cmd.none
-                        )
-                    else
-                        ( model, Cmd.none )
+                runSpeed =
+                    12.0
 
-                -- Up arrow key to jump
-                38 ->
-                    if model.gameState == Playing && model.characterVelocityY == 0 then
-                        ( { model | characterVelocityY = 8.0 }
-                        , Cmd.none
-                        )
-                    else
-                        ( model, Cmd.none )
+                jumpSpeed =
+                    15.0
+            in
+                case keyCode of
+                    -- Space bar key to start game
+                    32 ->
+                        if model.gameState /= Playing then
+                            ( { model
+                                | characterDirection = Right
+                                , characterPositionX = 50
+                                , itemsCollected = 0
+                                , gameState = Playing
+                                , playerScore = 0
+                                , timeRemaining = 10
+                              }
+                            , Cmd.none
+                            )
+                        else
+                            ( model, Cmd.none )
 
-                -- Right arrow key to walk right
-                39 ->
-                    if model.gameState == Playing then
-                        ( { model
-                            | characterDirection = Right
-                            , characterVelocityX = 2.0
-                          }
-                        , Cmd.none
-                        )
-                    else
-                        ( model, Cmd.none )
+                    -- Left arrow key to walk left
+                    37 ->
+                        if model.gameState == Playing then
+                            ( { model
+                                | characterDirection = Left
+                                , characterVelocityX = -walkSpeed
+                              }
+                            , Cmd.none
+                            )
+                        else
+                            ( model, Cmd.none )
 
-                -- A key to run left
-                65 ->
-                    if model.gameState == Playing then
-                        ( { model
-                            | characterDirection = Left
-                            , characterVelocityX = -3.5
-                          }
-                        , Cmd.none
-                        )
-                    else
-                        ( model, Cmd.none )
+                    -- Up arrow key to jump
+                    38 ->
+                        if model.gameState == Playing && model.characterVelocityY == 0 then
+                            ( { model | characterVelocityY = jumpSpeed }
+                            , Cmd.none
+                            )
+                        else
+                            ( model, Cmd.none )
 
-                -- D key to run right
-                68 ->
-                    if model.gameState == Playing then
-                        ( { model
-                            | characterDirection = Right
-                            , characterVelocityX = 3.5
-                          }
-                        , Cmd.none
-                        )
-                    else
-                        ( model, Cmd.none )
+                    -- Right arrow key to walk right
+                    39 ->
+                        if model.gameState == Playing then
+                            ( { model
+                                | characterDirection = Right
+                                , characterVelocityX = walkSpeed
+                              }
+                            , Cmd.none
+                            )
+                        else
+                            ( model, Cmd.none )
 
-                -- any other key
-                _ ->
-                    ( model, Cmd.none )
+                    -- A key to run left
+                    65 ->
+                        if model.gameState == Playing then
+                            ( { model
+                                | characterDirection = Left
+                                , characterVelocityX = -runSpeed
+                              }
+                            , Cmd.none
+                            )
+                        else
+                            ( model, Cmd.none )
+
+                    -- D key to run right
+                    68 ->
+                        if model.gameState == Playing then
+                            ( { model
+                                | characterDirection = Right
+                                , characterVelocityX = runSpeed
+                              }
+                            , Cmd.none
+                            )
+                        else
+                            ( model, Cmd.none )
+
+                    -- any other key
+                    _ ->
+                        ( model, Cmd.none )
 
         KeyUp keyCode ->
             case keyCode of
@@ -357,14 +367,14 @@ update msg model =
                 newCharacterVelocityY =
                     -- apply gravity if character position is above ground
                     if model.characterPositionY < 300.0 then
-                        model.characterVelocityY - time / 2
+                        model.characterVelocityY - (time / 50)
                     else
                         0
             in
                 ( { model
                     | characterVelocityY = newCharacterVelocityY
-                    , characterPositionX = model.characterPositionX + model.characterVelocityX * (time / 10)
-                    , characterPositionY = Basics.min 300.0 (model.characterPositionY - model.characterVelocityY * (time / 10))
+                    , characterPositionX = model.characterPositionX + model.characterVelocityX * (time / 50)
+                    , characterPositionY = Basics.min 300.0 (model.characterPositionY - model.characterVelocityY * (time / 50))
                   }
                 , Cmd.none
                 )

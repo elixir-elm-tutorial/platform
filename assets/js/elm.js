@@ -16805,6 +16805,9 @@ var _user$project$Platformer$update = F2(
 					};
 				}
 			case 'KeyDown':
+				var jumpSpeed = 15.0;
+				var runSpeed = 12.0;
+				var walkSpeed = 8.0;
 				var _p5 = _p2._0;
 				switch (_p5) {
 					case 32:
@@ -16820,7 +16823,7 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterDirection: _user$project$Platformer$Left, characterVelocityX: -2.0}),
+								{characterDirection: _user$project$Platformer$Left, characterVelocityX: 0 - walkSpeed}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 38:
@@ -16828,7 +16831,7 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterVelocityY: 8.0}),
+								{characterVelocityY: jumpSpeed}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 39:
@@ -16836,7 +16839,7 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterDirection: _user$project$Platformer$Right, characterVelocityX: 2.0}),
+								{characterDirection: _user$project$Platformer$Right, characterVelocityX: walkSpeed}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 65:
@@ -16844,7 +16847,7 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterDirection: _user$project$Platformer$Left, characterVelocityX: -3.5}),
+								{characterDirection: _user$project$Platformer$Left, characterVelocityX: 0 - runSpeed}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 68:
@@ -16852,7 +16855,7 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterDirection: _user$project$Platformer$Right, characterVelocityX: 3.5}),
+								{characterDirection: _user$project$Platformer$Right, characterVelocityX: runSpeed}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					default:
@@ -16869,15 +16872,15 @@ var _user$project$Platformer$update = F2(
 				};
 			case 'MoveCharacter':
 				var _p7 = _p2._0;
-				var newCharacterVelocityY = (_elm_lang$core$Native_Utils.cmp(model.characterPositionY, 300.0) < 0) ? (model.characterVelocityY - (_p7 / 2)) : 0;
+				var newCharacterVelocityY = (_elm_lang$core$Native_Utils.cmp(model.characterPositionY, 300.0) < 0) ? (model.characterVelocityY - (_p7 / 50)) : 0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
 							characterVelocityY: newCharacterVelocityY,
-							characterPositionX: model.characterPositionX + (model.characterVelocityX * (_p7 / 10)),
-							characterPositionY: A2(_elm_lang$core$Basics$min, 300.0, model.characterPositionY - (model.characterVelocityY * (_p7 / 10)))
+							characterPositionX: model.characterPositionX + (model.characterVelocityX * (_p7 / 50)),
+							characterPositionY: A2(_elm_lang$core$Basics$min, 300.0, model.characterPositionY - (model.characterVelocityY * (_p7 / 50)))
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
