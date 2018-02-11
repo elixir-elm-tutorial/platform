@@ -442,14 +442,19 @@ update msg model =
 
 characterFoundItem : Model -> Bool
 characterFoundItem model =
-    model.characterPositionX
-        >= (model.itemPositionX - 35.0)
-        && model.characterPositionX
-        <= model.itemPositionX
-        && model.characterPositionY
-        >= model.itemPositionY
-        && model.characterPositionY
-        <= model.itemPositionY
+    let
+        -- Allow character to find coin without having to be in exact spot
+        collisionBuffer =
+            35.0
+    in
+        model.characterPositionX
+            >= (model.itemPositionX - collisionBuffer)
+            && model.characterPositionX
+            <= model.itemPositionX
+            && model.characterPositionY
+            >= (model.itemPositionY - collisionBuffer)
+            && model.characterPositionY
+            <= model.itemPositionY
 
 
 

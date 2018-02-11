@@ -16585,7 +16585,8 @@ var _user$project$Platformer$viewGame = function (model) {
 		_user$project$Platformer$viewGameState(model));
 };
 var _user$project$Platformer$characterFoundItem = function (model) {
-	return (_elm_lang$core$Native_Utils.cmp(model.characterPositionX, model.itemPositionX - 35.0) > -1) && ((_elm_lang$core$Native_Utils.cmp(model.characterPositionX, model.itemPositionX) < 1) && ((_elm_lang$core$Native_Utils.cmp(model.characterPositionY, model.itemPositionY) > -1) && (_elm_lang$core$Native_Utils.cmp(model.characterPositionY, model.itemPositionY) < 1)));
+	var collisionBuffer = 35.0;
+	return (_elm_lang$core$Native_Utils.cmp(model.characterPositionX, model.itemPositionX - collisionBuffer) > -1) && ((_elm_lang$core$Native_Utils.cmp(model.characterPositionX, model.itemPositionX) < 1) && ((_elm_lang$core$Native_Utils.cmp(model.characterPositionY, model.itemPositionY - collisionBuffer) > -1) && (_elm_lang$core$Native_Utils.cmp(model.characterPositionY, model.itemPositionY) < 1)));
 };
 var _user$project$Platformer$anonymousPlayer = {
 	displayName: _elm_lang$core$Maybe$Just('Anonymous User'),
