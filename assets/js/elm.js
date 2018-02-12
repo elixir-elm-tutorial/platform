@@ -16585,10 +16585,8 @@ var _user$project$Platformer$viewGame = function (model) {
 		_user$project$Platformer$viewGameState(model));
 };
 var _user$project$Platformer$characterFoundItem = function (model) {
-	var approximateItemUpperBound = model.itemPositionX;
-	var approximateItemLowerBound = model.itemPositionX - 35;
-	var approximateItemRange = A2(_elm_lang$core$List$range, approximateItemLowerBound, approximateItemUpperBound);
-	return A2(_elm_lang$core$List$member, model.characterPositionX, approximateItemRange);
+	var collisionBuffer = 35.0;
+	return (_elm_lang$core$Native_Utils.cmp(model.characterPositionX, model.itemPositionX - collisionBuffer) > -1) && ((_elm_lang$core$Native_Utils.cmp(model.characterPositionX, model.itemPositionX) < 1) && ((_elm_lang$core$Native_Utils.cmp(model.characterPositionY, model.itemPositionY - collisionBuffer) > -1) && (_elm_lang$core$Native_Utils.cmp(model.characterPositionY, model.itemPositionY) < 1)));
 };
 var _user$project$Platformer$anonymousPlayer = {
 	displayName: _elm_lang$core$Maybe$Just('Anonymous User'),
@@ -16772,7 +16770,11 @@ var _user$project$Platformer$Model = function (a) {
 											return function (l) {
 												return function (m) {
 													return function (n) {
-														return {characterDirection: a, characterPositionX: b, characterPositionY: c, errors: d, gameId: e, gameplays: f, gameState: g, itemPositionX: h, itemPositionY: i, itemsCollected: j, phxSocket: k, playersList: l, playerScore: m, timeRemaining: n};
+														return function (o) {
+															return function (p) {
+																return {characterDirection: a, characterPositionX: b, characterPositionY: c, characterVelocityX: d, characterVelocityY: e, errors: f, gameId: g, gameplays: h, gameState: i, itemPositionX: j, itemPositionY: k, itemsCollected: l, phxSocket: m, playersList: n, playerScore: o, timeRemaining: p};
+															};
+														};
 													};
 												};
 											};
@@ -16876,14 +16878,16 @@ var _user$project$Platformer$initialSocketJoin = function (flags) {
 var _user$project$Platformer$initialModel = function (flags) {
 	return {
 		characterDirection: _user$project$Platformer$Right,
-		characterPositionX: 50,
-		characterPositionY: 300,
+		characterPositionX: 50.0,
+		characterPositionY: 300.0,
+		characterVelocityX: 0.0,
+		characterVelocityY: 0.0,
 		errors: '',
 		gameId: 1,
 		gameplays: {ctor: '[]'},
 		gameState: _user$project$Platformer$StartScreen,
-		itemPositionX: 150,
-		itemPositionY: 300,
+		itemPositionX: 150.0,
+		itemPositionY: 300.0,
 		itemsCollected: 0,
 		phxSocket: _user$project$Platformer$initialSocketJoin(flags),
 		playersList: {ctor: '[]'},
@@ -16955,6 +16959,9 @@ var _user$project$Platformer$update = F2(
 					};
 				}
 			case 'KeyDown':
+				var jumpSpeed = 6.0;
+				var runSpeed = 5.0;
+				var walkSpeed = 3.0;
 				var _p5 = _p2._0;
 				switch (_p5) {
 					case 32:
@@ -16970,7 +16977,15 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterDirection: _user$project$Platformer$Left, characterPositionX: model.characterPositionX - 15}),
+								{characterDirection: _user$project$Platformer$Left, characterVelocityX: 0 - walkSpeed}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					case 38:
+						return (_elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing) && _elm_lang$core$Native_Utils.eq(model.characterVelocityY, 0)) ? {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{characterVelocityY: jumpSpeed}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					case 39:
@@ -16978,16 +16993,55 @@ var _user$project$Platformer$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{characterDirection: _user$project$Platformer$Right, characterPositionX: model.characterPositionX + 15}),
+								{characterDirection: _user$project$Platformer$Right, characterVelocityX: walkSpeed}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					case 65:
+						return _elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing) ? {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{characterDirection: _user$project$Platformer$Left, characterVelocityX: 0 - runSpeed}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					case 68:
+						return _elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Platformer$Playing) ? {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{characterDirection: _user$project$Platformer$Right, characterVelocityX: runSpeed}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					default:
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
+			case 'KeyUp':
+				var _p6 = _p2._0;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{characterVelocityX: 0, characterVelocityY: 0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'MoveCharacter':
+				var _p7 = _p2._0;
+				var newCharacterVelocityY = (_elm_lang$core$Native_Utils.cmp(model.characterPositionY, 300.0) < 0) ? (model.characterVelocityY - (_p7 / 50)) : 0;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							characterVelocityY: newCharacterVelocityY,
+							characterPositionX: model.characterPositionX + (model.characterVelocityX * (_p7 / 10)),
+							characterPositionY: A2(_elm_lang$core$Basics$min, 300.0, model.characterPositionY - (model.characterVelocityY * (_p7 / 10)))
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'PhoenixMsg':
-				var _p6 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p2._0, model.phxSocket);
-				var phxSocket = _p6._0;
-				var phxCmd = _p6._1;
+				var _p8 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p2._0, model.phxSocket);
+				var phxSocket = _p8._0;
+				var phxCmd = _p8._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -16996,14 +17050,14 @@ var _user$project$Platformer$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Platformer$PhoenixMsg, phxCmd)
 				};
 			case 'ReceiveScoreChanges':
-				var _p7 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Platformer$decodeGameplay, _p2._0);
-				if (_p7.ctor === 'Ok') {
+				var _p9 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Platformer$decodeGameplay, _p2._0);
+				if (_p9.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								gameplays: {ctor: '::', _0: _p7._0, _1: model.gameplays}
+								gameplays: {ctor: '::', _0: _p9._0, _1: model.gameplays}
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -17012,7 +17066,7 @@ var _user$project$Platformer$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{errors: _p7._0}),
+							{errors: _p9._0}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
@@ -17044,9 +17098,9 @@ var _user$project$Platformer$update = F2(
 							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 							payload,
 							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'save_score', 'score:platformer'))));
-				var _p8 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
-				var phxSocket = _p8._0;
-				var phxCmd = _p8._1;
+				var _p10 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
+				var phxSocket = _p10._0;
+				var phxCmd = _p10._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -17071,7 +17125,7 @@ var _user$project$Platformer$update = F2(
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Platformer$SetNewItemPositionX,
-						A2(_elm_lang$core$Random$int, 50, 500))
+						A2(_elm_lang$core$Random$float, 50, 500))
 				} : ((_elm_lang$core$Native_Utils.cmp(model.itemsCollected, 10) > -1) ? {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -17087,6 +17141,12 @@ var _user$project$Platformer$update = F2(
 				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none}));
 		}
 	});
+var _user$project$Platformer$MoveCharacter = function (a) {
+	return {ctor: 'MoveCharacter', _0: a};
+};
+var _user$project$Platformer$KeyUp = function (a) {
+	return {ctor: 'KeyUp', _0: a};
+};
 var _user$project$Platformer$KeyDown = function (a) {
 	return {ctor: 'KeyDown', _0: a};
 };
@@ -17137,14 +17197,22 @@ var _user$project$Platformer$subscriptions = function (model) {
 			_0: _elm_lang$keyboard$Keyboard$downs(_user$project$Platformer$KeyDown),
 			_1: {
 				ctor: '::',
-				_0: _elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Platformer$TimeUpdate),
+				_0: _elm_lang$keyboard$Keyboard$ups(_user$project$Platformer$KeyUp),
 				_1: {
 					ctor: '::',
-					_0: A2(_elm_lang$core$Time$every, _elm_lang$core$Time$second, _user$project$Platformer$CountdownTimer),
+					_0: _elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Platformer$MoveCharacter),
 					_1: {
 						ctor: '::',
-						_0: A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$listen, model.phxSocket, _user$project$Platformer$PhoenixMsg),
-						_1: {ctor: '[]'}
+						_0: _elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Platformer$TimeUpdate),
+						_1: {
+							ctor: '::',
+							_0: A2(_elm_lang$core$Time$every, _elm_lang$core$Time$second, _user$project$Platformer$CountdownTimer),
+							_1: {
+								ctor: '::',
+								_0: A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$listen, model.phxSocket, _user$project$Platformer$PhoenixMsg),
+								_1: {ctor: '[]'}
+							}
+						}
 					}
 				}
 			}
@@ -17168,7 +17236,7 @@ if (typeof _user$project$Main$main !== 'undefined') {
 }
 Elm['Platformer'] = Elm['Platformer'] || {};
 if (typeof _user$project$Platformer$main !== 'undefined') {
-    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Platformer.Msg":{"args":[],"tags":{"FetchGameplaysList":["Result.Result Http.Error (List Platformer.Gameplay)"],"SetNewItemPositionX":["Int"],"SaveScoreRequest":[],"CountdownTimer":["Time.Time"],"FetchPlayersList":["Result.Result Http.Error (List Platformer.Player)"],"SaveScore":["Json.Encode.Value"],"PhoenixMsg":["Phoenix.Socket.Msg Platformer.Msg"],"TimeUpdate":["Time.Time"],"KeyDown":["Keyboard.KeyCode"],"ReceiveScoreChanges":["Json.Encode.Value"],"NoOp":[],"SaveScoreError":["Json.Encode.Value"]}},"Json.Encode.Value":{"args":[],"tags":{"Value":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Phoenix.Socket.Msg":{"args":["msg"],"tags":{"ChannelErrored":["String"],"ChannelClosed":["String"],"ExternalMsg":["msg"],"ChannelJoined":["String"],"Heartbeat":["Time.Time"],"NoOp":[],"ReceiveReply":["String","Int"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Keyboard.KeyCode":{"args":[],"type":"Int"},"Platformer.Gameplay":{"args":[],"type":"{ gameId : Int, playerId : Int, playerScore : Int }"},"Platformer.Player":{"args":[],"type":"{ displayName : Maybe.Maybe String , id : Int , score : Int , username : String }"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Platformer$main(Elm['Platformer'], 'Platformer', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Platformer.Msg":{"args":[],"tags":{"FetchGameplaysList":["Result.Result Http.Error (List Platformer.Gameplay)"],"SetNewItemPositionX":["Float"],"SaveScoreRequest":[],"CountdownTimer":["Time.Time"],"FetchPlayersList":["Result.Result Http.Error (List Platformer.Player)"],"SaveScore":["Json.Encode.Value"],"PhoenixMsg":["Phoenix.Socket.Msg Platformer.Msg"],"TimeUpdate":["Time.Time"],"KeyUp":["Keyboard.KeyCode"],"KeyDown":["Keyboard.KeyCode"],"MoveCharacter":["Time.Time"],"ReceiveScoreChanges":["Json.Encode.Value"],"NoOp":[],"SaveScoreError":["Json.Encode.Value"]}},"Json.Encode.Value":{"args":[],"tags":{"Value":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Phoenix.Socket.Msg":{"args":["msg"],"tags":{"ChannelErrored":["String"],"ChannelClosed":["String"],"ExternalMsg":["msg"],"ChannelJoined":["String"],"Heartbeat":["Time.Time"],"NoOp":[],"ReceiveReply":["String","Int"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Keyboard.KeyCode":{"args":[],"type":"Int"},"Platformer.Gameplay":{"args":[],"type":"{ gameId : Int, playerId : Int, playerScore : Int }"},"Platformer.Player":{"args":[],"type":"{ displayName : Maybe.Maybe String , id : Int , score : Int , username : String }"},"Time.Time":{"args":[],"type":"Float"}},"message":"Platformer.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

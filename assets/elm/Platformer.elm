@@ -7,7 +7,7 @@ import Html.Events exposing (onClick)
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
-import Keyboard exposing (KeyCode, downs)
+import Keyboard exposing (KeyCode, downs, ups)
 import Phoenix.Channel
 import Phoenix.Push
 import Phoenix.Socket
@@ -68,14 +68,16 @@ type alias Player =
 
 type alias Model =
     { characterDirection : Direction
-    , characterPositionX : Int
-    , characterPositionY : Int
+    , characterPositionX : Float
+    , characterPositionY : Float
+    , characterVelocityX : Float
+    , characterVelocityY : Float
     , errors : String
     , gameId : Int
     , gameplays : List Gameplay
     , gameState : GameState
-    , itemPositionX : Int
-    , itemPositionY : Int
+    , itemPositionX : Float
+    , itemPositionY : Float
     , itemsCollected : Int
     , phxSocket : Phoenix.Socket.Socket Msg
     , playersList : List Player
@@ -87,14 +89,16 @@ type alias Model =
 initialModel : Flags -> Model
 initialModel flags =
     { characterDirection = Right
-    , characterPositionX = 50
-    , characterPositionY = 300
+    , characterPositionX = 50.0
+    , characterPositionY = 300.0
+    , characterVelocityX = 0.0
+    , characterVelocityY = 0.0
     , errors = ""
     , gameId = 1
     , gameplays = []
     , gameState = StartScreen
-    , itemPositionX = 150
-    , itemPositionY = 300
+    , itemPositionX = 150.0
+    , itemPositionY = 300.0
     , itemsCollected = 0
     , phxSocket = initialSocketJoin flags
     , playersList = []
@@ -219,12 +223,14 @@ type Msg
     | FetchGameplaysList (Result Http.Error (List Gameplay))
     | FetchPlayersList (Result Http.Error (List Player))
     | KeyDown KeyCode
+    | KeyUp KeyCode
+    | MoveCharacter Time
     | PhoenixMsg (Phoenix.Socket.Msg Msg)
     | ReceiveScoreChanges Encode.Value
     | SaveScore Encode.Value
     | SaveScoreError Encode.Value
     | SaveScoreRequest
-    | SetNewItemPositionX Int
+    | SetNewItemPositionX Float
     | TimeUpdate Time
 
 
@@ -257,46 +263,121 @@ update msg model =
                     ( { model | errors = toString message }, Cmd.none )
 
         KeyDown keyCode ->
+            let
+                walkSpeed =
+                    3.0
+
+                runSpeed =
+                    5.0
+
+                jumpSpeed =
+                    6.0
+            in
+                case keyCode of
+                    -- Space bar key to start game
+                    32 ->
+                        if model.gameState /= Playing then
+                            ( { model
+                                | characterDirection = Right
+                                , characterPositionX = 50
+                                , itemsCollected = 0
+                                , gameState = Playing
+                                , playerScore = 0
+                                , timeRemaining = 10
+                              }
+                            , Cmd.none
+                            )
+                        else
+                            ( model, Cmd.none )
+
+                    -- Left arrow key to walk left
+                    37 ->
+                        if model.gameState == Playing then
+                            ( { model
+                                | characterDirection = Left
+                                , characterVelocityX = -walkSpeed
+                              }
+                            , Cmd.none
+                            )
+                        else
+                            ( model, Cmd.none )
+
+                    -- Up arrow key to jump
+                    38 ->
+                        if model.gameState == Playing && model.characterVelocityY == 0 then
+                            ( { model | characterVelocityY = jumpSpeed }
+                            , Cmd.none
+                            )
+                        else
+                            ( model, Cmd.none )
+
+                    -- Right arrow key to walk right
+                    39 ->
+                        if model.gameState == Playing then
+                            ( { model
+                                | characterDirection = Right
+                                , characterVelocityX = walkSpeed
+                              }
+                            , Cmd.none
+                            )
+                        else
+                            ( model, Cmd.none )
+
+                    -- A key to run left
+                    65 ->
+                        if model.gameState == Playing then
+                            ( { model
+                                | characterDirection = Left
+                                , characterVelocityX = -runSpeed
+                              }
+                            , Cmd.none
+                            )
+                        else
+                            ( model, Cmd.none )
+
+                    -- D key to run right
+                    68 ->
+                        if model.gameState == Playing then
+                            ( { model
+                                | characterDirection = Right
+                                , characterVelocityX = runSpeed
+                              }
+                            , Cmd.none
+                            )
+                        else
+                            ( model, Cmd.none )
+
+                    -- any other key
+                    _ ->
+                        ( model, Cmd.none )
+
+        KeyUp keyCode ->
             case keyCode of
-                32 ->
-                    if model.gameState /= Playing then
-                        ( { model
-                            | characterDirection = Right
-                            , characterPositionX = 50
-                            , itemsCollected = 0
-                            , gameState = Playing
-                            , playerScore = 0
-                            , timeRemaining = 10
-                          }
-                        , Cmd.none
-                        )
-                    else
-                        ( model, Cmd.none )
-
-                37 ->
-                    if model.gameState == Playing then
-                        ( { model
-                            | characterDirection = Left
-                            , characterPositionX = model.characterPositionX - 15
-                          }
-                        , Cmd.none
-                        )
-                    else
-                        ( model, Cmd.none )
-
-                39 ->
-                    if model.gameState == Playing then
-                        ( { model
-                            | characterDirection = Right
-                            , characterPositionX = model.characterPositionX + 15
-                          }
-                        , Cmd.none
-                        )
-                    else
-                        ( model, Cmd.none )
-
+                -- key up to stop movement
                 _ ->
-                    ( model, Cmd.none )
+                    ( { model
+                        | characterVelocityX = 0
+                        , characterVelocityY = 0
+                      }
+                    , Cmd.none
+                    )
+
+        MoveCharacter time ->
+            let
+                newCharacterVelocityY =
+                    -- apply gravity if character position is above ground
+                    if model.characterPositionY < 300.0 then
+                        model.characterVelocityY - (time / 50)
+                    else
+                        0
+            in
+                ( { model
+                    | characterVelocityY = newCharacterVelocityY
+                    , characterPositionX = model.characterPositionX + model.characterVelocityX * (time / 10)
+                    , characterPositionY = Basics.min 300.0 (model.characterPositionY - model.characterVelocityY * (time / 10))
+                  }
+                , Cmd.none
+                )
 
         PhoenixMsg msg ->
             let
@@ -349,7 +430,7 @@ update msg model =
                     | itemsCollected = model.itemsCollected + 1
                     , playerScore = model.playerScore + 100
                   }
-                , Random.generate SetNewItemPositionX (Random.int 50 500)
+                , Random.generate SetNewItemPositionX (Random.float 50 500)
                 )
             else if model.itemsCollected >= 10 then
                 ( { model | gameState = Success }, Cmd.none )
@@ -362,16 +443,18 @@ update msg model =
 characterFoundItem : Model -> Bool
 characterFoundItem model =
     let
-        approximateItemLowerBound =
-            model.itemPositionX - 35
-
-        approximateItemUpperBound =
-            model.itemPositionX
-
-        approximateItemRange =
-            List.range approximateItemLowerBound approximateItemUpperBound
+        -- Allow character to find coin without having to be in exact spot
+        collisionBuffer =
+            35.0
     in
-        List.member model.characterPositionX approximateItemRange
+        model.characterPositionX
+            >= (model.itemPositionX - collisionBuffer)
+            && model.characterPositionX
+            <= model.itemPositionX
+            && model.characterPositionY
+            >= (model.itemPositionY - collisionBuffer)
+            && model.characterPositionY
+            <= model.itemPositionY
 
 
 
@@ -382,6 +465,8 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ downs KeyDown
+        , ups KeyUp
+        , diffs MoveCharacter
         , diffs TimeUpdate
         , every second CountdownTimer
         , Phoenix.Socket.listen model.phxSocket PhoenixMsg
