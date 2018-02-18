@@ -29,12 +29,10 @@ defmodule PlatformWeb.PlayerControllerTest do
   describe "create player" do
     test "redirects to show when data is valid", %{conn: conn} do
       conn = post conn, player_path(conn, :create), player: @create_attrs
+      assert redirected_to(conn) == page_path(conn, :index)
 
-      assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == player_path(conn, :show, id)
-
-      conn = get conn, player_path(conn, :show, id)
-      assert html_response(conn, 200) =~ "Show Player"
+      conn = get conn, page_path(conn, :index)
+      assert html_response(conn, 200) =~ "Player created successfully"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
