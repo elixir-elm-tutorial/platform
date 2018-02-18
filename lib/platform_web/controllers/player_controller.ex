@@ -22,7 +22,7 @@ defmodule PlatformWeb.PlayerController do
         conn
         |> PlatformWeb.PlayerAuthController.sign_in(player)
         |> put_flash(:info, "Player created successfully.")
-        |> redirect(to: player_path(conn, :show, player))
+        |> redirect(to: page_path(conn, :index))
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
