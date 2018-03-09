@@ -11,7 +11,6 @@ config :platform,
 
 # Configures the endpoint
 config :platform, PlatformWeb.Endpoint,
-  instrumenters: [Appsignal.Phoenix.Instrumenter],
   url: [host: "localhost"],
   secret_key_base: "5WY2LoKih9wBLcSs1KJdSumLNMFDzgDYvhqwdZjFvSVgDDVIYjx+dHmikCho8/lm",
   render_errors: [view: PlatformWeb.ErrorView, accepts: ~w(html json)],
@@ -22,14 +21,6 @@ config :platform, PlatformWeb.Endpoint,
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
-
-# AppSignal
-config :phoenix, :template_engines,
-  eex: Appsignal.Phoenix.Template.EExEngine,
-  exs: Appsignal.Phoenix.Template.ExsEngine
-
-config :platform, Platform.Repo,
-  loggers: [Appsignal.Ecto, Ecto.LogEntry]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

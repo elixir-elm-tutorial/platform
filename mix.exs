@@ -20,7 +20,7 @@ defmodule Platform.Mixfile do
   def application do
     [
       mod: {Platform.Application, []},
-      extra_applications: [:appsignal, :logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -33,7 +33,6 @@ defmodule Platform.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:appsignal, "~> 1.0"},
       {:bcrypt_elixir, "~> 1.0"},
       {:comeonin, "~> 4.0"},
       {:cowboy, "~> 1.0"},
