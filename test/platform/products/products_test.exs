@@ -6,8 +6,20 @@ defmodule Platform.ProductsTest do
   describe "games" do
     alias Platform.Products.Game
 
-    @valid_attrs %{description: "some description", featured: true, thumbnail: "some thumbnail", title: "some title", slug: "some-slug"}
-    @update_attrs %{description: "some updated description", featured: false, thumbnail: "some updated thumbnail", title: "some updated title", slug: "some-slug"}
+    @valid_attrs %{
+      description: "some description",
+      featured: true,
+      thumbnail: "some thumbnail",
+      title: "some title",
+      slug: "some-slug"
+    }
+    @update_attrs %{
+      description: "some updated description",
+      featured: false,
+      thumbnail: "some updated thumbnail",
+      title: "some updated title",
+      slug: "some-slug"
+    }
     @invalid_attrs %{description: nil, featured: nil, thumbnail: nil, title: nil, slug: nil}
 
     def game_fixture(attrs \\ %{}) do

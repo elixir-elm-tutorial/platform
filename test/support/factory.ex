@@ -5,7 +5,7 @@ defmodule Platform.Factory do
     %Platform.Accounts.Player{
       display_name: "José Valim",
       username: "josevalim",
-      score: 0,
+      score: 0
     }
   end
 
@@ -13,9 +13,9 @@ defmodule Platform.Factory do
     %Platform.Products.Game{
       description: "Platformer game example.",
       featured: true,
-      slug: Enum.random(0..1000) |> Integer.to_string,
+      slug: Enum.random(0..1000) |> Integer.to_string(),
       thumbnail: "https://i.imgur.com/L6ci0xL.png",
-      title: "Platformer",
+      title: "Platformer"
     }
   end
 
