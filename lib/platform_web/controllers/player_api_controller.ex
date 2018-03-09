@@ -4,7 +4,7 @@ defmodule PlatformWeb.PlayerApiController do
   alias Platform.Accounts
   alias Platform.Accounts.Player
 
-  action_fallback PlatformWeb.FallbackController
+  action_fallback(PlatformWeb.FallbackController)
 
   def index(conn, _params) do
     players = Accounts.list_players()
@@ -35,6 +35,7 @@ defmodule PlatformWeb.PlayerApiController do
 
   def delete(conn, %{"id" => id}) do
     player = Accounts.get_player!(id)
+
     with {:ok, %Player{}} <- Accounts.delete_player(player) do
       send_resp(conn, :no_content, "")
     end

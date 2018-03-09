@@ -11,9 +11,11 @@ defmodule PlatformWeb.GameplayView do
   end
 
   def render("gameplay.json", %{gameplay: gameplay}) do
-    %{id: gameplay.id,
+    %{
+      id: gameplay.id,
       game_id: gameplay.game_id,
       player_id: gameplay.player_id,
-      player_score: gameplay.player_score}
+      player_score: gameplay.player_score
+    }
   end
 end

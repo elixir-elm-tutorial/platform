@@ -4,7 +4,7 @@ defmodule PlatformWeb.GameplayController do
   alias Platform.Products
   alias Platform.Products.Gameplay
 
-  action_fallback PlatformWeb.FallbackController
+  action_fallback(PlatformWeb.FallbackController)
 
   def index(conn, _params) do
     gameplays = Products.list_gameplays()
@@ -35,6 +35,7 @@ defmodule PlatformWeb.GameplayController do
 
   def delete(conn, %{"id" => id}) do
     gameplay = Products.get_gameplay!(id)
+
     with {:ok, %Gameplay{}} <- Products.delete_gameplay(gameplay) do
       send_resp(conn, :no_content, "")
     end
