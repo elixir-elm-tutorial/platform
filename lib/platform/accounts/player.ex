@@ -13,13 +13,13 @@ defmodule Platform.Accounts.Player do
   alias Platform.Products.Gameplay
 
   schema "players" do
-    many_to_many :games, Game, join_through: Gameplay
+    many_to_many(:games, Game, join_through: Gameplay)
 
-    field :display_name, :string
-    field :password, :string, virtual: true
-    field :password_digest, :string
-    field :score, :integer, default: 0
-    field :username, :string, unique: true
+    field(:display_name, :string)
+    field(:password, :string, virtual: true)
+    field(:password_digest, :string)
+    field(:score, :integer, default: 0)
+    field(:username, :string, unique: true)
 
     timestamps()
   end
