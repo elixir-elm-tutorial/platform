@@ -20,7 +20,7 @@ defmodule Platform.Mixfile do
   def application do
     [
       mod: {Platform.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :rollbax, :runtime_tools]
     ]
   end
 
@@ -44,7 +44,8 @@ defmodule Platform.Mixfile do
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:phoenix_pubsub, "~> 1.0"},
-      {:postgrex, ">= 0.0.0"}
+      {:postgrex, ">= 0.0.0"},
+      {:rollbax, ">= 0.0.0"}
     ]
   end
 

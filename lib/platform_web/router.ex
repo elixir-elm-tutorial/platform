@@ -1,5 +1,6 @@
 defmodule PlatformWeb.Router do
   use PlatformWeb, :router
+  use Plug.ErrorHandler
 
   pipeline :browser do
     plug(:accepts, ["html"])
@@ -30,6 +31,10 @@ defmodule PlatformWeb.Router do
     resources("/players", PlayerApiController, except: [:new, :edit])
     resources("/games", GameController, except: [:new, :edit])
     resources("/gameplays", GameplayController, except: [:new, :edit])
+  end
+
+  defp handle_errors(conn, %{kind: kind, reason: reason, stack: stacktrace}) do
+    Rollbax.report(kind, reason, stacktrace, %{params: conn.params})
   end
 
   defp put_user_token(conn, _) do
