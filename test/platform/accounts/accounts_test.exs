@@ -7,7 +7,12 @@ defmodule Platform.AccountsTest do
     alias Platform.Accounts.Player
 
     @valid_attrs %{password: "some password", username: "some username"}
-    @update_attrs %{display_name: "some updated display name", password: "some updated password", score: 43, username: "some updated username"}
+    @update_attrs %{
+      display_name: "some updated display name",
+      password: "some updated password",
+      score: 43,
+      username: "some updated username"
+    }
     @invalid_attrs %{password: nil, username: nil}
 
     def player_fixture(attrs \\ %{}) do

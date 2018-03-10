@@ -9,7 +9,7 @@ which is the demo application from the
 
 ## Requirements
 
-- Elixir 1.5
+- Elixir 1.6
 - Phoenix 1.3
 - Elm 0.18
 

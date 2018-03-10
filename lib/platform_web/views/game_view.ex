@@ -15,11 +15,13 @@ defmodule PlatformWeb.GameView do
   end
 
   def render("game.json", %{game: game}) do
-    %{id: game.id,
+    %{
+      id: game.id,
       title: game.title,
       slug: game.slug,
       description: game.description,
       thumbnail: game.thumbnail,
-      featured: game.featured}
+      featured: game.featured
+    }
   end
 end

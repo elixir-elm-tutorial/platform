@@ -135,7 +135,7 @@ defmodule Platform.Products do
   def get_gameplay!(id), do: Repo.get!(Gameplay, id)
 
   def get_gameplays_by_id!(id) do
-    query = from gp in "gameplays", where: gp.game_id == ^id, select: [:player_id, :player_score]
+    query = from(gp in "gameplays", where: gp.game_id == ^id, select: [:player_id, :player_score])
     Repo.all(query)
   end
 

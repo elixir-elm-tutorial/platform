@@ -4,7 +4,7 @@ defmodule PlatformWeb.PlayerController do
   alias Platform.Accounts
   alias Platform.Accounts.Player
 
-  plug :authorize when action in [:edit]
+  plug(:authorize when action in [:edit])
 
   def index(conn, _params) do
     players = Accounts.list_players()
@@ -23,6 +23,7 @@ defmodule PlatformWeb.PlayerController do
         |> PlatformWeb.PlayerAuthController.sign_in(player)
         |> put_flash(:info, "Player created successfully.")
         |> redirect(to: page_path(conn, :index))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -47,6 +48,7 @@ defmodule PlatformWeb.PlayerController do
         conn
         |> put_flash(:info, "Player updated successfully.")
         |> redirect(to: player_path(conn, :show, player))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", player: player, changeset: changeset)
     end
@@ -62,11 +64,10 @@ defmodule PlatformWeb.PlayerController do
   end
 
   defp authorize(conn, _opts) do
-    if Mix.env == :test do
+    if Mix.env() == :test do
       conn
     else
-      current_player_id =
-        conn.assigns.current_user().id
+      current_player_id = conn.assigns.current_user().id
 
       requested_player_id =
         conn.path_params["id"]

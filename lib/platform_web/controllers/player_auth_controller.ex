@@ -27,8 +27,10 @@ defmodule PlatformWeb.PlayerAuthController do
     cond do
       player && Comeonin.Bcrypt.checkpw(given_pass, player.password_digest) ->
         {:ok, sign_in(conn, player)}
+
       player ->
         {:error, :unauthorized, conn}
+
       true ->
         Comeonin.Bcrypt.dummy_checkpw()
         {:error, :not_found, conn}

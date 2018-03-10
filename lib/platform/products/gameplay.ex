@@ -13,12 +13,11 @@ defmodule Platform.Products.Gameplay do
   alias Platform.Products.Gameplay
   alias Platform.Accounts.Player
 
-
   schema "gameplays" do
-    belongs_to :game, Game
-    belongs_to :player, Player
+    belongs_to(:game, Game)
+    belongs_to(:player, Player)
 
-    field :player_score, :integer, default: 0
+    field(:player_score, :integer, default: 0)
 
     timestamps()
   end

@@ -20,7 +20,7 @@
         #
         # You can give explicit globs or simply directories.
         # In the latter case `**/*.{ex,exs}` will be used.
-      #
+        #
         included: ["lib/", "src/", "web/", "apps/"],
         excluded: [~r"/_build/", ~r"/deps/"]
       },
@@ -54,12 +54,10 @@
         {Credo.Check.Consistency.SpaceAroundOperators},
         {Credo.Check.Consistency.SpaceInParentheses},
         {Credo.Check.Consistency.TabsOrSpaces},
-
         {Credo.Check.Design.AliasUsage, false},
         {Credo.Check.Design.DuplicatedCode, excluded_macros: []},
         {Credo.Check.Design.TagTODO, exit_status: 2},
         {Credo.Check.Design.TagFIXME},
-
         {Credo.Check.Readability.FunctionNames},
         {Credo.Check.Readability.LargeNumbers},
         {Credo.Check.Readability.MaxLineLength, false},
@@ -77,7 +75,6 @@
         {Credo.Check.Readability.VariableNames},
         {Credo.Check.Readability.Semicolons},
         {Credo.Check.Readability.SpaceAfterCommas},
-
         {Credo.Check.Refactor.DoubleBooleanNegation},
         {Credo.Check.Refactor.CondStatements},
         {Credo.Check.Refactor.CyclomaticComplexity},
@@ -89,7 +86,6 @@
         {Credo.Check.Refactor.Nesting},
         {Credo.Check.Refactor.PipeChainStart},
         {Credo.Check.Refactor.UnlessWithElse},
-
         {Credo.Check.Warning.BoolOperationOnSameValues},
         {Credo.Check.Warning.ExpensiveEmptyEnumCheck},
         {Credo.Check.Warning.IExPry},
@@ -121,7 +117,7 @@
         {Credo.Check.Warning.NameRedeclarationByAssignment, false},
         {Credo.Check.Warning.NameRedeclarationByCase, false},
         {Credo.Check.Warning.NameRedeclarationByDef, false},
-        {Credo.Check.Warning.NameRedeclarationByFn, false},
+        {Credo.Check.Warning.NameRedeclarationByFn, false}
 
         # Custom checks can be created using `mix credo.gen.check`.
         #

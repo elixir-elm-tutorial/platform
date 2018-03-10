@@ -4,7 +4,12 @@ defmodule PlatformWeb.PlayerControllerTest do
   alias Platform.Accounts
 
   @create_attrs %{password: "some password", username: "some username"}
-  @update_attrs %{display_name: "some updated display name", password: "some updated password", score: 43, username: "some updated username"}
+  @update_attrs %{
+    display_name: "some updated display name",
+    password: "some updated password",
+    score: 43,
+    username: "some updated username"
+  }
   @invalid_attrs %{password: nil, username: nil}
 
   def fixture(:player) do
@@ -14,29 +19,29 @@ defmodule PlatformWeb.PlayerControllerTest do
 
   describe "index" do
     test "lists all players", %{conn: conn} do
-      conn = get conn, player_path(conn, :index)
+      conn = get(conn, player_path(conn, :index))
       assert html_response(conn, 200) =~ "Listing Players"
     end
   end
 
   describe "new player" do
     test "renders form", %{conn: conn} do
-      conn = get conn, player_path(conn, :new)
+      conn = get(conn, player_path(conn, :new))
       assert html_response(conn, 200) =~ "New Player"
     end
   end
 
   describe "create player" do
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post conn, player_path(conn, :create), player: @create_attrs
+      conn = post(conn, player_path(conn, :create), player: @create_attrs)
       assert redirected_to(conn) == page_path(conn, :index)
 
-      conn = get conn, page_path(conn, :index)
+      conn = get(conn, page_path(conn, :index))
       assert html_response(conn, 200) =~ "Player created successfully"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post conn, player_path(conn, :create), player: @invalid_attrs
+      conn = post(conn, player_path(conn, :create), player: @invalid_attrs)
       assert html_response(conn, 200) =~ "New Player"
     end
   end
@@ -45,7 +50,7 @@ defmodule PlatformWeb.PlayerControllerTest do
     setup [:create_player]
 
     test "renders form for editing chosen player", %{conn: conn, player: player} do
-      conn = get conn, player_path(conn, :edit, player)
+      conn = get(conn, player_path(conn, :edit, player))
       assert html_response(conn, 200) =~ "Edit Player"
     end
   end
@@ -54,15 +59,15 @@ defmodule PlatformWeb.PlayerControllerTest do
     setup [:create_player]
 
     test "redirects when data is valid", %{conn: conn, player: player} do
-      conn = put conn, player_path(conn, :update, player), player: @update_attrs
+      conn = put(conn, player_path(conn, :update, player), player: @update_attrs)
       assert redirected_to(conn) == player_path(conn, :show, player)
 
-      conn = get conn, player_path(conn, :show, player)
+      conn = get(conn, player_path(conn, :show, player))
       assert html_response(conn, 200) =~ "some updated username"
     end
 
     test "renders errors when data is invalid", %{conn: conn, player: player} do
-      conn = put conn, player_path(conn, :update, player), player: @invalid_attrs
+      conn = put(conn, player_path(conn, :update, player), player: @invalid_attrs)
       assert html_response(conn, 200) =~ "Edit Player"
     end
   end
@@ -71,11 +76,12 @@ defmodule PlatformWeb.PlayerControllerTest do
     setup [:create_player]
 
     test "deletes chosen player", %{conn: conn, player: player} do
-      conn = delete conn, player_path(conn, :delete, player)
+      conn = delete(conn, player_path(conn, :delete, player))
       assert redirected_to(conn) == player_path(conn, :index)
-      assert_error_sent 404, fn ->
-        get conn, player_path(conn, :show, player)
-      end
+
+      assert_error_sent(404, fn ->
+        get(conn, player_path(conn, :show, player))
+      end)
     end
   end
 

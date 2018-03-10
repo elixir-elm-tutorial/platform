@@ -3,9 +3,9 @@ defmodule Platform.Repo.Migrations.AddSlugToGames do
 
   def change do
     alter table(:games) do
-      add :slug, :string
+      add(:slug, :string)
     end
 
-    create unique_index(:games, [:slug])
+    create(unique_index(:games, [:slug]))
   end
 end
