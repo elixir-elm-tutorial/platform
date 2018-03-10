@@ -13,7 +13,7 @@ exports.config = {
     babel: { ignore: [/vendor/] },
     elmBrunch: {
       mainModules: ["elm/Main.elm", "elm/Platformer.elm"],
-      makeParameters: ["--debug"],
+      // makeParameters: ["--debug"],
       outputFile: "elm.js",
       outputFolder: "../assets/js"
     }
