@@ -1,11 +1,13 @@
 module Pong exposing (..)
 
+import AnimationFrame exposing (diffs)
 import Html exposing (Html, div)
 import Svg exposing (Svg, line, rect, svg, text, text_)
 import Svg.Attributes exposing (color, fill, fontFamily, fontSize, fontWeight, height, stroke, strokeDasharray, strokeWidth, version, width, x, x1, x2, y, y1, y2)
+import Time exposing (Time, every, second)
 
 
----- MODEL ----
+---- TYPES ----
 
 
 type alias Ball =
@@ -43,11 +45,12 @@ type alias Model =
 
 
 type Msg
-    = NoOp
+    = GameLoop Time
+    | NoOp
 
 
 
----- INIT ----
+---- MODEL ----
 
 
 initialBall : Ball
@@ -129,8 +132,32 @@ gameWindowWidth =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        _ ->
+        GameLoop dt ->
+            let
+                ball =
+                    model.ball
+
+                updatedBall =
+                    { ball | positionX = ball.positionX + 1 }
+
+                updatedModel =
+                    { model | ball = updatedBall }
+            in
+                ( updatedModel, Cmd.none )
+
+        NoOp ->
             ( model, Cmd.none )
+
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.batch
+        [ diffs GameLoop
+        ]
 
 
 
@@ -286,5 +313,5 @@ main =
         { init = init
         , view = view
         , update = update
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         }
