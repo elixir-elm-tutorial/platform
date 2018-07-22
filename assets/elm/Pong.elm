@@ -51,6 +51,7 @@ type Msg
     = GameLoop Time
     | MovePlayer KeyCode
     | NoOp
+    | StartGame KeyCode
 
 
 
@@ -73,7 +74,7 @@ initialModel : Model
 initialModel =
     { ball = initialBall
     , errors = Nothing
-    , gameState = Playing
+    , gameState = StartScreen
     , players = initialPlayers
     }
 
@@ -155,6 +156,12 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
+        StartGame keyCode ->
+            if model.gameState == StartScreen && keyCode == 32 then
+                ( { model | gameState = Playing }, Cmd.none )
+            else
+                ( model, Cmd.none )
+
 
 updateBallPosition : Ball -> Time -> Ball
 updateBallPosition ball dt =
@@ -194,6 +201,7 @@ subscriptions model =
     Sub.batch
         [ diffs GameLoop
         , downs MovePlayer
+        , downs StartGame
         ]
 
 
