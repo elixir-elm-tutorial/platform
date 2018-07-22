@@ -16,6 +16,8 @@ type alias Ball =
     , positionX : Float
     , positionY : Float
     , size : Int
+    , velocityX : Float
+    , velocityY : Float
     }
 
 
@@ -60,6 +62,8 @@ initialBall =
     , positionX = 440
     , positionY = 290
     , size = 10
+    , velocityX = 0.2
+    , velocityY = 0.2
     }
 
 
@@ -134,19 +138,29 @@ update msg model =
     case msg of
         GameLoop dt ->
             let
-                ball =
-                    model.ball
-
-                updatedBall =
-                    { ball | positionX = ball.positionX + 1 }
-
                 updatedModel =
-                    { model | ball = updatedBall }
+                    { model | ball = updateBallLocation model.ball dt }
             in
                 ( updatedModel, Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )
+
+
+updateBallLocation : Ball -> Time -> Ball
+updateBallLocation ball dt =
+    let
+        x =
+            ball.positionX
+    in
+        if x > 800 then
+            { ball | positionX = x + (1 * ball.velocityX) * dt }
+        else if x < 0 then
+            { ball | positionX = x + (abs ball.velocityX) * dt }
+        else if x > 0 && x < 800 then
+            { ball | positionX = x + (-1 * ball.velocityX) * dt }
+        else
+            ball
 
 
 
