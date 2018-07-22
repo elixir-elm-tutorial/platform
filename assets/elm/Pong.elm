@@ -165,9 +165,9 @@ update msg model =
 
 updateBallPosition : Time -> Ball -> Ball
 updateBallPosition dt ball =
-    if ball.positionX > 890 then
+    if ball.positionX > toFloat (gameWindowWidth - 10) then
         { ball
-            | positionX = 889
+            | positionX = toFloat (gameWindowWidth - 25)
             , velocityX = -1 * ball.velocityX
         }
     else if ball.positionX < 0 then
@@ -175,8 +175,21 @@ updateBallPosition dt ball =
             | positionX = 1
             , velocityX = abs ball.velocityX
         }
+    else if ball.positionY > toFloat (gameWindowHeight - 20) then
+        { ball
+            | positionY = toFloat (gameWindowHeight - 25)
+            , velocityY = -1 * ball.velocityY
+        }
+    else if ball.positionY < 0 then
+        { ball
+            | positionY = 1
+            , velocityY = abs ball.velocityY
+        }
     else
-        { ball | positionX = ball.positionX + ball.velocityX * dt }
+        { ball
+            | positionX = ball.positionX + ball.velocityX * dt
+            , positionY = ball.positionY + ball.velocityY * dt
+        }
 
 
 updatePlayerPosition : Int -> Player -> Player
