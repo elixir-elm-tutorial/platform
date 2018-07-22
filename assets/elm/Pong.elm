@@ -49,7 +49,7 @@ type alias Model =
 
 type Msg
     = GameLoop Time
-    | KeyDown KeyCode
+    | MovePlayer KeyCode
     | NoOp
 
 
@@ -141,14 +141,14 @@ update msg model =
         GameLoop dt ->
             let
                 updatedModel =
-                    { model | ball = updateBallLocation model.ball dt }
+                    { model | ball = updateBallPosition model.ball dt }
             in
                 ( updatedModel, Cmd.none )
 
-        KeyDown keyCode ->
+        MovePlayer keyCode ->
             let
                 updatedPlayers =
-                    List.map (updatePlayerLocation keyCode) model.players
+                    List.map (updatePlayerPosition keyCode) model.players
             in
                 ( { model | players = updatedPlayers }, Cmd.none )
 
@@ -156,8 +156,8 @@ update msg model =
             ( model, Cmd.none )
 
 
-updateBallLocation : Ball -> Time -> Ball
-updateBallLocation ball dt =
+updateBallPosition : Ball -> Time -> Ball
+updateBallPosition ball dt =
     let
         x =
             ball.positionX
@@ -172,8 +172,8 @@ updateBallLocation ball dt =
             ball
 
 
-updatePlayerLocation : Int -> Player -> Player
-updatePlayerLocation keyCode player =
+updatePlayerPosition : Int -> Player -> Player
+updatePlayerPosition keyCode player =
     case keyCode of
         38 ->
             { player | positionY = player.positionY - 5 }
@@ -193,7 +193,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ diffs GameLoop
-        , downs KeyDown
+        , downs MovePlayer
         ]
 
 
@@ -275,8 +275,8 @@ viewBall { ball } =
         [ fill ball.color
         , height (toString ball.size)
         , width (toString ball.size)
-        , x (toString ball.positionX)
-        , y (toString ball.positionY)
+        , x <| toString <| round ball.positionX
+        , y <| toString <| round ball.positionY
         ]
         []
 
