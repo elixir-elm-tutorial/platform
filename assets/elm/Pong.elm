@@ -1,8 +1,8 @@
 module Pong exposing (..)
 
 import Html exposing (Html, div)
-import Svg exposing (Svg, rect, svg, text, text_)
-import Svg.Attributes exposing (color, fill, fontFamily, fontSize, fontWeight, height, version, width, x, y)
+import Svg exposing (Svg, line, rect, svg, text, text_)
+import Svg.Attributes exposing (color, fill, fontFamily, fontSize, fontWeight, height, stroke, strokeDasharray, strokeWidth, version, width, x, x1, x2, y, y1, y2)
 
 
 ---- MODEL ----
@@ -79,7 +79,7 @@ initialPlayerOne =
     { color = "white"
     , id = 1
     , positionX = distanceFromEdge
-    , positionY = distanceFromEdge
+    , positionY = (toFloat gameWindowHeight / 2 - distanceFromEdge)
     , score = 0
     , sizeX = 10
     , sizeY = 80
@@ -91,7 +91,7 @@ initialPlayerTwo =
     { color = "white"
     , id = 2
     , positionX = (toFloat gameWindowWidth - distanceFromEdge)
-    , positionY = distanceFromEdge
+    , positionY = (toFloat gameWindowHeight / 2 - distanceFromEdge)
     , score = 0
     , sizeX = 10
     , sizeY = 80
@@ -164,6 +164,9 @@ viewGameState model =
         Playing ->
             [ viewPlayingState model
             , viewBall model
+            , viewPlayerOneScore model
+            , viewPlayerTwoScore model
+            , viewNet
             ]
                 ++ viewPlayers model
 
@@ -227,6 +230,48 @@ viewPlayer player =
         , width (toString player.sizeX)
         , x (toString player.positionX)
         , y (toString player.positionY)
+        ]
+        []
+
+
+viewPlayerOneScore : Model -> Svg Msg
+viewPlayerOneScore model =
+    svg [ fill "white" ]
+        [ text_
+            [ fontFamily "Courier"
+            , fontSize "64"
+            , fontWeight "bold"
+            , x "180"
+            , y "80"
+            ]
+            [ text "0" ]
+        ]
+
+
+viewPlayerTwoScore : Model -> Svg Msg
+viewPlayerTwoScore model =
+    svg [ fill "white" ]
+        [ text_
+            [ fontFamily "Courier"
+            , fontSize "64"
+            , fontWeight "bold"
+            , x "660"
+            , y "80"
+            ]
+            [ text "0" ]
+        ]
+
+
+viewNet : Svg Msg
+viewNet =
+    line
+        [ x1 "445"
+        , y1 "0"
+        , x2 "445"
+        , y2 "600"
+        , stroke "white"
+        , strokeDasharray "21"
+        , strokeWidth "10"
         ]
         []
 
