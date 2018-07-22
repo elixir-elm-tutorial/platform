@@ -2,6 +2,7 @@ module Pong exposing (..)
 
 import AnimationFrame exposing (diffs)
 import Html exposing (Html, div)
+import Keyboard exposing (KeyCode, downs)
 import Svg exposing (Svg, line, rect, svg, text, text_)
 import Svg.Attributes exposing (color, fill, fontFamily, fontSize, fontWeight, height, stroke, strokeDasharray, strokeWidth, version, width, x, x1, x2, y, y1, y2)
 import Time exposing (Time, every, second)
@@ -48,6 +49,7 @@ type alias Model =
 
 type Msg
     = GameLoop Time
+    | KeyDown KeyCode
     | NoOp
 
 
@@ -143,6 +145,13 @@ update msg model =
             in
                 ( updatedModel, Cmd.none )
 
+        KeyDown keyCode ->
+            let
+                updatedPlayers =
+                    List.map (updatePlayerLocation keyCode) model.players
+            in
+                ( { model | players = updatedPlayers }, Cmd.none )
+
         NoOp ->
             ( model, Cmd.none )
 
@@ -163,6 +172,19 @@ updateBallLocation ball dt =
             ball
 
 
+updatePlayerLocation : Int -> Player -> Player
+updatePlayerLocation keyCode player =
+    case keyCode of
+        38 ->
+            { player | positionY = player.positionY - 5 }
+
+        40 ->
+            { player | positionY = player.positionY + 5 }
+
+        _ ->
+            player
+
+
 
 -- SUBSCRIPTIONS
 
@@ -171,6 +193,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ diffs GameLoop
+        , downs KeyDown
         ]
 
 
