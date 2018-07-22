@@ -142,7 +142,7 @@ update msg model =
         GameLoop dt ->
             let
                 updatedModel =
-                    { model | ball = updateBallPosition model.ball dt }
+                    { model | ball = updateBallPosition dt model.ball }
             in
                 ( updatedModel, Cmd.none )
 
@@ -163,20 +163,20 @@ update msg model =
                 ( model, Cmd.none )
 
 
-updateBallPosition : Ball -> Time -> Ball
-updateBallPosition ball dt =
-    let
-        x =
-            ball.positionX
-    in
-        if x > 800 then
-            { ball | positionX = x + (1 * ball.velocityX) * dt }
-        else if x < 0 then
-            { ball | positionX = x + (abs ball.velocityX) * dt }
-        else if x > 0 && x < 800 then
-            { ball | positionX = x + (-1 * ball.velocityX) * dt }
-        else
-            ball
+updateBallPosition : Time -> Ball -> Ball
+updateBallPosition dt ball =
+    if ball.positionX > 890 then
+        { ball
+            | positionX = 889
+            , velocityX = -1 * ball.velocityX
+        }
+    else if ball.positionX < 0 then
+        { ball
+            | positionX = 1
+            , velocityX = abs ball.velocityX
+        }
+    else
+        { ball | positionX = ball.positionX + ball.velocityX * dt }
 
 
 updatePlayerPosition : Int -> Player -> Player
