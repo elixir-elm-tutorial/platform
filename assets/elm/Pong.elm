@@ -142,7 +142,10 @@ update msg model =
         GameLoop dt ->
             let
                 updatedModel =
-                    { model | ball = updateBallPosition dt model.ball }
+                    { model
+                        | ball = updateBallPosition dt model.ball
+                        , players = updatePlayerScores model.ball model.players
+                    }
             in
                 ( updatedModel, Cmd.none )
 
@@ -217,6 +220,35 @@ updatePlayerPosition keyCode player =
 
             _ ->
                 player
+
+
+updatePlayerScores : Ball -> List Player -> List Player
+updatePlayerScores ball players =
+    if ball.positionX >= 900.0 then
+        List.map
+            (\player ->
+                if player.id == 1 then
+                    updatePlayerScore player
+                else
+                    player
+            )
+            players
+    else if ball.positionX <= 0 then
+        List.map
+            (\player ->
+                if player.id == 2 then
+                    updatePlayerScore player
+                else
+                    player
+            )
+            players
+    else
+        players
+
+
+updatePlayerScore : Player -> Player
+updatePlayerScore player =
+    { player | score = player.score + 1 }
 
 
 
