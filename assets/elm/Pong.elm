@@ -143,7 +143,7 @@ update msg model =
             let
                 updatedModel =
                     { model
-                        | ball = updateBallPosition dt model.ball
+                        | ball = updateBallPosition model dt model.ball
                         , players = updatePlayerScores model.ball model.players
                     }
             in
@@ -166,19 +166,43 @@ update msg model =
                 ( model, Cmd.none )
 
 
-updateBallPosition : Time -> Ball -> Ball
-updateBallPosition dt ball =
+updateBallPosition : Model -> Time -> Ball -> Ball
+updateBallPosition model dt ball =
     let
+        ballCollidedWithPlayerOne =
+            (ball.positionX >= playerOne.positionX && ball.positionX <= playerOne.positionX + toFloat playerOne.sizeX)
+                && (ball.positionY >= playerOne.positionY && ball.positionY <= playerOne.positionY + toFloat playerOne.sizeY)
+
+        defaultPlayer =
+            { color = ""
+            , id = 0
+            , positionX = 0
+            , positionY = 0
+            , score = 0
+            , sizeX = 0
+            , sizeY = 0
+            }
+
         height =
             toFloat gameWindowHeight
 
         offsetDistance =
             toFloat ball.size
 
+        playerOne =
+            model.players
+                |> List.head
+                |> Maybe.withDefault defaultPlayer
+
         width =
             toFloat gameWindowWidth
     in
-        if ball.positionX >= width then
+        if ballCollidedWithPlayerOne then
+            { ball
+                | positionX = playerOne.positionX + 1
+                , velocityX = abs ball.velocityX
+            }
+        else if ball.positionX >= width then
             { ball
                 | positionX = width - offsetDistance
                 , velocityX = -1.0 * ball.velocityX
