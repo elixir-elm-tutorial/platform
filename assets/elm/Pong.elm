@@ -204,15 +204,19 @@ updateBallPosition dt ball =
 
 updatePlayerPosition : Int -> Player -> Player
 updatePlayerPosition keyCode player =
-    case keyCode of
-        38 ->
-            { player | positionY = player.positionY - 5 }
+    let
+        moveSpeed =
+            5.0
+    in
+        case keyCode of
+            38 ->
+                { player | positionY = max (player.positionY - moveSpeed) 0 }
 
-        40 ->
-            { player | positionY = player.positionY + 5 }
+            40 ->
+                { player | positionY = min (player.positionY + moveSpeed) (toFloat gameWindowHeight - toFloat player.sizeY) }
 
-        _ ->
-            player
+            _ ->
+                player
 
 
 
