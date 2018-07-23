@@ -165,31 +165,41 @@ update msg model =
 
 updateBallPosition : Time -> Ball -> Ball
 updateBallPosition dt ball =
-    if ball.positionX > toFloat (gameWindowWidth - 10) then
-        { ball
-            | positionX = toFloat (gameWindowWidth - 25)
-            , velocityX = -1 * ball.velocityX
-        }
-    else if ball.positionX < 0 then
-        { ball
-            | positionX = 1
-            , velocityX = abs ball.velocityX
-        }
-    else if ball.positionY > toFloat (gameWindowHeight - 20) then
-        { ball
-            | positionY = toFloat (gameWindowHeight - 25)
-            , velocityY = -1 * ball.velocityY
-        }
-    else if ball.positionY < 0 then
-        { ball
-            | positionY = 1
-            , velocityY = abs ball.velocityY
-        }
-    else
-        { ball
-            | positionX = ball.positionX + ball.velocityX * dt
-            , positionY = ball.positionY + ball.velocityY * dt
-        }
+    let
+        height =
+            toFloat gameWindowHeight
+
+        offsetDistance =
+            toFloat ball.size
+
+        width =
+            toFloat gameWindowWidth
+    in
+        if ball.positionX >= width then
+            { ball
+                | positionX = width - offsetDistance
+                , velocityX = -1.0 * ball.velocityX
+            }
+        else if ball.positionX <= 0 then
+            { ball
+                | positionX = 1.0
+                , velocityX = abs ball.velocityX
+            }
+        else if ball.positionY >= 600.0 then
+            { ball
+                | positionY = height - offsetDistance
+                , velocityY = -1.0 * ball.velocityY
+            }
+        else if ball.positionY <= 0 then
+            { ball
+                | positionY = 1.0
+                , velocityY = abs ball.velocityY
+            }
+        else
+            { ball
+                | positionX = ball.positionX + ball.velocityX * dt
+                , positionY = ball.positionY + ball.velocityY * dt
+            }
 
 
 updatePlayerPosition : Int -> Player -> Player
