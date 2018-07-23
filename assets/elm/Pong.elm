@@ -173,6 +173,10 @@ updateBallPosition model dt ball =
             (ball.positionX >= playerOne.positionX && ball.positionX <= playerOne.positionX + toFloat playerOne.sizeX)
                 && (ball.positionY >= playerOne.positionY && ball.positionY <= playerOne.positionY + toFloat playerOne.sizeY)
 
+        ballCollidedWithPlayerTwo =
+            (ball.positionX >= playerTwo.positionX && ball.positionX <= playerTwo.positionX + toFloat playerTwo.sizeX)
+                && (ball.positionY >= playerTwo.positionY && ball.positionY <= playerTwo.positionY + toFloat playerTwo.sizeY)
+
         defaultPlayer =
             { color = ""
             , id = 0
@@ -191,6 +195,13 @@ updateBallPosition model dt ball =
 
         playerOne =
             model.players
+                |> List.filter (\p -> p.id == 1)
+                |> List.head
+                |> Maybe.withDefault defaultPlayer
+
+        playerTwo =
+            model.players
+                |> List.filter (\p -> p.id == 2)
                 |> List.head
                 |> Maybe.withDefault defaultPlayer
 
@@ -199,8 +210,13 @@ updateBallPosition model dt ball =
     in
         if ballCollidedWithPlayerOne then
             { ball
-                | positionX = playerOne.positionX + 1
+                | positionX = playerOne.positionX + toFloat playerOne.sizeX + 1
                 , velocityX = abs ball.velocityX
+            }
+        else if ballCollidedWithPlayerTwo then
+            { ball
+                | positionX = playerTwo.positionX - 1
+                , velocityX = -1.0 * ball.velocityX
             }
         else if ball.positionX >= width then
             { ball
