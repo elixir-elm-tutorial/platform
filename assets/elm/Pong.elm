@@ -295,8 +295,8 @@ viewGameState model =
         Playing ->
             [ viewPlayingState model
             , viewBall model
-            , viewPlayerOneScore model
-            , viewPlayerTwoScore model
+            , viewPlayerScore 1 180 80 model
+            , viewPlayerScore 2 660 80 model
             , viewNet
             ]
                 ++ viewPlayers model
@@ -365,32 +365,26 @@ viewPlayer player =
         []
 
 
-viewPlayerOneScore : Model -> Svg Msg
-viewPlayerOneScore model =
-    svg [ fill "white" ]
-        [ text_
-            [ fontFamily "Courier"
-            , fontSize "64"
-            , fontWeight "bold"
-            , x "180"
-            , y "80"
+viewPlayerScore : Int -> Int -> Int -> Model -> Svg Msg
+viewPlayerScore playerId positionX positionY model =
+    let
+        playerScore =
+            model.players
+                |> List.filter (\player -> player.id == playerId)
+                |> List.map .score
+                |> List.head
+                |> Maybe.withDefault 0
+    in
+        svg [ fill "white" ]
+            [ text_
+                [ fontFamily "Courier"
+                , fontSize "64"
+                , fontWeight "bold"
+                , x <| toString positionX
+                , y <| toString positionY
+                ]
+                [ text <| toString playerScore ]
             ]
-            [ text "0" ]
-        ]
-
-
-viewPlayerTwoScore : Model -> Svg Msg
-viewPlayerTwoScore model =
-    svg [ fill "white" ]
-        [ text_
-            [ fontFamily "Courier"
-            , fontSize "64"
-            , fontWeight "bold"
-            , x "660"
-            , y "80"
-            ]
-            [ text "0" ]
-        ]
 
 
 viewNet : Svg Msg
