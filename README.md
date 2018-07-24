@@ -23,6 +23,15 @@ which is the demo application from the
 6. `mix phx.server` to start Phoenix server.
 7. `localhost:4000` to see application!
 
+## Troubleshooting
+
+If assets aren't loading, try using `brunch` to rebuild inside the `assets`
+folder with the following command after running `npm install`:
+
+```shell
+./node_modules/brunch/bin/brunch build
+```
+
 ## Tests and Tooling
 
 - Run the test suite with `mix test`.

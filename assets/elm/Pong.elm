@@ -22,6 +22,11 @@ type alias Ball =
     }
 
 
+type alias Flags =
+    { token : String
+    }
+
+
 type GameState
     = StartScreen
     | Playing
@@ -70,8 +75,8 @@ initialBall =
     }
 
 
-initialModel : Model
-initialModel =
+initialModel : Flags -> Model
+initialModel flags =
     { ball = initialBall
     , errors = Nothing
     , gameState = StartScreen
@@ -108,9 +113,9 @@ initialPlayerTwo =
     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( initialModel, Cmd.none )
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    ( initialModel flags, Cmd.none )
 
 
 
@@ -445,9 +450,9 @@ viewNet =
 ---- MAIN ----
 
 
-main : Program Never Model Msg
+main : Program Flags Model Msg
 main =
-    Html.program
+    Html.programWithFlags
         { init = init
         , view = view
         , update = update
