@@ -1,8 +1,14 @@
 module Pong exposing (..)
 
 import AnimationFrame exposing (diffs)
-import Html exposing (Html, div)
+import Html exposing (Html, div, h1, li, span, strong, ul)
+import Html.Attributes exposing (class)
+import Http
+import Json.Decode as Decode
+import Json.Encode as Encode
 import Keyboard exposing (KeyCode, downs)
+import Phoenix.Channel
+import Phoenix.Socket exposing (Socket)
 import Svg exposing (Svg, line, rect, svg, text, text_)
 import Svg.Attributes exposing (color, fill, fontFamily, fontSize, fontWeight, height, stroke, strokeDasharray, strokeWidth, version, width, x, x1, x2, y, y1, y2)
 import Time exposing (Time, every, second)
@@ -27,6 +33,21 @@ type alias Flags =
     }
 
 
+type alias Gameplay =
+    { gameId : Int
+    , playerId : Int
+    , playerScore : Int
+    }
+
+
+type alias GamePlayer =
+    { displayName : Maybe String
+    , id : Int
+    , score : Int
+    , username : String
+    }
+
+
 type GameState
     = StartScreen
     | Playing
@@ -47,15 +68,22 @@ type alias Player =
 type alias Model =
     { ball : Ball
     , errors : Maybe String
+    , gameplays : List Gameplay
+    , gamePlayers : List GamePlayer
     , gameState : GameState
+    , phxSocket : Socket Msg
     , players : List Player
     }
 
 
 type Msg
-    = GameLoop Time
+    = FetchGameplaysList (Result Http.Error (List Gameplay))
+    | FetchPlayersList (Result Http.Error (List GamePlayer))
+    | GameLoop Time
     | MovePlayer KeyCode
     | NoOp
+    | PhoenixMsg (Phoenix.Socket.Msg Msg)
+    | ReceiveScoreChanges Encode.Value
     | StartGame KeyCode
 
 
@@ -75,11 +103,19 @@ initialBall =
     }
 
 
+initialChannel : Phoenix.Channel.Channel msg
+initialChannel =
+    Phoenix.Channel.init "score:pong"
+
+
 initialModel : Flags -> Model
 initialModel flags =
     { ball = initialBall
     , errors = Nothing
+    , gameplays = []
+    , gamePlayers = []
     , gameState = StartScreen
+    , phxSocket = initialSocketJoin flags
     , players = initialPlayers
     }
 
@@ -113,9 +149,51 @@ initialPlayerTwo =
     }
 
 
+initialSocket : Flags -> ( Phoenix.Socket.Socket Msg, Cmd (Phoenix.Socket.Msg Msg) )
+initialSocket flags =
+    let
+        devSocketServer =
+            if String.isEmpty flags.token then
+                "ws://localhost:4000/socket/websocket"
+            else
+                "ws://localhost:4000/socket/websocket?token=" ++ flags.token
+
+        prodSocketServer =
+            if String.isEmpty flags.token then
+                "wss://elixir-elm-tutorial.herokuapp.com/socket/websocket"
+            else
+                "wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=" ++ flags.token
+    in
+        Phoenix.Socket.init devSocketServer
+            |> Phoenix.Socket.withDebug
+            |> Phoenix.Socket.on "save_score" "score:pong" ReceiveScoreChanges
+            |> Phoenix.Socket.join initialChannel
+
+
+initialSocketJoin : Flags -> Phoenix.Socket.Socket Msg
+initialSocketJoin flags =
+    initialSocket flags
+        |> Tuple.first
+
+
+initialSocketCommand : Flags -> Cmd (Phoenix.Socket.Msg Msg)
+initialSocketCommand flags =
+    initialSocket flags
+        |> Tuple.second
+
+
+initialCommand : Flags -> Cmd Msg
+initialCommand flags =
+    Cmd.batch
+        [ fetchPlayersList
+        , fetchGameplaysList
+        , Cmd.map PhoenixMsg (initialSocketCommand flags)
+        ]
+
+
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( initialModel flags, Cmd.none )
+    ( initialModel flags, initialCommand flags )
 
 
 
@@ -138,12 +216,84 @@ gameWindowWidth =
 
 
 
+---- API ----
+
+
+fetchPlayersList : Cmd Msg
+fetchPlayersList =
+    Http.get "/api/players" decodePlayersList
+        |> Http.send FetchPlayersList
+
+
+decodePlayersList : Decode.Decoder (List GamePlayer)
+decodePlayersList =
+    decodePlayer
+        |> Decode.list
+        |> Decode.at [ "data" ]
+
+
+decodePlayer : Decode.Decoder GamePlayer
+decodePlayer =
+    Decode.map4 GamePlayer
+        (Decode.maybe (Decode.field "display_name" Decode.string))
+        (Decode.field "id" Decode.int)
+        (Decode.field "score" Decode.int)
+        (Decode.field "username" Decode.string)
+
+
+fetchGameplaysList : Cmd Msg
+fetchGameplaysList =
+    Http.get "/api/gameplays" decodeGameplaysList
+        |> Http.send FetchGameplaysList
+
+
+decodeGameplaysList : Decode.Decoder (List Gameplay)
+decodeGameplaysList =
+    decodeGameplay
+        |> Decode.list
+        |> Decode.at [ "data" ]
+
+
+decodeGameplay : Decode.Decoder Gameplay
+decodeGameplay =
+    Decode.map3 Gameplay
+        (Decode.field "game_id" Decode.int)
+        (Decode.field "player_id" Decode.int)
+        (Decode.field "player_score" Decode.int)
+
+
+anonymousPlayer : GamePlayer
+anonymousPlayer =
+    { displayName = Just "Anonymous User"
+    , id = 0
+    , score = 0
+    , username = "anonymous"
+    }
+
+
+
 ---- UPDATE ----
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        FetchGameplaysList result ->
+            case result of
+                Ok gameplays ->
+                    ( { model | gameplays = gameplays }, Cmd.none )
+
+                Err message ->
+                    ( { model | errors = Just <| toString message }, Cmd.none )
+
+        FetchPlayersList result ->
+            case result of
+                Ok players ->
+                    ( { model | gamePlayers = players }, Cmd.none )
+
+                Err message ->
+                    ( { model | errors = Just <| toString message }, Cmd.none )
+
         GameLoop dt ->
             let
                 updatedModel =
@@ -163,6 +313,23 @@ update msg model =
 
         NoOp ->
             ( model, Cmd.none )
+
+        ReceiveScoreChanges raw ->
+            case Decode.decodeValue decodeGameplay raw of
+                Ok scoreChange ->
+                    ( { model | errors = Just "scoreChange :: model.gameplays" }, Cmd.none )
+
+                Err message ->
+                    ( { model | errors = Just message }, Cmd.none )
+
+        PhoenixMsg msg ->
+            let
+                ( phxSocket, phxCmd ) =
+                    Phoenix.Socket.update msg model.phxSocket
+            in
+                ( { model | phxSocket = phxSocket }
+                , Cmd.map PhoenixMsg phxCmd
+                )
 
         StartGame keyCode ->
             if model.gameState == StartScreen && keyCode == 32 then
@@ -317,6 +484,7 @@ view : Model -> Html Msg
 view model =
     div []
         [ viewGame model
+        , viewGameplaysIndex model
         ]
 
 
@@ -444,6 +612,43 @@ viewNet =
         , strokeWidth "10"
         ]
         []
+
+
+viewGameplaysIndex : Model -> Html Msg
+viewGameplaysIndex model =
+    if List.isEmpty model.gameplays then
+        div [] []
+    else
+        div [ Html.Attributes.class "players-index" ]
+            [ h1 [ Html.Attributes.class "players-section" ] [ text "Player Scores" ]
+            , viewGameplaysList model
+            ]
+
+
+viewGameplaysList : Model -> Html Msg
+viewGameplaysList model =
+    div [ Html.Attributes.class "players-list panel panel-info" ]
+        [ div [ Html.Attributes.class "panel-heading" ] [ text "Scores" ]
+        , ul [ Html.Attributes.class "list-group" ] (List.map (viewGameplayItem model) model.gameplays)
+        ]
+
+
+viewGameplayItem : Model -> Gameplay -> Html Msg
+viewGameplayItem model gameplay =
+    let
+        currentPlayer =
+            model.gamePlayers
+                |> List.filter (\player -> player.id == gameplay.playerId)
+                |> List.head
+                |> Maybe.withDefault anonymousPlayer
+
+        displayName =
+            Maybe.withDefault currentPlayer.username currentPlayer.displayName
+    in
+        li [ Html.Attributes.class "player-item list-group-item" ]
+            [ strong [] [ text displayName ]
+            , span [ Html.Attributes.class "badge" ] [ text (toString gameplay.playerScore) ]
+            ]
 
 
 

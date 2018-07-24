@@ -13498,6 +13498,132 @@ var _user$project$Pong$updatePlayerScores = F2(
 			},
 			players) : players);
 	});
+var _user$project$Pong$anonymousPlayer = {
+	displayName: _elm_lang$core$Maybe$Just('Anonymous User'),
+	id: 0,
+	score: 0,
+	username: 'anonymous'
+};
+var _user$project$Pong$viewGameplayItem = F2(
+	function (model, gameplay) {
+		var currentPlayer = A2(
+			_elm_lang$core$Maybe$withDefault,
+			_user$project$Pong$anonymousPlayer,
+			_elm_lang$core$List$head(
+				A2(
+					_elm_lang$core$List$filter,
+					function (player) {
+						return _elm_lang$core$Native_Utils.eq(player.id, gameplay.playerId);
+					},
+					model.gamePlayers)));
+		var displayName = A2(_elm_lang$core$Maybe$withDefault, currentPlayer.username, currentPlayer.displayName);
+		return A2(
+			_elm_lang$html$Html$li,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('player-item list-group-item'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$strong,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$svg$Svg$text(displayName),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$span,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('badge'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$svg$Svg$text(
+								_elm_lang$core$Basics$toString(gameplay.playerScore)),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _user$project$Pong$viewGameplaysList = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('players-list panel panel-info'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('panel-heading'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$svg$Svg$text('Scores'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$ul,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('list-group'),
+						_1: {ctor: '[]'}
+					},
+					A2(
+						_elm_lang$core$List$map,
+						_user$project$Pong$viewGameplayItem(model),
+						model.gameplays)),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Pong$viewGameplaysIndex = function (model) {
+	return _elm_lang$core$List$isEmpty(model.gameplays) ? A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{ctor: '[]'}) : A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('players-index'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h1,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('players-section'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$svg$Svg$text('Player Scores'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Pong$viewGameplaysList(model),
+				_1: {ctor: '[]'}
+			}
+		});
+};
 var _user$project$Pong$gameWindowWidth = 900;
 var _user$project$Pong$gameWindowHeight = 600;
 var _user$project$Pong$updateBallPosition = F3(
@@ -13670,7 +13796,11 @@ var _user$project$Pong$view = function (model) {
 		{
 			ctor: '::',
 			_0: _user$project$Pong$viewGame(model),
-			_1: {ctor: '[]'}
+			_1: {
+				ctor: '::',
+				_0: _user$project$Pong$viewGameplaysIndex(model),
+				_1: {ctor: '[]'}
+			}
 		});
 };
 var _user$project$Pong$distanceFromEdge = 40.0;
@@ -13701,6 +13831,7 @@ var _user$project$Pong$initialPlayers = {
 		_1: {ctor: '[]'}
 	}
 };
+var _user$project$Pong$initialChannel = _fbonetti$elm_phoenix_socket$Phoenix_Channel$init('score:pong');
 var _user$project$Pong$initialBall = {color: 'white', id: 1, positionX: 440, positionY: 290, size: 10, velocityX: 0.2, velocityY: 0.2};
 var _user$project$Pong$Ball = F7(
 	function (a, b, c, d, e, f, g) {
@@ -13709,31 +13840,145 @@ var _user$project$Pong$Ball = F7(
 var _user$project$Pong$Flags = function (a) {
 	return {token: a};
 };
+var _user$project$Pong$Gameplay = F3(
+	function (a, b, c) {
+		return {gameId: a, playerId: b, playerScore: c};
+	});
+var _user$project$Pong$decodeGameplay = A4(
+	_elm_lang$core$Json_Decode$map3,
+	_user$project$Pong$Gameplay,
+	A2(_elm_lang$core$Json_Decode$field, 'game_id', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'player_id', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'player_score', _elm_lang$core$Json_Decode$int));
+var _user$project$Pong$decodeGameplaysList = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'data',
+		_1: {ctor: '[]'}
+	},
+	_elm_lang$core$Json_Decode$list(_user$project$Pong$decodeGameplay));
+var _user$project$Pong$GamePlayer = F4(
+	function (a, b, c, d) {
+		return {displayName: a, id: b, score: c, username: d};
+	});
+var _user$project$Pong$decodePlayer = A5(
+	_elm_lang$core$Json_Decode$map4,
+	_user$project$Pong$GamePlayer,
+	_elm_lang$core$Json_Decode$maybe(
+		A2(_elm_lang$core$Json_Decode$field, 'display_name', _elm_lang$core$Json_Decode$string)),
+	A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'score', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'username', _elm_lang$core$Json_Decode$string));
+var _user$project$Pong$decodePlayersList = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'data',
+		_1: {ctor: '[]'}
+	},
+	_elm_lang$core$Json_Decode$list(_user$project$Pong$decodePlayer));
 var _user$project$Pong$Player = F7(
 	function (a, b, c, d, e, f, g) {
 		return {color: a, id: b, positionX: c, positionY: d, score: e, sizeX: f, sizeY: g};
 	});
-var _user$project$Pong$Model = F4(
-	function (a, b, c, d) {
-		return {ball: a, errors: b, gameState: c, players: d};
+var _user$project$Pong$Model = F7(
+	function (a, b, c, d, e, f, g) {
+		return {ball: a, errors: b, gameplays: c, gamePlayers: d, gameState: e, phxSocket: f, players: g};
 	});
 var _user$project$Pong$EndScreen = {ctor: 'EndScreen'};
 var _user$project$Pong$Playing = {ctor: 'Playing'};
 var _user$project$Pong$StartScreen = {ctor: 'StartScreen'};
-var _user$project$Pong$initialModel = function (flags) {
-	return {ball: _user$project$Pong$initialBall, errors: _elm_lang$core$Maybe$Nothing, gameState: _user$project$Pong$StartScreen, players: _user$project$Pong$initialPlayers};
+var _user$project$Pong$StartGame = function (a) {
+	return {ctor: 'StartGame', _0: a};
 };
-var _user$project$Pong$init = function (flags) {
+var _user$project$Pong$ReceiveScoreChanges = function (a) {
+	return {ctor: 'ReceiveScoreChanges', _0: a};
+};
+var _user$project$Pong$initialSocket = function (flags) {
+	var prodSocketServer = _elm_lang$core$String$isEmpty(flags.token) ? 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket' : A2(_elm_lang$core$Basics_ops['++'], 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=', flags.token);
+	var devSocketServer = _elm_lang$core$String$isEmpty(flags.token) ? 'ws://localhost:4000/socket/websocket' : A2(_elm_lang$core$Basics_ops['++'], 'ws://localhost:4000/socket/websocket?token=', flags.token);
+	return A2(
+		_fbonetti$elm_phoenix_socket$Phoenix_Socket$join,
+		_user$project$Pong$initialChannel,
+		A4(
+			_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
+			'save_score',
+			'score:pong',
+			_user$project$Pong$ReceiveScoreChanges,
+			_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
+				_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer))));
+};
+var _user$project$Pong$initialSocketJoin = function (flags) {
+	return _elm_lang$core$Tuple$first(
+		_user$project$Pong$initialSocket(flags));
+};
+var _user$project$Pong$initialModel = function (flags) {
 	return {
-		ctor: '_Tuple2',
-		_0: _user$project$Pong$initialModel(flags),
-		_1: _elm_lang$core$Platform_Cmd$none
+		ball: _user$project$Pong$initialBall,
+		errors: _elm_lang$core$Maybe$Nothing,
+		gameplays: {ctor: '[]'},
+		gamePlayers: {ctor: '[]'},
+		gameState: _user$project$Pong$StartScreen,
+		phxSocket: _user$project$Pong$initialSocketJoin(flags),
+		players: _user$project$Pong$initialPlayers
 	};
+};
+var _user$project$Pong$initialSocketCommand = function (flags) {
+	return _elm_lang$core$Tuple$second(
+		_user$project$Pong$initialSocket(flags));
+};
+var _user$project$Pong$PhoenixMsg = function (a) {
+	return {ctor: 'PhoenixMsg', _0: a};
 };
 var _user$project$Pong$update = F2(
 	function (msg, model) {
 		var _p7 = msg;
 		switch (_p7.ctor) {
+			case 'FetchGameplaysList':
+				var _p8 = _p7._0;
+				if (_p8.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{gameplays: _p8._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errors: _elm_lang$core$Maybe$Just(
+									_elm_lang$core$Basics$toString(_p8._0))
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'FetchPlayersList':
+				var _p9 = _p7._0;
+				if (_p9.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{gamePlayers: _p9._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errors: _elm_lang$core$Maybe$Just(
+									_elm_lang$core$Basics$toString(_p9._0))
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
 			case 'GameLoop':
 				var updatedModel = _elm_lang$core$Native_Utils.update(
 					model,
@@ -13756,6 +14001,40 @@ var _user$project$Pong$update = F2(
 				};
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'ReceiveScoreChanges':
+				var _p10 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Pong$decodeGameplay, _p7._0);
+				if (_p10.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errors: _elm_lang$core$Maybe$Just('scoreChange :: model.gameplays')
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errors: _elm_lang$core$Maybe$Just(_p10._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'PhoenixMsg':
+				var _p11 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p7._0, model.phxSocket);
+				var phxSocket = _p11._0;
+				var phxCmd = _p11._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{phxSocket: phxSocket}),
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Pong$PhoenixMsg, phxCmd)
+				};
 			default:
 				return (_elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Pong$StartScreen) && _elm_lang$core$Native_Utils.eq(_p7._0, 32)) ? {
 					ctor: '_Tuple2',
@@ -13766,9 +14045,6 @@ var _user$project$Pong$update = F2(
 				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 		}
 	});
-var _user$project$Pong$StartGame = function (a) {
-	return {ctor: 'StartGame', _0: a};
-};
 var _user$project$Pong$NoOp = {ctor: 'NoOp'};
 var _user$project$Pong$MovePlayer = function (a) {
 	return {ctor: 'MovePlayer', _0: a};
@@ -13791,6 +14067,46 @@ var _user$project$Pong$subscriptions = function (model) {
 				}
 			}
 		});
+};
+var _user$project$Pong$FetchPlayersList = function (a) {
+	return {ctor: 'FetchPlayersList', _0: a};
+};
+var _user$project$Pong$fetchPlayersList = A2(
+	_elm_lang$http$Http$send,
+	_user$project$Pong$FetchPlayersList,
+	A2(_elm_lang$http$Http$get, '/api/players', _user$project$Pong$decodePlayersList));
+var _user$project$Pong$FetchGameplaysList = function (a) {
+	return {ctor: 'FetchGameplaysList', _0: a};
+};
+var _user$project$Pong$fetchGameplaysList = A2(
+	_elm_lang$http$Http$send,
+	_user$project$Pong$FetchGameplaysList,
+	A2(_elm_lang$http$Http$get, '/api/gameplays', _user$project$Pong$decodeGameplaysList));
+var _user$project$Pong$initialCommand = function (flags) {
+	return _elm_lang$core$Platform_Cmd$batch(
+		{
+			ctor: '::',
+			_0: _user$project$Pong$fetchPlayersList,
+			_1: {
+				ctor: '::',
+				_0: _user$project$Pong$fetchGameplaysList,
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$core$Platform_Cmd$map,
+						_user$project$Pong$PhoenixMsg,
+						_user$project$Pong$initialSocketCommand(flags)),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
+var _user$project$Pong$init = function (flags) {
+	return {
+		ctor: '_Tuple2',
+		_0: _user$project$Pong$initialModel(flags),
+		_1: _user$project$Pong$initialCommand(flags)
+	};
 };
 var _user$project$Pong$main = _elm_lang$html$Html$programWithFlags(
 	{init: _user$project$Pong$init, view: _user$project$Pong$view, update: _user$project$Pong$update, subscriptions: _user$project$Pong$subscriptions})(
