@@ -85,6 +85,7 @@ type Msg
     | MovePlayer KeyCode
     | NoOp
     | PhoenixMsg (Socket.Msg Msg)
+    | ReceiveBallPositionUpdate Encode.Value
     | StartGame KeyCode
     | UpdateBallPositionError Encode.Value
     | UpdateBallPositionRequest
@@ -171,6 +172,7 @@ initialSocket flags =
         Socket.init devSocketServer
             |> Socket.withDebug
             |> Socket.on "ball:position_x" "game:pong" UpdateBallPositionSuccess
+            |> Socket.on "ball:position_x" "game:pong" ReceiveBallPositionUpdate
             |> Socket.join initialChannel
 
 
@@ -266,6 +268,11 @@ decodeGameplay =
         (Decode.field "player_score" Decode.int)
 
 
+decodeBallPosition : Decode.Decoder Float
+decodeBallPosition =
+    Decode.field "ball_position_x" Decode.float
+
+
 anonymousPlayer : GamePlayer
 anonymousPlayer =
     { displayName = Just "Anonymous User"
@@ -326,6 +333,21 @@ update msg model =
                 ( { model | phxSocket = phxSocket }
                 , Cmd.map PhoenixMsg phxCmd
                 )
+
+        ReceiveBallPositionUpdate raw ->
+            case Decode.decodeValue decodeBallPosition raw of
+                Ok ballPositionChange ->
+                    let
+                        ball =
+                            model.ball
+
+                        newBall =
+                            { ball | positionX = 1 }
+                    in
+                        ( { model | ball = newBall }, Cmd.none )
+
+                Err message ->
+                    ( { model | errors = Just message }, Cmd.none )
 
         StartGame keyCode ->
             if model.gameState == StartScreen && keyCode == 32 then

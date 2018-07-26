@@ -13624,6 +13624,7 @@ var _user$project$Pong$viewGameplaysIndex = function (model) {
 			}
 		});
 };
+var _user$project$Pong$decodeBallPosition = A2(_elm_lang$core$Json_Decode$field, 'ball_position_x', _elm_lang$core$Json_Decode$float);
 var _user$project$Pong$gameWindowWidth = 900;
 var _user$project$Pong$gameWindowHeight = 600;
 var _user$project$Pong$updateBallPosition = F3(
@@ -13858,39 +13859,6 @@ var _user$project$Pong$StartScreen = {ctor: 'StartScreen'};
 var _user$project$Pong$UpdateBallPositionSuccess = function (a) {
 	return {ctor: 'UpdateBallPositionSuccess', _0: a};
 };
-var _user$project$Pong$initialSocket = function (flags) {
-	var prodSocketServer = _elm_lang$core$String$isEmpty(flags.token) ? 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket' : A2(_elm_lang$core$Basics_ops['++'], 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=', flags.token);
-	var devSocketServer = _elm_lang$core$String$isEmpty(flags.token) ? 'ws://localhost:4000/socket/websocket' : A2(_elm_lang$core$Basics_ops['++'], 'ws://localhost:4000/socket/websocket?token=', flags.token);
-	return A2(
-		_fbonetti$elm_phoenix_socket$Phoenix_Socket$join,
-		_user$project$Pong$initialChannel,
-		A4(
-			_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
-			'ball:position_x',
-			'game:pong',
-			_user$project$Pong$UpdateBallPositionSuccess,
-			_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
-				_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer))));
-};
-var _user$project$Pong$initialSocketJoin = function (flags) {
-	return _elm_lang$core$Tuple$first(
-		_user$project$Pong$initialSocket(flags));
-};
-var _user$project$Pong$initialModel = function (flags) {
-	return {
-		ball: _user$project$Pong$initialBall,
-		errors: _elm_lang$core$Maybe$Nothing,
-		gameplays: {ctor: '[]'},
-		gamePlayers: {ctor: '[]'},
-		gameState: _user$project$Pong$StartScreen,
-		phxSocket: _user$project$Pong$initialSocketJoin(flags),
-		players: _user$project$Pong$initialPlayers
-	};
-};
-var _user$project$Pong$initialSocketCommand = function (flags) {
-	return _elm_lang$core$Tuple$second(
-		_user$project$Pong$initialSocket(flags));
-};
 var _user$project$Pong$UpdateBallPositionRequest = {ctor: 'UpdateBallPositionRequest'};
 var _user$project$Pong$viewGame = function (model) {
 	return A2(
@@ -13935,6 +13903,47 @@ var _user$project$Pong$UpdateBallPositionError = function (a) {
 };
 var _user$project$Pong$StartGame = function (a) {
 	return {ctor: 'StartGame', _0: a};
+};
+var _user$project$Pong$ReceiveBallPositionUpdate = function (a) {
+	return {ctor: 'ReceiveBallPositionUpdate', _0: a};
+};
+var _user$project$Pong$initialSocket = function (flags) {
+	var prodSocketServer = _elm_lang$core$String$isEmpty(flags.token) ? 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket' : A2(_elm_lang$core$Basics_ops['++'], 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=', flags.token);
+	var devSocketServer = _elm_lang$core$String$isEmpty(flags.token) ? 'ws://localhost:4000/socket/websocket' : A2(_elm_lang$core$Basics_ops['++'], 'ws://localhost:4000/socket/websocket?token=', flags.token);
+	return A2(
+		_fbonetti$elm_phoenix_socket$Phoenix_Socket$join,
+		_user$project$Pong$initialChannel,
+		A4(
+			_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
+			'ball:position_x',
+			'game:pong',
+			_user$project$Pong$ReceiveBallPositionUpdate,
+			A4(
+				_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
+				'ball:position_x',
+				'game:pong',
+				_user$project$Pong$UpdateBallPositionSuccess,
+				_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
+					_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer)))));
+};
+var _user$project$Pong$initialSocketJoin = function (flags) {
+	return _elm_lang$core$Tuple$first(
+		_user$project$Pong$initialSocket(flags));
+};
+var _user$project$Pong$initialModel = function (flags) {
+	return {
+		ball: _user$project$Pong$initialBall,
+		errors: _elm_lang$core$Maybe$Nothing,
+		gameplays: {ctor: '[]'},
+		gamePlayers: {ctor: '[]'},
+		gameState: _user$project$Pong$StartScreen,
+		phxSocket: _user$project$Pong$initialSocketJoin(flags),
+		players: _user$project$Pong$initialPlayers
+	};
+};
+var _user$project$Pong$initialSocketCommand = function (flags) {
+	return _elm_lang$core$Tuple$second(
+		_user$project$Pong$initialSocket(flags));
 };
 var _user$project$Pong$PhoenixMsg = function (a) {
 	return {ctor: 'PhoenixMsg', _0: a};
@@ -14020,6 +14029,31 @@ var _user$project$Pong$update = F2(
 						{phxSocket: phxSocket}),
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Pong$PhoenixMsg, phxCmd)
 				};
+			case 'ReceiveBallPositionUpdate':
+				var _p11 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Pong$decodeBallPosition, _p7._0);
+				if (_p11.ctor === 'Ok') {
+					var ball = model.ball;
+					var newBall = _elm_lang$core$Native_Utils.update(
+						ball,
+						{positionX: 1});
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{ball: newBall}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errors: _elm_lang$core$Maybe$Just(_p11._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
 			case 'StartGame':
 				return (_elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Pong$StartScreen) && _elm_lang$core$Native_Utils.eq(_p7._0, 32)) ? {
 					ctor: '_Tuple2',
@@ -14054,9 +14088,9 @@ var _user$project$Pong$update = F2(
 							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 							payload,
 							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'ball:position_x', 'game:pong'))));
-				var _p11 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
-				var phxSocket = _p11._0;
-				var phxCmd = _p11._1;
+				var _p12 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
+				var phxSocket = _p12._0;
+				var phxCmd = _p12._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
