@@ -13769,40 +13769,6 @@ var _user$project$Pong$viewGameState = function (model) {
 			return {ctor: '[]'};
 	}
 };
-var _user$project$Pong$viewGame = function (model) {
-	return A2(
-		_elm_lang$svg$Svg$svg,
-		{
-			ctor: '::',
-			_0: _elm_lang$svg$Svg_Attributes$height(
-				_elm_lang$core$Basics$toString(_user$project$Pong$gameWindowHeight)),
-			_1: {
-				ctor: '::',
-				_0: _elm_lang$svg$Svg_Attributes$version('1.1'),
-				_1: {
-					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$width(
-						_elm_lang$core$Basics$toString(_user$project$Pong$gameWindowWidth)),
-					_1: {ctor: '[]'}
-				}
-			}
-		},
-		_user$project$Pong$viewGameState(model));
-};
-var _user$project$Pong$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: _user$project$Pong$viewGame(model),
-			_1: {
-				ctor: '::',
-				_0: _user$project$Pong$viewGameplaysIndex(model),
-				_1: {ctor: '[]'}
-			}
-		});
-};
 var _user$project$Pong$distanceFromEdge = 40.0;
 var _user$project$Pong$initialPlayerTwo = {
 	color: 'white',
@@ -13831,7 +13797,7 @@ var _user$project$Pong$initialPlayers = {
 		_1: {ctor: '[]'}
 	}
 };
-var _user$project$Pong$initialChannel = _fbonetti$elm_phoenix_socket$Phoenix_Channel$init('score:pong');
+var _user$project$Pong$initialChannel = _fbonetti$elm_phoenix_socket$Phoenix_Channel$init('game:pong');
 var _user$project$Pong$initialBall = {color: 'white', id: 1, positionX: 440, positionY: 290, size: 10, velocityX: 0.2, velocityY: 0.2};
 var _user$project$Pong$Ball = F7(
 	function (a, b, c, d, e, f, g) {
@@ -13889,11 +13855,8 @@ var _user$project$Pong$Model = F7(
 var _user$project$Pong$EndScreen = {ctor: 'EndScreen'};
 var _user$project$Pong$Playing = {ctor: 'Playing'};
 var _user$project$Pong$StartScreen = {ctor: 'StartScreen'};
-var _user$project$Pong$StartGame = function (a) {
-	return {ctor: 'StartGame', _0: a};
-};
-var _user$project$Pong$ReceiveScoreChanges = function (a) {
-	return {ctor: 'ReceiveScoreChanges', _0: a};
+var _user$project$Pong$UpdateBallPositionSuccess = function (a) {
+	return {ctor: 'UpdateBallPositionSuccess', _0: a};
 };
 var _user$project$Pong$initialSocket = function (flags) {
 	var prodSocketServer = _elm_lang$core$String$isEmpty(flags.token) ? 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket' : A2(_elm_lang$core$Basics_ops['++'], 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=', flags.token);
@@ -13903,9 +13866,9 @@ var _user$project$Pong$initialSocket = function (flags) {
 		_user$project$Pong$initialChannel,
 		A4(
 			_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
-			'save_score',
-			'score:pong',
-			_user$project$Pong$ReceiveScoreChanges,
+			'ball:position_x',
+			'game:pong',
+			_user$project$Pong$UpdateBallPositionSuccess,
 			_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
 				_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer))));
 };
@@ -13927,6 +13890,51 @@ var _user$project$Pong$initialModel = function (flags) {
 var _user$project$Pong$initialSocketCommand = function (flags) {
 	return _elm_lang$core$Tuple$second(
 		_user$project$Pong$initialSocket(flags));
+};
+var _user$project$Pong$UpdateBallPositionRequest = {ctor: 'UpdateBallPositionRequest'};
+var _user$project$Pong$viewGame = function (model) {
+	return A2(
+		_elm_lang$svg$Svg$svg,
+		{
+			ctor: '::',
+			_0: _elm_lang$svg$Svg_Attributes$height(
+				_elm_lang$core$Basics$toString(_user$project$Pong$gameWindowHeight)),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Events$onClick(_user$project$Pong$UpdateBallPositionRequest),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$version('1.1'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$width(
+							_elm_lang$core$Basics$toString(_user$project$Pong$gameWindowWidth)),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		},
+		_user$project$Pong$viewGameState(model));
+};
+var _user$project$Pong$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _user$project$Pong$viewGame(model),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Pong$viewGameplaysIndex(model),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Pong$UpdateBallPositionError = function (a) {
+	return {ctor: 'UpdateBallPositionError', _0: a};
+};
+var _user$project$Pong$StartGame = function (a) {
+	return {ctor: 'StartGame', _0: a};
 };
 var _user$project$Pong$PhoenixMsg = function (a) {
 	return {ctor: 'PhoenixMsg', _0: a};
@@ -14001,31 +14009,52 @@ var _user$project$Pong$update = F2(
 				};
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'ReceiveScoreChanges':
-				var _p10 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Pong$decodeGameplay, _p7._0);
-				if (_p10.ctor === 'Ok') {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								errors: _elm_lang$core$Maybe$Just('scoreChange :: model.gameplays')
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								errors: _elm_lang$core$Maybe$Just(_p10._0)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
 			case 'PhoenixMsg':
-				var _p11 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p7._0, model.phxSocket);
+				var _p10 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p7._0, model.phxSocket);
+				var phxSocket = _p10._0;
+				var phxCmd = _p10._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{phxSocket: phxSocket}),
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Pong$PhoenixMsg, phxCmd)
+				};
+			case 'StartGame':
+				return (_elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Pong$StartScreen) && _elm_lang$core$Native_Utils.eq(_p7._0, 32)) ? {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{gameState: _user$project$Pong$Playing}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'UpdateBallPositionError':
+				return A2(
+					_elm_lang$core$Debug$log,
+					'Error sending ball position over socket.',
+					{ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none});
+			case 'UpdateBallPositionRequest':
+				var payload = _elm_lang$core$Json_Encode$object(
+					{
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'ball_position_x',
+							_1: _elm_lang$core$Json_Encode$float(model.ball.positionX)
+						},
+						_1: {ctor: '[]'}
+					});
+				var phxPush = A2(
+					_fbonetti$elm_phoenix_socket$Phoenix_Push$onError,
+					_user$project$Pong$UpdateBallPositionError,
+					A2(
+						_fbonetti$elm_phoenix_socket$Phoenix_Push$onOk,
+						_user$project$Pong$UpdateBallPositionSuccess,
+						A2(
+							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
+							payload,
+							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'ball:position_x', 'game:pong'))));
+				var _p11 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
 				var phxSocket = _p11._0;
 				var phxCmd = _p11._1;
 				return {
@@ -14036,13 +14065,10 @@ var _user$project$Pong$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Pong$PhoenixMsg, phxCmd)
 				};
 			default:
-				return (_elm_lang$core$Native_Utils.eq(model.gameState, _user$project$Pong$StartScreen) && _elm_lang$core$Native_Utils.eq(_p7._0, 32)) ? {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{gameState: _user$project$Pong$Playing}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				return A2(
+					_elm_lang$core$Debug$log,
+					'Success sending ball position over socket.',
+					{ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none});
 		}
 	});
 var _user$project$Pong$NoOp = {ctor: 'NoOp'};
@@ -14063,7 +14089,11 @@ var _user$project$Pong$subscriptions = function (model) {
 				_1: {
 					ctor: '::',
 					_0: _elm_lang$keyboard$Keyboard$downs(_user$project$Pong$StartGame),
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$listen, model.phxSocket, _user$project$Pong$PhoenixMsg),
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		});

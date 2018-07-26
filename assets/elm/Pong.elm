@@ -3,12 +3,14 @@ module Pong exposing (..)
 import AnimationFrame exposing (diffs)
 import Html exposing (Html, div, h1, li, span, strong, ul)
 import Html.Attributes exposing (class)
+import Html.Events exposing (onClick)
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Keyboard exposing (KeyCode, downs)
-import Phoenix.Channel
-import Phoenix.Socket exposing (Socket)
+import Phoenix.Channel as Channel
+import Phoenix.Push as Push
+import Phoenix.Socket as Socket
 import Svg exposing (Svg, line, rect, svg, text, text_)
 import Svg.Attributes exposing (color, fill, fontFamily, fontSize, fontWeight, height, stroke, strokeDasharray, strokeWidth, version, width, x, x1, x2, y, y1, y2)
 import Time exposing (Time, every, second)
@@ -71,7 +73,7 @@ type alias Model =
     , gameplays : List Gameplay
     , gamePlayers : List GamePlayer
     , gameState : GameState
-    , phxSocket : Socket Msg
+    , phxSocket : Socket.Socket Msg
     , players : List Player
     }
 
@@ -82,9 +84,11 @@ type Msg
     | GameLoop Time
     | MovePlayer KeyCode
     | NoOp
-    | PhoenixMsg (Phoenix.Socket.Msg Msg)
-    | ReceiveScoreChanges Encode.Value
+    | PhoenixMsg (Socket.Msg Msg)
     | StartGame KeyCode
+    | UpdateBallPositionError Encode.Value
+    | UpdateBallPositionRequest
+    | UpdateBallPositionSuccess Encode.Value
 
 
 
@@ -103,9 +107,9 @@ initialBall =
     }
 
 
-initialChannel : Phoenix.Channel.Channel msg
+initialChannel : Channel.Channel msg
 initialChannel =
-    Phoenix.Channel.init "score:pong"
+    Channel.init "game:pong"
 
 
 initialModel : Flags -> Model
@@ -149,7 +153,7 @@ initialPlayerTwo =
     }
 
 
-initialSocket : Flags -> ( Phoenix.Socket.Socket Msg, Cmd (Phoenix.Socket.Msg Msg) )
+initialSocket : Flags -> ( Socket.Socket Msg, Cmd (Socket.Msg Msg) )
 initialSocket flags =
     let
         devSocketServer =
@@ -164,19 +168,19 @@ initialSocket flags =
             else
                 "wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=" ++ flags.token
     in
-        Phoenix.Socket.init devSocketServer
-            |> Phoenix.Socket.withDebug
-            |> Phoenix.Socket.on "save_score" "score:pong" ReceiveScoreChanges
-            |> Phoenix.Socket.join initialChannel
+        Socket.init devSocketServer
+            |> Socket.withDebug
+            |> Socket.on "ball:position_x" "game:pong" UpdateBallPositionSuccess
+            |> Socket.join initialChannel
 
 
-initialSocketJoin : Flags -> Phoenix.Socket.Socket Msg
+initialSocketJoin : Flags -> Socket.Socket Msg
 initialSocketJoin flags =
     initialSocket flags
         |> Tuple.first
 
 
-initialSocketCommand : Flags -> Cmd (Phoenix.Socket.Msg Msg)
+initialSocketCommand : Flags -> Cmd (Socket.Msg Msg)
 initialSocketCommand flags =
     initialSocket flags
         |> Tuple.second
@@ -314,18 +318,10 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        ReceiveScoreChanges raw ->
-            case Decode.decodeValue decodeGameplay raw of
-                Ok scoreChange ->
-                    ( { model | errors = Just "scoreChange :: model.gameplays" }, Cmd.none )
-
-                Err message ->
-                    ( { model | errors = Just message }, Cmd.none )
-
         PhoenixMsg msg ->
             let
                 ( phxSocket, phxCmd ) =
-                    Phoenix.Socket.update msg model.phxSocket
+                    Socket.update msg model.phxSocket
             in
                 ( { model | phxSocket = phxSocket }
                 , Cmd.map PhoenixMsg phxCmd
@@ -335,6 +331,32 @@ update msg model =
             if model.gameState == StartScreen && keyCode == 32 then
                 ( { model | gameState = Playing }, Cmd.none )
             else
+                ( model, Cmd.none )
+
+        UpdateBallPositionError message ->
+            Debug.log "Error sending ball position over socket."
+                ( model, Cmd.none )
+
+        UpdateBallPositionRequest ->
+            let
+                payload =
+                    Encode.object [ ( "ball_position_x", Encode.float model.ball.positionX ) ]
+
+                phxPush =
+                    Push.init "ball:position_x" "game:pong"
+                        |> Push.withPayload payload
+                        |> Push.onOk UpdateBallPositionSuccess
+                        |> Push.onError UpdateBallPositionError
+
+                ( phxSocket, phxCmd ) =
+                    Socket.push phxPush model.phxSocket
+            in
+                ( { model | phxSocket = phxSocket }
+                , Cmd.map PhoenixMsg phxCmd
+                )
+
+        UpdateBallPositionSuccess value ->
+            Debug.log "Success sending ball position over socket."
                 ( model, Cmd.none )
 
 
@@ -473,6 +495,7 @@ subscriptions model =
         [ diffs GameLoop
         , downs MovePlayer
         , downs StartGame
+        , Socket.listen model.phxSocket PhoenixMsg
         ]
 
 
@@ -492,6 +515,7 @@ viewGame : Model -> Svg Msg
 viewGame model =
     svg
         [ height (toString gameWindowHeight)
+        , onClick UpdateBallPositionRequest
         , version "1.1"
         , width (toString gameWindowWidth)
         ]
