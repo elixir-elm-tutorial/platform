@@ -14029,17 +14029,30 @@ var _user$project$Pong$update = F2(
 					});
 				return {ctor: '_Tuple2', _0: updatedModel, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'MovePlayerOne':
+				var _p11 = _p7._0;
 				var updatedPlayers = A2(
 					_elm_lang$core$List$map,
-					_user$project$Pong$updatePlayerPosition(_p7._0),
+					_user$project$Pong$updatePlayerPosition(_p11),
 					model.players);
+				var defaultPlayer = {color: '', id: 0, positionX: 0, positionY: 0, score: 0, sizeX: 0, sizeY: 0};
+				var playerOne = A2(
+					_elm_lang$core$Maybe$withDefault,
+					defaultPlayer,
+					_elm_lang$core$List$head(
+						A2(
+							_elm_lang$core$List$filter,
+							function (p) {
+								return _elm_lang$core$Native_Utils.eq(p.id, 1);
+							},
+							model.players)));
 				var payload = _elm_lang$core$Json_Encode$object(
 					{
 						ctor: '::',
 						_0: {
 							ctor: '_Tuple2',
 							_0: 'paddle_position_y',
-							_1: _elm_lang$core$Json_Encode$float(model.ball.positionY)
+							_1: _elm_lang$core$Json_Encode$float(
+								A2(_user$project$Pong$updatePlayerPosition, _p11, playerOne).positionY)
 						},
 						_1: {ctor: '[]'}
 					});
@@ -14066,9 +14079,9 @@ var _user$project$Pong$update = F2(
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'PhoenixMsg':
-				var _p11 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p7._0, model.phxSocket);
-				var phxSocket = _p11._0;
-				var phxCmd = _p11._1;
+				var _p12 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p7._0, model.phxSocket);
+				var phxSocket = _p12._0;
+				var phxCmd = _p12._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -14077,8 +14090,8 @@ var _user$project$Pong$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Pong$PhoenixMsg, phxCmd)
 				};
 			case 'ReceiveBallPositionUpdate':
-				var _p12 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Pong$decodeBallPosition, _p7._0);
-				if (_p12.ctor === 'Ok') {
+				var _p13 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Pong$decodeBallPosition, _p7._0);
+				if (_p13.ctor === 'Ok') {
 					var ball = model.ball;
 					var newBall = _elm_lang$core$Native_Utils.update(
 						ball,
@@ -14096,14 +14109,14 @@ var _user$project$Pong$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								errors: _elm_lang$core$Maybe$Just(_p12._0)
+								errors: _elm_lang$core$Maybe$Just(_p13._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
 			case 'ReceivePaddlePositionUpdate':
-				var _p13 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Pong$decodePaddlePosition, _p7._0);
-				if (_p13.ctor === 'Ok') {
+				var _p14 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Pong$decodePaddlePosition, _p7._0);
+				if (_p14.ctor === 'Ok') {
 					var defaultPlayer = {color: '', id: 0, positionX: 0, positionY: 0, score: 0, sizeX: 0, sizeY: 0};
 					var playerOne = A2(
 						_elm_lang$core$Maybe$withDefault,
@@ -14120,7 +14133,7 @@ var _user$project$Pong$update = F2(
 						function (p) {
 							return _elm_lang$core$Native_Utils.eq(p.id, playerOne.id) ? _elm_lang$core$Native_Utils.update(
 								p,
-								{positionY: _p13._0}) : p;
+								{positionY: _p14._0}) : p;
 						},
 						model.players);
 					return {
@@ -14136,7 +14149,7 @@ var _user$project$Pong$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								errors: _elm_lang$core$Maybe$Just(_p13._0)
+								errors: _elm_lang$core$Maybe$Just(_p14._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -14175,9 +14188,9 @@ var _user$project$Pong$update = F2(
 							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 							payload,
 							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'ball:position_x', 'game:pong'))));
-				var _p14 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
-				var phxSocket = _p14._0;
-				var phxCmd = _p14._1;
+				var _p15 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
+				var phxSocket = _p15._0;
+				var phxCmd = _p15._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(

@@ -328,7 +328,7 @@ update msg model =
         MovePlayerOne keyCode ->
             let
                 payload =
-                    Encode.object [ ( "paddle_position_y", Encode.float model.ball.positionY {- TODO -} ) ]
+                    Encode.object [ ( "paddle_position_y", Encode.float <| (updatePlayerPosition keyCode playerOne).positionY ) ]
 
                 phxPush =
                     Push.init "paddle:position_y" "game:pong"
@@ -338,6 +338,22 @@ update msg model =
 
                 ( phxSocket, phxCmd ) =
                     Socket.push phxPush model.phxSocket
+
+                defaultPlayer =
+                    { color = ""
+                    , id = 0
+                    , positionX = 0
+                    , positionY = 0
+                    , score = 0
+                    , sizeX = 0
+                    , sizeY = 0
+                    }
+
+                playerOne =
+                    model.players
+                        |> List.filter (\p -> p.id == 1)
+                        |> List.head
+                        |> Maybe.withDefault defaultPlayer
 
                 updatedPlayers =
                     List.map (updatePlayerPosition keyCode) model.players
