@@ -14,4 +14,10 @@ defmodule PlatformWeb.GameChannel do
     broadcast(socket, "ball:position_x", payload)
     {:noreply, socket}
   end
+
+  def handle_in("paddle:position_y", %{"paddle_position_y" => paddle_position_y}, socket) do
+    payload = %{paddle_position_y: paddle_position_y}
+    broadcast(socket, "paddle:position_y", payload)
+    {:noreply, socket}
+  end
 end

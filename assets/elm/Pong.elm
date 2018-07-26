@@ -82,14 +82,17 @@ type Msg
     = FetchGameplaysList (Result Http.Error (List Gameplay))
     | FetchPlayersList (Result Http.Error (List GamePlayer))
     | GameLoop Time
-    | MovePlayer KeyCode
+    | MovePlayerOne KeyCode
     | NoOp
     | PhoenixMsg (Socket.Msg Msg)
     | ReceiveBallPositionUpdate Encode.Value
+    | ReceivePaddlePositionUpdate Encode.Value
     | StartGame KeyCode
     | UpdateBallPositionError Encode.Value
     | UpdateBallPositionRequest
     | UpdateBallPositionSuccess Encode.Value
+    | UpdatePaddlePositionError Encode.Value
+    | UpdatePaddlePositionSuccess Encode.Value
 
 
 
@@ -173,6 +176,8 @@ initialSocket flags =
             |> Socket.withDebug
             |> Socket.on "ball:position_x" "game:pong" UpdateBallPositionSuccess
             |> Socket.on "ball:position_x" "game:pong" ReceiveBallPositionUpdate
+            |> Socket.on "paddle:position_y" "game:pong" UpdatePaddlePositionSuccess
+            |> Socket.on "paddle:position_y" "game:pong" ReceivePaddlePositionUpdate
             |> Socket.join initialChannel
 
 
@@ -273,6 +278,11 @@ decodeBallPosition =
     Decode.field "ball_position_x" Decode.float
 
 
+decodePaddlePosition : Decode.Decoder Float
+decodePaddlePosition =
+    Decode.field "paddle_position_y" Decode.float
+
+
 anonymousPlayer : GamePlayer
 anonymousPlayer =
     { displayName = Just "Anonymous User"
@@ -315,12 +325,29 @@ update msg model =
             in
                 ( updatedModel, Cmd.none )
 
-        MovePlayer keyCode ->
+        MovePlayerOne keyCode ->
             let
+                payload =
+                    Encode.object [ ( "paddle_position_y", Encode.float model.ball.positionY {- TODO -} ) ]
+
+                phxPush =
+                    Push.init "paddle:position_y" "game:pong"
+                        |> Push.withPayload payload
+                        |> Push.onOk UpdatePaddlePositionSuccess
+                        |> Push.onError UpdatePaddlePositionError
+
+                ( phxSocket, phxCmd ) =
+                    Socket.push phxPush model.phxSocket
+
                 updatedPlayers =
                     List.map (updatePlayerPosition keyCode) model.players
             in
-                ( { model | players = updatedPlayers }, Cmd.none )
+                ( { model
+                    | phxSocket = phxSocket
+                    , players = updatedPlayers
+                  }
+                , Cmd.map PhoenixMsg phxCmd
+                )
 
         NoOp ->
             ( model, Cmd.none )
@@ -345,6 +372,41 @@ update msg model =
                             { ball | positionX = 1 }
                     in
                         ( { model | ball = newBall }, Cmd.none )
+
+                Err message ->
+                    ( { model | errors = Just message }, Cmd.none )
+
+        ReceivePaddlePositionUpdate raw ->
+            case Decode.decodeValue decodePaddlePosition raw of
+                Ok paddlePositionChange ->
+                    let
+                        defaultPlayer =
+                            { color = ""
+                            , id = 0
+                            , positionX = 0
+                            , positionY = 0
+                            , score = 0
+                            , sizeX = 0
+                            , sizeY = 0
+                            }
+
+                        playerOne =
+                            model.players
+                                |> List.filter (\p -> p.id == 1)
+                                |> List.head
+                                |> Maybe.withDefault defaultPlayer
+
+                        updatedPlayers =
+                            List.map
+                                (\p ->
+                                    if p.id == playerOne.id then
+                                        { p | positionY = paddlePositionChange }
+                                    else
+                                        p
+                                )
+                                model.players
+                    in
+                        ( { model | players = updatedPlayers }, Cmd.none )
 
                 Err message ->
                     ( { model | errors = Just message }, Cmd.none )
@@ -379,6 +441,14 @@ update msg model =
 
         UpdateBallPositionSuccess value ->
             Debug.log "Success sending ball position over socket."
+                ( model, Cmd.none )
+
+        UpdatePaddlePositionError message ->
+            Debug.log "Error sending paddle position over socket."
+                ( model, Cmd.none )
+
+        UpdatePaddlePositionSuccess value ->
+            Debug.log "Success sending paddle position over socket."
                 ( model, Cmd.none )
 
 
@@ -467,15 +537,18 @@ updatePlayerPosition keyCode player =
         moveSpeed =
             5.0
     in
-        case keyCode of
-            38 ->
-                { player | positionY = max (player.positionY - moveSpeed) 0 }
+        if player.id == 1 then
+            case keyCode of
+                38 ->
+                    { player | positionY = max (player.positionY - moveSpeed) 0 }
 
-            40 ->
-                { player | positionY = min (player.positionY + moveSpeed) (toFloat gameWindowHeight - toFloat player.sizeY) }
+                40 ->
+                    { player | positionY = min (player.positionY + moveSpeed) (toFloat gameWindowHeight - toFloat player.sizeY) }
 
-            _ ->
-                player
+                _ ->
+                    player
+        else
+            player
 
 
 updatePlayerScores : Ball -> List Player -> List Player
@@ -515,7 +588,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ diffs GameLoop
-        , downs MovePlayer
+        , downs MovePlayerOne
         , downs StartGame
         , Socket.listen model.phxSocket PhoenixMsg
         ]
