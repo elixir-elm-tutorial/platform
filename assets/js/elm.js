@@ -13809,9 +13809,10 @@ var _user$project$Pong$Ball = F7(
 	function (a, b, c, d, e, f, g) {
 		return {color: a, id: b, positionX: c, positionY: d, size: e, velocityX: f, velocityY: g};
 	});
-var _user$project$Pong$Flags = function (a) {
-	return {token: a};
-};
+var _user$project$Pong$Context = F4(
+	function (a, b, c, d) {
+		return {host: a, httpProtocol: b, socketServer: c, userToken: d};
+	});
 var _user$project$Pong$Gameplay = F3(
 	function (a, b, c) {
 		return {gameId: a, playerId: b, playerScore: c};
@@ -13921,9 +13922,11 @@ var _user$project$Pong$ReceivePaddlePositionUpdate = function (a) {
 var _user$project$Pong$ReceiveBallPositionUpdate = function (a) {
 	return {ctor: 'ReceiveBallPositionUpdate', _0: a};
 };
-var _user$project$Pong$initialSocket = function (flags) {
-	var prodSocketServer = _elm_lang$core$String$isEmpty(flags.token) ? 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket' : A2(_elm_lang$core$Basics_ops['++'], 'wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=', flags.token);
-	var devSocketServer = _elm_lang$core$String$isEmpty(flags.token) ? 'ws://localhost:4000/socket/websocket' : A2(_elm_lang$core$Basics_ops['++'], 'ws://localhost:4000/socket/websocket?token=', flags.token);
+var _user$project$Pong$initialSocket = function (context) {
+	var socketServer = _elm_lang$core$String$isEmpty(context.userToken) ? context.socketServer : A2(
+		_elm_lang$core$Basics_ops['++'],
+		context.socketServer,
+		A2(_elm_lang$core$Basics_ops['++'], '?token=', context.userToken));
 	return A2(
 		_fbonetti$elm_phoenix_socket$Phoenix_Socket$join,
 		_user$project$Pong$initialChannel,
@@ -13948,26 +13951,26 @@ var _user$project$Pong$initialSocket = function (flags) {
 						'game:pong',
 						_user$project$Pong$UpdateBallPositionSuccess,
 						_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
-							_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(devSocketServer)))))));
+							_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(socketServer)))))));
 };
-var _user$project$Pong$initialSocketJoin = function (flags) {
+var _user$project$Pong$initialSocketJoin = function (context) {
 	return _elm_lang$core$Tuple$first(
-		_user$project$Pong$initialSocket(flags));
+		_user$project$Pong$initialSocket(context));
 };
-var _user$project$Pong$initialModel = function (flags) {
+var _user$project$Pong$initialModel = function (context) {
 	return {
 		ball: _user$project$Pong$initialBall,
 		errors: _elm_lang$core$Maybe$Nothing,
 		gameplays: {ctor: '[]'},
 		gamePlayers: {ctor: '[]'},
 		gameState: _user$project$Pong$StartScreen,
-		phxSocket: _user$project$Pong$initialSocketJoin(flags),
+		phxSocket: _user$project$Pong$initialSocketJoin(context),
 		players: _user$project$Pong$initialPlayers
 	};
 };
-var _user$project$Pong$initialSocketCommand = function (flags) {
+var _user$project$Pong$initialSocketCommand = function (context) {
 	return _elm_lang$core$Tuple$second(
-		_user$project$Pong$initialSocket(flags));
+		_user$project$Pong$initialSocket(context));
 };
 var _user$project$Pong$PhoenixMsg = function (a) {
 	return {ctor: 'PhoenixMsg', _0: a};
@@ -14256,7 +14259,7 @@ var _user$project$Pong$fetchGameplaysList = A2(
 	_elm_lang$http$Http$send,
 	_user$project$Pong$FetchGameplaysList,
 	A2(_elm_lang$http$Http$get, '/api/gameplays', _user$project$Pong$decodeGameplaysList));
-var _user$project$Pong$initialCommand = function (flags) {
+var _user$project$Pong$initialCommand = function (context) {
 	return _elm_lang$core$Platform_Cmd$batch(
 		{
 			ctor: '::',
@@ -14269,28 +14272,43 @@ var _user$project$Pong$initialCommand = function (flags) {
 					_0: A2(
 						_elm_lang$core$Platform_Cmd$map,
 						_user$project$Pong$PhoenixMsg,
-						_user$project$Pong$initialSocketCommand(flags)),
+						_user$project$Pong$initialSocketCommand(context)),
 					_1: {ctor: '[]'}
 				}
 			}
 		});
 };
-var _user$project$Pong$init = function (flags) {
+var _user$project$Pong$init = function (context) {
 	return {
 		ctor: '_Tuple2',
-		_0: _user$project$Pong$initialModel(flags),
-		_1: _user$project$Pong$initialCommand(flags)
+		_0: _user$project$Pong$initialModel(context),
+		_1: _user$project$Pong$initialCommand(context)
 	};
 };
 var _user$project$Pong$main = _elm_lang$html$Html$programWithFlags(
 	{init: _user$project$Pong$init, view: _user$project$Pong$view, update: _user$project$Pong$update, subscriptions: _user$project$Pong$subscriptions})(
 	A2(
 		_elm_lang$core$Json_Decode$andThen,
-		function (token) {
-			return _elm_lang$core$Json_Decode$succeed(
-				{token: token});
+		function (host) {
+			return A2(
+				_elm_lang$core$Json_Decode$andThen,
+				function (httpProtocol) {
+					return A2(
+						_elm_lang$core$Json_Decode$andThen,
+						function (socketServer) {
+							return A2(
+								_elm_lang$core$Json_Decode$andThen,
+								function (userToken) {
+									return _elm_lang$core$Json_Decode$succeed(
+										{host: host, httpProtocol: httpProtocol, socketServer: socketServer, userToken: userToken});
+								},
+								A2(_elm_lang$core$Json_Decode$field, 'userToken', _elm_lang$core$Json_Decode$string));
+						},
+						A2(_elm_lang$core$Json_Decode$field, 'socketServer', _elm_lang$core$Json_Decode$string));
+				},
+				A2(_elm_lang$core$Json_Decode$field, 'httpProtocol', _elm_lang$core$Json_Decode$string));
 		},
-		A2(_elm_lang$core$Json_Decode$field, 'token', _elm_lang$core$Json_Decode$string)));
+		A2(_elm_lang$core$Json_Decode$field, 'host', _elm_lang$core$Json_Decode$string)));
 
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};

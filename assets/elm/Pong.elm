@@ -30,8 +30,11 @@ type alias Ball =
     }
 
 
-type alias Flags =
-    { token : String
+type alias Context =
+    { host : String
+    , httpProtocol : String
+    , socketServer : String
+    , userToken : String
     }
 
 
@@ -116,14 +119,14 @@ initialChannel =
     Channel.init "game:pong"
 
 
-initialModel : Flags -> Model
-initialModel flags =
+initialModel : Context -> Model
+initialModel context =
     { ball = initialBall
     , errors = Nothing
     , gameplays = []
     , gamePlayers = []
     , gameState = StartScreen
-    , phxSocket = initialSocketJoin flags
+    , phxSocket = initialSocketJoin context
     , players = initialPlayers
     }
 
@@ -157,22 +160,18 @@ initialPlayerTwo =
     }
 
 
-initialSocket : Flags -> ( Socket.Socket Msg, Cmd (Socket.Msg Msg) )
-initialSocket flags =
+initialSocket : Context -> ( Socket.Socket Msg, Cmd (Socket.Msg Msg) )
+initialSocket context =
     let
-        devSocketServer =
-            if String.isEmpty flags.token then
-                "ws://localhost:4000/socket/websocket"
+        socketServer =
+            if String.isEmpty context.userToken then
+                context.socketServer
             else
-                "ws://localhost:4000/socket/websocket?token=" ++ flags.token
-
-        prodSocketServer =
-            if String.isEmpty flags.token then
-                "wss://elixir-elm-tutorial.herokuapp.com/socket/websocket"
-            else
-                "wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=" ++ flags.token
+                context.socketServer
+                    ++ "?token="
+                    ++ context.userToken
     in
-        Socket.init devSocketServer
+        Socket.init socketServer
             |> Socket.withDebug
             |> Socket.on "ball:position_x" "game:pong" UpdateBallPositionSuccess
             |> Socket.on "ball:position_x" "game:pong" ReceiveBallPositionUpdate
@@ -181,30 +180,30 @@ initialSocket flags =
             |> Socket.join initialChannel
 
 
-initialSocketJoin : Flags -> Socket.Socket Msg
-initialSocketJoin flags =
-    initialSocket flags
+initialSocketJoin : Context -> Socket.Socket Msg
+initialSocketJoin context =
+    initialSocket context
         |> Tuple.first
 
 
-initialSocketCommand : Flags -> Cmd (Socket.Msg Msg)
-initialSocketCommand flags =
-    initialSocket flags
+initialSocketCommand : Context -> Cmd (Socket.Msg Msg)
+initialSocketCommand context =
+    initialSocket context
         |> Tuple.second
 
 
-initialCommand : Flags -> Cmd Msg
-initialCommand flags =
+initialCommand : Context -> Cmd Msg
+initialCommand context =
     Cmd.batch
         [ fetchPlayersList
         , fetchGameplaysList
-        , Cmd.map PhoenixMsg (initialSocketCommand flags)
+        , Cmd.map PhoenixMsg (initialSocketCommand context)
         ]
 
 
-init : Flags -> ( Model, Cmd Msg )
-init flags =
-    ( initialModel flags, initialCommand flags )
+init : Context -> ( Model, Cmd Msg )
+init context =
+    ( initialModel context, initialCommand context )
 
 
 
@@ -790,7 +789,7 @@ viewGameplayItem model gameplay =
 ---- MAIN ----
 
 
-main : Program Flags Model Msg
+main : Program Context Model Msg
 main =
     Html.programWithFlags
         { init = init
