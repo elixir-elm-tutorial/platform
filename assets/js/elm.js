@@ -13625,7 +13625,6 @@ var _user$project$Pong$viewGameplaysIndex = function (model) {
 		});
 };
 var _user$project$Pong$decodePaddlePosition = A2(_elm_lang$core$Json_Decode$field, 'paddle_position_y', _elm_lang$core$Json_Decode$float);
-var _user$project$Pong$decodeBallPosition = A2(_elm_lang$core$Json_Decode$field, 'ball_position_x', _elm_lang$core$Json_Decode$float);
 var _user$project$Pong$gameWindowWidth = 900;
 var _user$project$Pong$gameWindowHeight = 600;
 var _user$project$Pong$updateBallPosition = F3(
@@ -13775,6 +13774,40 @@ var _user$project$Pong$viewGameState = function (model) {
 			return {ctor: '[]'};
 	}
 };
+var _user$project$Pong$viewGame = function (model) {
+	return A2(
+		_elm_lang$svg$Svg$svg,
+		{
+			ctor: '::',
+			_0: _elm_lang$svg$Svg_Attributes$height(
+				_elm_lang$core$Basics$toString(_user$project$Pong$gameWindowHeight)),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Attributes$version('1.1'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$width(
+						_elm_lang$core$Basics$toString(_user$project$Pong$gameWindowWidth)),
+					_1: {ctor: '[]'}
+				}
+			}
+		},
+		_user$project$Pong$viewGameState(model));
+};
+var _user$project$Pong$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _user$project$Pong$viewGame(model),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Pong$viewGameplaysIndex(model),
+				_1: {ctor: '[]'}
+			}
+		});
+};
 var _user$project$Pong$distanceFromEdge = 40.0;
 var _user$project$Pong$initialPlayerTwo = {
 	color: 'white',
@@ -13859,6 +13892,15 @@ var _user$project$Pong$Model = F7(
 	function (a, b, c, d, e, f, g) {
 		return {ball: a, errors: b, gameplays: c, gamePlayers: d, gameState: e, phxSocket: f, players: g};
 	});
+var _user$project$Pong$BallPosition = F2(
+	function (a, b) {
+		return {x: a, y: b};
+	});
+var _user$project$Pong$decodeBallPosition = A3(
+	_elm_lang$core$Json_Decode$map2,
+	_user$project$Pong$BallPosition,
+	A2(_elm_lang$core$Json_Decode$field, 'ball_position_x', _elm_lang$core$Json_Decode$float),
+	A2(_elm_lang$core$Json_Decode$field, 'ball_position_y', _elm_lang$core$Json_Decode$float));
 var _user$project$Pong$EndScreen = {ctor: 'EndScreen'};
 var _user$project$Pong$Playing = {ctor: 'Playing'};
 var _user$project$Pong$StartScreen = {ctor: 'StartScreen'};
@@ -13870,45 +13912,6 @@ var _user$project$Pong$UpdatePaddlePositionError = function (a) {
 };
 var _user$project$Pong$UpdateBallPositionSuccess = function (a) {
 	return {ctor: 'UpdateBallPositionSuccess', _0: a};
-};
-var _user$project$Pong$UpdateBallPositionRequest = {ctor: 'UpdateBallPositionRequest'};
-var _user$project$Pong$viewGame = function (model) {
-	return A2(
-		_elm_lang$svg$Svg$svg,
-		{
-			ctor: '::',
-			_0: _elm_lang$svg$Svg_Attributes$height(
-				_elm_lang$core$Basics$toString(_user$project$Pong$gameWindowHeight)),
-			_1: {
-				ctor: '::',
-				_0: _elm_lang$html$Html_Events$onClick(_user$project$Pong$UpdateBallPositionRequest),
-				_1: {
-					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$version('1.1'),
-					_1: {
-						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$width(
-							_elm_lang$core$Basics$toString(_user$project$Pong$gameWindowWidth)),
-						_1: {ctor: '[]'}
-					}
-				}
-			}
-		},
-		_user$project$Pong$viewGameState(model));
-};
-var _user$project$Pong$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: _user$project$Pong$viewGame(model),
-			_1: {
-				ctor: '::',
-				_0: _user$project$Pong$viewGameplaysIndex(model),
-				_1: {ctor: '[]'}
-			}
-		});
 };
 var _user$project$Pong$UpdateBallPositionError = function (a) {
 	return {ctor: 'UpdateBallPositionError', _0: a};
@@ -13942,12 +13945,12 @@ var _user$project$Pong$initialSocket = function (context) {
 				_user$project$Pong$UpdatePaddlePositionSuccess,
 				A4(
 					_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
-					'ball:position_x',
+					'ball:position',
 					'game:pong',
 					_user$project$Pong$ReceiveBallPositionUpdate,
 					A4(
 						_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
-						'ball:position_x',
+						'ball:position',
 						'game:pong',
 						_user$project$Pong$UpdateBallPositionSuccess,
 						_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
@@ -14024,18 +14027,57 @@ var _user$project$Pong$update = F2(
 					};
 				}
 			case 'GameLoop':
+				var _p11 = _p7._0;
+				var payload = _elm_lang$core$Json_Encode$object(
+					{
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'ball_position_x',
+							_1: _elm_lang$core$Json_Encode$float(
+								A3(_user$project$Pong$updateBallPosition, model, _p11, model.ball).positionX)
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: 'ball_position_y',
+								_1: _elm_lang$core$Json_Encode$float(
+									A3(_user$project$Pong$updateBallPosition, model, _p11, model.ball).positionY)
+							},
+							_1: {ctor: '[]'}
+						}
+					});
+				var phxPush = A2(
+					_fbonetti$elm_phoenix_socket$Phoenix_Push$onError,
+					_user$project$Pong$UpdateBallPositionError,
+					A2(
+						_fbonetti$elm_phoenix_socket$Phoenix_Push$onOk,
+						_user$project$Pong$UpdateBallPositionSuccess,
+						A2(
+							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
+							payload,
+							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'ball:position', 'game:pong'))));
+				var _p10 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
+				var phxSocket = _p10._0;
+				var phxCmd = _p10._1;
 				var updatedModel = _elm_lang$core$Native_Utils.update(
 					model,
 					{
-						ball: A3(_user$project$Pong$updateBallPosition, model, _p7._0, model.ball),
+						ball: A3(_user$project$Pong$updateBallPosition, model, _p11, model.ball),
+						phxSocket: phxSocket,
 						players: A2(_user$project$Pong$updatePlayerScores, model.ball, model.players)
 					});
-				return {ctor: '_Tuple2', _0: updatedModel, _1: _elm_lang$core$Platform_Cmd$none};
+				return {
+					ctor: '_Tuple2',
+					_0: updatedModel,
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Pong$PhoenixMsg, phxCmd)
+				};
 			case 'MovePlayerOne':
-				var _p11 = _p7._0;
+				var _p13 = _p7._0;
 				var updatedPlayers = A2(
 					_elm_lang$core$List$map,
-					_user$project$Pong$updatePlayerPosition(_p11),
+					_user$project$Pong$updatePlayerPosition(_p13),
 					model.players);
 				var defaultPlayer = {color: '', id: 0, positionX: 0, positionY: 0, score: 0, sizeX: 0, sizeY: 0};
 				var playerOne = A2(
@@ -14055,7 +14097,7 @@ var _user$project$Pong$update = F2(
 							ctor: '_Tuple2',
 							_0: 'paddle_position_y',
 							_1: _elm_lang$core$Json_Encode$float(
-								A2(_user$project$Pong$updatePlayerPosition, _p11, playerOne).positionY)
+								A2(_user$project$Pong$updatePlayerPosition, _p13, playerOne).positionY)
 						},
 						_1: {ctor: '[]'}
 					});
@@ -14069,9 +14111,9 @@ var _user$project$Pong$update = F2(
 							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 							payload,
 							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'paddle:position_y', 'game:pong'))));
-				var _p10 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
-				var phxSocket = _p10._0;
-				var phxCmd = _p10._1;
+				var _p12 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
+				var phxSocket = _p12._0;
+				var phxCmd = _p12._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -14082,9 +14124,9 @@ var _user$project$Pong$update = F2(
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'PhoenixMsg':
-				var _p12 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p7._0, model.phxSocket);
-				var phxSocket = _p12._0;
-				var phxCmd = _p12._1;
+				var _p14 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p7._0, model.phxSocket);
+				var phxSocket = _p14._0;
+				var phxCmd = _p14._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -14093,12 +14135,13 @@ var _user$project$Pong$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Pong$PhoenixMsg, phxCmd)
 				};
 			case 'ReceiveBallPositionUpdate':
-				var _p13 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Pong$decodeBallPosition, _p7._0);
-				if (_p13.ctor === 'Ok') {
+				var _p15 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Pong$decodeBallPosition, _p7._0);
+				if (_p15.ctor === 'Ok') {
+					var _p16 = _p15._0;
 					var ball = model.ball;
 					var newBall = _elm_lang$core$Native_Utils.update(
 						ball,
-						{positionX: 1});
+						{positionX: _p16.x, positionY: _p16.y});
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -14112,14 +14155,14 @@ var _user$project$Pong$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								errors: _elm_lang$core$Maybe$Just(_p13._0)
+								errors: _elm_lang$core$Maybe$Just(_p15._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
 			case 'ReceivePaddlePositionUpdate':
-				var _p14 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Pong$decodePaddlePosition, _p7._0);
-				if (_p14.ctor === 'Ok') {
+				var _p17 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Pong$decodePaddlePosition, _p7._0);
+				if (_p17.ctor === 'Ok') {
 					var defaultPlayer = {color: '', id: 0, positionX: 0, positionY: 0, score: 0, sizeX: 0, sizeY: 0};
 					var playerOne = A2(
 						_elm_lang$core$Maybe$withDefault,
@@ -14136,7 +14179,7 @@ var _user$project$Pong$update = F2(
 						function (p) {
 							return _elm_lang$core$Native_Utils.eq(p.id, playerOne.id) ? _elm_lang$core$Native_Utils.update(
 								p,
-								{positionY: _p14._0}) : p;
+								{positionY: _p17._0}) : p;
 						},
 						model.players);
 					return {
@@ -14152,7 +14195,7 @@ var _user$project$Pong$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								errors: _elm_lang$core$Maybe$Just(_p14._0)
+								errors: _elm_lang$core$Maybe$Just(_p17._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -14170,37 +14213,6 @@ var _user$project$Pong$update = F2(
 					_elm_lang$core$Debug$log,
 					'Error sending ball position over socket.',
 					{ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none});
-			case 'UpdateBallPositionRequest':
-				var payload = _elm_lang$core$Json_Encode$object(
-					{
-						ctor: '::',
-						_0: {
-							ctor: '_Tuple2',
-							_0: 'ball_position_x',
-							_1: _elm_lang$core$Json_Encode$float(model.ball.positionX)
-						},
-						_1: {ctor: '[]'}
-					});
-				var phxPush = A2(
-					_fbonetti$elm_phoenix_socket$Phoenix_Push$onError,
-					_user$project$Pong$UpdateBallPositionError,
-					A2(
-						_fbonetti$elm_phoenix_socket$Phoenix_Push$onOk,
-						_user$project$Pong$UpdateBallPositionSuccess,
-						A2(
-							_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
-							payload,
-							A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'ball:position_x', 'game:pong'))));
-				var _p15 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, phxPush, model.phxSocket);
-				var phxSocket = _p15._0;
-				var phxCmd = _p15._1;
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{phxSocket: phxSocket}),
-					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Pong$PhoenixMsg, phxCmd)
-				};
 			case 'UpdateBallPositionSuccess':
 				return A2(
 					_elm_lang$core$Debug$log,

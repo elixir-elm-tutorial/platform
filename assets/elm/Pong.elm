@@ -3,7 +3,6 @@ module Pong exposing (..)
 import AnimationFrame exposing (diffs)
 import Html exposing (Html, div, h1, li, span, strong, ul)
 import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -92,7 +91,6 @@ type Msg
     | ReceivePaddlePositionUpdate Encode.Value
     | StartGame KeyCode
     | UpdateBallPositionError Encode.Value
-    | UpdateBallPositionRequest
     | UpdateBallPositionSuccess Encode.Value
     | UpdatePaddlePositionError Encode.Value
     | UpdatePaddlePositionSuccess Encode.Value
@@ -173,8 +171,8 @@ initialSocket context =
     in
         Socket.init socketServer
             |> Socket.withDebug
-            |> Socket.on "ball:position_x" "game:pong" UpdateBallPositionSuccess
-            |> Socket.on "ball:position_x" "game:pong" ReceiveBallPositionUpdate
+            |> Socket.on "ball:position" "game:pong" UpdateBallPositionSuccess
+            |> Socket.on "ball:position" "game:pong" ReceiveBallPositionUpdate
             |> Socket.on "paddle:position_y" "game:pong" UpdatePaddlePositionSuccess
             |> Socket.on "paddle:position_y" "game:pong" ReceivePaddlePositionUpdate
             |> Socket.join initialChannel
@@ -272,9 +270,15 @@ decodeGameplay =
         (Decode.field "player_score" Decode.int)
 
 
-decodeBallPosition : Decode.Decoder Float
+type alias BallPosition =
+    { x : Float, y : Float }
+
+
+decodeBallPosition : Decode.Decoder BallPosition
 decodeBallPosition =
-    Decode.field "ball_position_x" Decode.float
+    Decode.map2 BallPosition
+        (Decode.field "ball_position_x" Decode.float)
+        (Decode.field "ball_position_y" Decode.float)
 
 
 decodePaddlePosition : Decode.Decoder Float
@@ -316,13 +320,29 @@ update msg model =
 
         GameLoop dt ->
             let
+                payload =
+                    Encode.object
+                        [ ( "ball_position_x", Encode.float <| (updateBallPosition model dt model.ball).positionX )
+                        , ( "ball_position_y", Encode.float <| (updateBallPosition model dt model.ball).positionY )
+                        ]
+
+                phxPush =
+                    Push.init "ball:position" "game:pong"
+                        |> Push.withPayload payload
+                        |> Push.onOk UpdateBallPositionSuccess
+                        |> Push.onError UpdateBallPositionError
+
+                ( phxSocket, phxCmd ) =
+                    Socket.push phxPush model.phxSocket
+
                 updatedModel =
                     { model
                         | ball = updateBallPosition model dt model.ball
+                        , phxSocket = phxSocket
                         , players = updatePlayerScores model.ball model.players
                     }
             in
-                ( updatedModel, Cmd.none )
+                ( updatedModel, Cmd.map PhoenixMsg phxCmd )
 
         MovePlayerOne keyCode ->
             let
@@ -378,13 +398,16 @@ update msg model =
 
         ReceiveBallPositionUpdate raw ->
             case Decode.decodeValue decodeBallPosition raw of
-                Ok ballPositionChange ->
+                Ok ballPosition ->
                     let
                         ball =
                             model.ball
 
                         newBall =
-                            { ball | positionX = 1 }
+                            { ball
+                                | positionX = ballPosition.x
+                                , positionY = ballPosition.y
+                            }
                     in
                         ( { model | ball = newBall }, Cmd.none )
 
@@ -435,24 +458,6 @@ update msg model =
         UpdateBallPositionError message ->
             Debug.log "Error sending ball position over socket."
                 ( model, Cmd.none )
-
-        UpdateBallPositionRequest ->
-            let
-                payload =
-                    Encode.object [ ( "ball_position_x", Encode.float model.ball.positionX ) ]
-
-                phxPush =
-                    Push.init "ball:position_x" "game:pong"
-                        |> Push.withPayload payload
-                        |> Push.onOk UpdateBallPositionSuccess
-                        |> Push.onError UpdateBallPositionError
-
-                ( phxSocket, phxCmd ) =
-                    Socket.push phxPush model.phxSocket
-            in
-                ( { model | phxSocket = phxSocket }
-                , Cmd.map PhoenixMsg phxCmd
-                )
 
         UpdateBallPositionSuccess value ->
             Debug.log "Success sending ball position over socket."
@@ -625,7 +630,6 @@ viewGame : Model -> Svg Msg
 viewGame model =
     svg
         [ height (toString gameWindowHeight)
-        , onClick UpdateBallPositionRequest
         , version "1.1"
         , width (toString gameWindowWidth)
         ]
