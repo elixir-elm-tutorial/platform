@@ -1,8 +1,9 @@
 module Pong exposing (..)
 
 import AnimationFrame exposing (diffs)
-import Html exposing (Html, div, h1, li, span, strong, ul)
-import Html.Attributes exposing (class)
+import Html exposing (Html, div, form, h1, input, label, li, small, span, strong, ul)
+import Html.Attributes exposing (class, type_)
+import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -61,6 +62,7 @@ type GameState
 type alias Player =
     { color : String
     , id : Int
+    , name : String
     , positionX : Float
     , positionY : Float
     , score : Int
@@ -75,6 +77,7 @@ type alias Model =
     , gameplays : List Gameplay
     , gamePlayers : List GamePlayer
     , gameState : GameState
+    , playerInput : String
     , phxSocket : Socket.Socket Msg
     , players : List Player
     }
@@ -84,11 +87,13 @@ type Msg
     = FetchGameplaysList (Result Http.Error (List Gameplay))
     | FetchPlayersList (Result Http.Error (List GamePlayer))
     | GameLoop Time
+    | InputPlayerName String
     | MovePlayerOne KeyCode
     | NoOp
     | PhoenixMsg (Socket.Msg Msg)
     | ReceiveBallPositionUpdate Encode.Value
     | ReceivePaddlePositionUpdate Encode.Value
+    | SetPlayerName
     | StartGame KeyCode
     | UpdateBallPositionError Encode.Value
     | UpdateBallPositionSuccess Encode.Value
@@ -125,6 +130,7 @@ initialModel context =
     , gamePlayers = []
     , gameState = StartScreen
     , phxSocket = initialSocketJoin context
+    , playerInput = ""
     , players = initialPlayers
     }
 
@@ -138,6 +144,7 @@ initialPlayerOne : Player
 initialPlayerOne =
     { color = "white"
     , id = 1
+    , name = ""
     , positionX = distanceFromEdge
     , positionY = (toFloat gameWindowHeight / 2 - distanceFromEdge)
     , score = 0
@@ -150,6 +157,7 @@ initialPlayerTwo : Player
 initialPlayerTwo =
     { color = "white"
     , id = 2
+    , name = ""
     , positionX = (toFloat gameWindowWidth - distanceFromEdge)
     , positionY = (toFloat gameWindowHeight / 2 - distanceFromEdge)
     , score = 0
@@ -344,10 +352,13 @@ update msg model =
             in
                 ( updatedModel, Cmd.map PhoenixMsg phxCmd )
 
+        InputPlayerName name ->
+            ( { model | playerInput = name }, Cmd.none )
+
         MovePlayerOne keyCode ->
             let
                 payload =
-                    Encode.object [ ( "paddle_position_y", Encode.float <| (updatePlayerPosition keyCode playerOne).positionY ) ]
+                    Encode.object [ ( "paddle_position_y", Encode.float <| (updatePlayerPosition keyCode (playerOne model)).positionY ) ]
 
                 phxPush =
                     Push.init "paddle:position_y" "game:pong"
@@ -357,22 +368,6 @@ update msg model =
 
                 ( phxSocket, phxCmd ) =
                     Socket.push phxPush model.phxSocket
-
-                defaultPlayer =
-                    { color = ""
-                    , id = 0
-                    , positionX = 0
-                    , positionY = 0
-                    , score = 0
-                    , sizeX = 0
-                    , sizeY = 0
-                    }
-
-                playerOne =
-                    model.players
-                        |> List.filter (\p -> p.id == 1)
-                        |> List.head
-                        |> Maybe.withDefault defaultPlayer
 
                 updatedPlayers =
                     List.map (updatePlayerPosition keyCode) model.players
@@ -418,26 +413,10 @@ update msg model =
             case Decode.decodeValue decodePaddlePosition raw of
                 Ok paddlePositionChange ->
                     let
-                        defaultPlayer =
-                            { color = ""
-                            , id = 0
-                            , positionX = 0
-                            , positionY = 0
-                            , score = 0
-                            , sizeX = 0
-                            , sizeY = 0
-                            }
-
-                        playerOne =
-                            model.players
-                                |> List.filter (\p -> p.id == 1)
-                                |> List.head
-                                |> Maybe.withDefault defaultPlayer
-
                         updatedPlayers =
                             List.map
                                 (\p ->
-                                    if p.id == playerOne.id then
+                                    if p.id == 1 then
                                         { p | positionY = paddlePositionChange }
                                     else
                                         p
@@ -448,6 +427,23 @@ update msg model =
 
                 Err message ->
                     ( { model | errors = Just message }, Cmd.none )
+
+        SetPlayerName ->
+            let
+                player =
+                    playerOne model
+
+                updatedPlayers =
+                    List.map
+                        (\p ->
+                            if p.id == 1 then
+                                { player | name = model.playerInput }
+                            else
+                                p
+                        )
+                        model.players
+            in
+                ( { model | players = updatedPlayers }, Cmd.none )
 
         StartGame keyCode ->
             if model.gameState == StartScreen && keyCode == 32 then
@@ -476,12 +472,12 @@ updateBallPosition : Model -> Time -> Ball -> Ball
 updateBallPosition model dt ball =
     let
         ballCollidedWithPlayerOne =
-            (ball.positionX >= playerOne.positionX && ball.positionX <= playerOne.positionX + toFloat playerOne.sizeX)
-                && (ball.positionY >= playerOne.positionY && ball.positionY <= playerOne.positionY + toFloat playerOne.sizeY)
+            (ball.positionX >= (playerOne model).positionX && ball.positionX <= (playerOne model).positionX + toFloat (playerOne model).sizeX)
+                && (ball.positionY >= (playerOne model).positionY && ball.positionY <= (playerOne model).positionY + toFloat (playerOne model).sizeY)
 
         ballCollidedWithPlayerTwo =
-            (ball.positionX >= playerTwo.positionX && ball.positionX <= playerTwo.positionX + toFloat playerTwo.sizeX)
-                && (ball.positionY >= playerTwo.positionY && ball.positionY <= playerTwo.positionY + toFloat playerTwo.sizeY)
+            (ball.positionX >= (playerTwo model).positionX && ball.positionX <= (playerTwo model).positionX + toFloat (playerTwo model).sizeX)
+                && (ball.positionY >= (playerTwo model).positionY && ball.positionY <= (playerTwo model).positionY + toFloat (playerTwo model).sizeY)
 
         defaultPlayer =
             { color = ""
@@ -499,29 +495,17 @@ updateBallPosition model dt ball =
         offsetDistance =
             toFloat ball.size
 
-        playerOne =
-            model.players
-                |> List.filter (\p -> p.id == 1)
-                |> List.head
-                |> Maybe.withDefault defaultPlayer
-
-        playerTwo =
-            model.players
-                |> List.filter (\p -> p.id == 2)
-                |> List.head
-                |> Maybe.withDefault defaultPlayer
-
         width =
             toFloat gameWindowWidth
     in
         if ballCollidedWithPlayerOne then
             { ball
-                | positionX = playerOne.positionX + toFloat playerOne.sizeX + 1
+                | positionX = (playerOne model).positionX + toFloat (playerOne model).sizeX + 1
                 , velocityX = abs ball.velocityX
             }
         else if ballCollidedWithPlayerTwo then
             { ball
-                | positionX = playerTwo.positionX - 1
+                | positionX = (playerTwo model).positionX - 1
                 , velocityX = -1.0 * ball.velocityX
             }
         else if ball.positionX >= width then
@@ -601,7 +585,7 @@ updatePlayerScore player =
 
 
 
--- SUBSCRIPTIONS
+---- SUBSCRIPTIONS ----
 
 
 subscriptions : Model -> Sub Msg
@@ -615,6 +599,39 @@ subscriptions model =
 
 
 
+---- HELPERS ----
+
+
+defaultPlayer : Player
+defaultPlayer =
+    { color = ""
+    , id = 0
+    , name = ""
+    , positionX = 0
+    , positionY = 0
+    , score = 0
+    , sizeX = 0
+    , sizeY = 0
+    }
+
+
+playerOne : Model -> Player
+playerOne model =
+    model.players
+        |> List.filter (\p -> p.id == 1)
+        |> List.head
+        |> Maybe.withDefault defaultPlayer
+
+
+playerTwo : Model -> Player
+playerTwo model =
+    model.players
+        |> List.filter (\p -> p.id == 2)
+        |> List.head
+        |> Maybe.withDefault defaultPlayer
+
+
+
 ---- VIEW ----
 
 
@@ -623,6 +640,7 @@ view model =
     div []
         [ viewGame model
         , viewGameplaysIndex model
+        , viewSignIn model
         ]
 
 
@@ -787,6 +805,19 @@ viewGameplayItem model gameplay =
             [ strong [] [ text displayName ]
             , span [ Html.Attributes.class "badge" ] [ text (toString gameplay.playerScore) ]
             ]
+
+
+viewSignIn : Model -> Html Msg
+viewSignIn model =
+    form [ class "pa4 black-80" ]
+        [ div [ class "measure" ]
+            [ label [ class "f6 b db mb2" ] [ text "Name" ]
+            , input [ class "input-reset ba b--black-20 pa2 mb2 db w-100", onInput InputPlayerName, type_ "text" ] []
+            , small [ class "f6 black-60 db mb2" ] [ text "This will be your display name during the game." ]
+            ]
+        , div [ class "mt3" ]
+            [ input [ class "b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6", onClick SetPlayerName, type_ "submit" ] [] ]
+        ]
 
 
 
