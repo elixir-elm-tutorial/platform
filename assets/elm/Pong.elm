@@ -640,7 +640,6 @@ view model =
     div []
         [ viewGame model
         , viewGameplaysIndex model
-        , viewSignIn model
         ]
 
 
@@ -805,19 +804,6 @@ viewGameplayItem model gameplay =
             [ strong [] [ text displayName ]
             , span [ Html.Attributes.class "badge" ] [ text (toString gameplay.playerScore) ]
             ]
-
-
-viewSignIn : Model -> Html Msg
-viewSignIn model =
-    form [ class "pa4 black-80" ]
-        [ div [ class "measure" ]
-            [ label [ class "f6 b db mb2" ] [ text "Name" ]
-            , input [ class "input-reset ba b--black-20 pa2 mb2 db w-100", onInput InputPlayerName, type_ "text" ] []
-            , small [ class "f6 black-60 db mb2" ] [ text "This will be your display name during the game." ]
-            ]
-        , div [ class "mt3" ]
-            [ input [ class "b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6", onClick SetPlayerName, type_ "submit" ] [] ]
-        ]
 
 
 
