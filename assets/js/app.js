@@ -11,7 +11,7 @@
 //
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
-import "phoenix_html"
+import "phoenix_html";
 
 // Import local files
 //
@@ -28,27 +28,40 @@ const platformer = document.querySelector("#platformer");
 const pong = document.querySelector("#pong");
 
 function socketProtocol() {
-    if (window.location.protocol == "https:") {
-        return "wss:"
-    } else {
-        return "ws:"
-    }
+  if (window.location.protocol == "https:") {
+    return "wss:";
+  } else {
+    return "ws:";
+  }
 }
 
 const context = {
-    host: window.location.host,
-    httpProtocol: window.location.protocol,
-    socketServer: socketProtocol() + "//" + window.location.host + "/socket/websocket",
-    userToken: window.userToken
+  host: window.location.host,
+  httpProtocol: window.location.protocol,
+  socketServer:
+    socketProtocol() + "//" + window.location.host + "/socket/websocket",
+  userToken: window.userToken
 };
 
 if (elmContainer) Elm.Main.embed(elmContainer);
 if (platformer) Elm.Platformer.embed(platformer, context);
 if (pong) Elm.Pong.embed(pong, context);
 
-// Disable scroll to use space bar for game start
-document.documentElement.addEventListener("keydown", function (e) {
-    if ((e.keycode || e.which) == 32) {
-        e.preventDefault();
+// Disable default space bar and arrow keys in favor of game interactions
+document.documentElement.addEventListener(
+  "keydown",
+  function(e) {
+    let spaceBarKeyCode = 32;
+    let upArrowKeyCode = 38;
+    let downArrowKeyCode = 40;
+
+    if (
+      (e.keycode || e.which) == spaceBarKeyCode ||
+      (e.keycode || e.which) == upArrowKeyCode ||
+      (e.keycode || e.which) == downArrowKeyCode
+    ) {
+      e.preventDefault();
     }
-}, false);
+  },
+  false
+);
