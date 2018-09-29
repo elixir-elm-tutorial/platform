@@ -3,6 +3,7 @@ defmodule PlatformWeb.UserSocket do
 
   ## Channels
   # channel "room:*", PlatformWeb.RoomChannel
+  channel("game:*", PlatformWeb.GameChannel)
   channel("score:*", PlatformWeb.ScoreChannel)
 
   ## Transports

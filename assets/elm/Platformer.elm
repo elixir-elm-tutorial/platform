@@ -20,12 +20,7 @@ import Time exposing (Time, every, second)
 -- MAIN
 
 
-type alias Flags =
-    { token : String
-    }
-
-
-main : Program Flags Model Msg
+main : Program Context Model Msg
 main =
     Html.programWithFlags
         { init = init
@@ -37,6 +32,14 @@ main =
 
 
 -- MODEL
+
+
+type alias Context =
+    { host : String
+    , httpProtocol : String
+    , socketServer : String
+    , userToken : String
+    }
 
 
 type Direction
@@ -86,8 +89,8 @@ type alias Model =
     }
 
 
-initialModel : Flags -> Model
-initialModel flags =
+initialModel : Context -> Model
+initialModel context =
     { characterDirection = Right
     , characterPositionX = 50.0
     , characterPositionY = 300.0
@@ -100,29 +103,25 @@ initialModel flags =
     , itemPositionX = 150.0
     , itemPositionY = 300.0
     , itemsCollected = 0
-    , phxSocket = initialSocketJoin flags
+    , phxSocket = initialSocketJoin context
     , playersList = []
     , playerScore = 0
     , timeRemaining = 10
     }
 
 
-initialSocket : Flags -> ( Phoenix.Socket.Socket Msg, Cmd (Phoenix.Socket.Msg Msg) )
-initialSocket flags =
+initialSocket : Context -> ( Phoenix.Socket.Socket Msg, Cmd (Phoenix.Socket.Msg Msg) )
+initialSocket context =
     let
-        devSocketServer =
-            if String.isEmpty flags.token then
-                "ws://localhost:4000/socket/websocket"
+        socketServer =
+            if String.isEmpty context.userToken then
+                context.socketServer
             else
-                "ws://localhost:4000/socket/websocket?token=" ++ flags.token
-
-        prodSocketServer =
-            if String.isEmpty flags.token then
-                "wss://elixir-elm-tutorial.herokuapp.com/socket/websocket"
-            else
-                "wss://elixir-elm-tutorial.herokuapp.com/socket/websocket?token=" ++ flags.token
+                context.socketServer
+                    ++ "?token="
+                    ++ context.userToken
     in
-        Phoenix.Socket.init prodSocketServer
+        Phoenix.Socket.init socketServer
             |> Phoenix.Socket.withDebug
             |> Phoenix.Socket.on "save_score" "score:platformer" SaveScore
             |> Phoenix.Socket.on "save_score" "score:platformer" ReceiveScoreChanges
@@ -134,25 +133,25 @@ initialChannel =
     Phoenix.Channel.init "score:platformer"
 
 
-initialSocketJoin : Flags -> Phoenix.Socket.Socket Msg
-initialSocketJoin flags =
-    initialSocket flags
+initialSocketJoin : Context -> Phoenix.Socket.Socket Msg
+initialSocketJoin context =
+    initialSocket context
         |> Tuple.first
 
 
-initialSocketCommand : Flags -> Cmd (Phoenix.Socket.Msg Msg)
-initialSocketCommand flags =
-    initialSocket flags
+initialSocketCommand : Context -> Cmd (Phoenix.Socket.Msg Msg)
+initialSocketCommand context =
+    initialSocket context
         |> Tuple.second
 
 
-init : Flags -> ( Model, Cmd Msg )
-init flags =
-    ( initialModel flags
+init : Context -> ( Model, Cmd Msg )
+init context =
+    ( initialModel context
     , Cmd.batch
         [ fetchGameplaysList
         , fetchPlayersList
-        , Cmd.map PhoenixMsg (initialSocketCommand flags)
+        , Cmd.map PhoenixMsg (initialSocketCommand context)
         ]
     )
 

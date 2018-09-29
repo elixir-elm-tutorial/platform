@@ -25,9 +25,26 @@ import Elm from "./elm";
 
 const elmContainer = document.querySelector("#elm-container");
 const platformer = document.querySelector("#platformer");
+const pong = document.querySelector("#pong");
+
+function socketProtocol() {
+    if (window.location.protocol == "https:") {
+        return "wss:"
+    } else {
+        return "ws:"
+    }
+}
+
+const context = {
+    host: window.location.host,
+    httpProtocol: window.location.protocol,
+    socketServer: socketProtocol() + "//" + window.location.host + "/socket/websocket",
+    userToken: window.userToken
+};
 
 if (elmContainer) Elm.Main.embed(elmContainer);
-if (platformer) Elm.Platformer.embed(platformer, { token: window.userToken });
+if (platformer) Elm.Platformer.embed(platformer, context);
+if (pong) Elm.Pong.embed(pong, context);
 
 // Disable scroll to use space bar for game start
 document.documentElement.addEventListener("keydown", function (e) {

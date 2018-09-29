@@ -47,3 +47,11 @@ Products.create_game(%{
   thumbnail: "http://via.placeholder.com/300x200",
   featured: true
 })
+
+Products.create_game(%{
+  title: "Pong",
+  slug: "pong",
+  description: "Pong game example.",
+  thumbnail: "http://via.placeholder.com/300x200",
+  featured: false
+})
