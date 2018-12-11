@@ -1,7 +1,5 @@
 # Platform
 
-[![CircleCI](https://circleci.com/gh/elixir-elm-tutorial/platform.svg?style=svg)](https://circleci.com/gh/elixir-elm-tutorial/platform)
-
 This repository contains the source code for
 [elixir-elm-tutorial.herokuapp.com](https://elixir-elm-tutorial.herokuapp.com),
 which is the demo application from the
@@ -9,9 +7,9 @@ which is the demo application from the
 
 ## Requirements
 
-- Elixir 1.6
-- Phoenix 1.3
-- Elm 0.18
+- Elixir 1.7
+- Phoenix 1.4
+- Elm 0.19
 
 ## Setup
 
@@ -22,25 +20,6 @@ which is the demo application from the
 5. `cd assets && npm install` to install Node dependencies.
 6. `mix phx.server` to start Phoenix server.
 7. `localhost:4000` to see application!
-
-## Troubleshooting
-
-If assets aren't loading, try using `brunch` to rebuild inside the `assets`
-folder with the following command after running `npm install`:
-
-```shell
-./node_modules/brunch/bin/brunch build
-```
-
-## Tests and Tooling
-
-- Run the test suite with `mix test`.
-- Check for outdated dependencies with `mix hex.outdated`.
-- Run static analysis with `mix credo --strict`.
-
-## Deployment
-
-This app is deployed to Heroku at https://elixir-elm-tutorial.herokuapp.com.
 
 ## Need Help?
 
