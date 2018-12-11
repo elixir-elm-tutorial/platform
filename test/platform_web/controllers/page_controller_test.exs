@@ -1,8 +1,8 @@
 defmodule PlatformWeb.PageControllerTest do
   use PlatformWeb.ConnCase
 
-  test "redirects unauthenticated users away from index page", %{conn: conn} do
+  test "GET /", %{conn: conn} do
     conn = get(conn, "/")
-    assert html_response(conn, 302) =~ "redirect"
+    assert html_response(conn, 200) =~ "Players"
   end
 end

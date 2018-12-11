@@ -3,10 +3,11 @@ defmodule Platform.Repo.Migrations.CreatePlayers do
 
   def change do
     create table(:players) do
-      add(:username, :string)
-      add(:score, :integer)
+      add :username, :string
+      add :score, :integer
 
       timestamps()
     end
+
   end
 end

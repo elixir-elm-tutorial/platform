@@ -3,12 +3,6 @@ defmodule PlatformWeb.UserSocket do
 
   ## Channels
   # channel "room:*", PlatformWeb.RoomChannel
-  channel("game:*", PlatformWeb.GameChannel)
-  channel("score:*", PlatformWeb.ScoreChannel)
-
-  ## Transports
-  transport(:websocket, Phoenix.Transports.WebSocket)
-  # transport :longpoll, Phoenix.Transports.LongPoll
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -21,18 +15,7 @@ defmodule PlatformWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(%{"token" => token}, socket) do
-    case Phoenix.Token.verify(socket, "user socket", token, max_age: 1_209_600) do
-      {:ok, current_user_id} ->
-        socket = assign(socket, :player_id, current_user_id)
-        {:ok, socket}
-
-      {:error, _} ->
-        :error
-    end
-  end
-
-  def connect(_params, socket) do
+  def connect(_params, socket, _connect_info) do
     {:ok, socket}
   end
 

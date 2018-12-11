@@ -1,25 +1,19 @@
 defmodule Platform.Application do
-  @moduledoc """
-  Phoenix OTP Application
-  """
+  # See https://hexdocs.pm/elixir/Application.html
+  # for more information on OTP Applications
+  @moduledoc false
 
   use Application
 
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
   def start(_type, _args) do
-    import Supervisor.Spec
-
-    # Define workers and child supervisors to be supervised
+    # List all child processes to be supervised
     children = [
       # Start the Ecto repository
-      supervisor(Platform.Repo, []),
+      Platform.Repo,
       # Start the endpoint when the application starts
-      supervisor(PlatformWeb.Endpoint, []),
-      # Start Phoenix Presence
-      supervisor(Platform.GamePresence, [])
-      # Start your own worker by calling: Platform.Worker.start_link(arg1, arg2, arg3)
-      # worker(Platform.Worker, [arg1, arg2, arg3]),
+      PlatformWeb.Endpoint
+      # Starts a worker by calling: Platform.Worker.start_link(arg)
+      # {Platform.Worker, arg},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

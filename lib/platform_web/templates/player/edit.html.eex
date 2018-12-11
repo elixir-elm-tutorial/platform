@@ -1,33 +1,5 @@
-<h2>Edit Player</h2>
+<h1>Edit Player</h1>
 
-<%= form_for @changeset, player_path(@conn, :update, @player), fn f -> %>
-  <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
-    </div>
-  <% end %>
+<%= render "form.html", Map.put(assigns, :action, Routes.player_path(@conn, :update, @player)) %>
 
-  <div class="form-group">
-    <%= label f, :display_name, "Change Display Name", class: "control-label" %>
-    <%= text_input f, :display_name, placeholder: "Enter display name...", class: "form-control" %>
-    <%= error_tag f, :display_name %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :username, "Change Username", class: "control-label" %>
-    <%= text_input f, :username, placeholder: "Enter username...", class: "form-control" %>
-    <%= error_tag f, :username %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :password, "Change Password", class: "control-label" %>
-    <%= text_input f, :password, placeholder: "Enter password...", class: "form-control" %>
-    <%= error_tag f, :password %>
-  </div>
-
-  <div class="form-group">
-    <%= submit "Submit", class: "btn btn-primary" %>
-    <span><%= link "Delete Account", to: player_path(@conn, :delete, @player), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger" %></span>
-    <span><%= link "Back", to: page_path(@conn, :index), class: "btn btn-default" %></span>
-  </div>
-<% end %>
+<span><%= link "Back", to: Routes.player_path(@conn, :index) %></span>

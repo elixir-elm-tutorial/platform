@@ -1,11 +1,11 @@
-defmodule Platform.Mixfile do
+defmodule Platform.MixProject do
   use Mix.Project
 
   def project do
     [
       app: :platform,
-      version: "0.0.1",
-      elixir: "~> 1.6",
+      version: "0.1.0",
+      elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -20,7 +20,7 @@ defmodule Platform.Mixfile do
   def application do
     [
       mod: {Platform.Application, []},
-      extra_applications: [:logger, :rollbax, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -33,19 +33,16 @@ defmodule Platform.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bcrypt_elixir, "~> 1.0"},
-      {:comeonin, "~> 4.0"},
-      {:cowboy, "~> 1.0"},
-      {:credo, "~> 0.8.0", only: [:dev, :test], runtime: false},
-      {:ex_machina, "~> 2.1", only: :test},
-      {:gettext, "~> 0.11"},
-      {:phoenix, "~> 1.3.0"},
-      {:phoenix_ecto, "~> 3.2"},
-      {:phoenix_html, "~> 2.10"},
-      {:phoenix_live_reload, "~> 1.0", only: :dev},
-      {:phoenix_pubsub, "~> 1.0"},
+      {:phoenix, "~> 1.4.0"},
+      {:phoenix_pubsub, "~> 1.1"},
+      {:phoenix_ecto, "~> 4.0"},
+      {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
-      {:rollbax, ">= 0.0.0"}
+      {:phoenix_html, "~> 2.11"},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:gettext, "~> 0.11"},
+      {:jason, "~> 1.0"},
+      {:plug_cowboy, "~> 2.0"}
     ]
   end
 
