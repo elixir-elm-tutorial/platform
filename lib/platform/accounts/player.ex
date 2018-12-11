@@ -4,8 +4,11 @@ defmodule Platform.Accounts.Player do
 
 
   schema "players" do
-    field :score, :integer
-    field :username, :string
+    field :display_name, :string
+    field :password, :string, virtual: true
+    field :password_digest, :string
+    field :score, :integer, default: 0
+    field :username, :string, unique: true
 
     timestamps()
   end
@@ -13,7 +16,8 @@ defmodule Platform.Accounts.Player do
   @doc false
   def changeset(player, attrs) do
     player
-    |> cast(attrs, [:username, :score])
-    |> validate_required([:username, :score])
+    |> cast(attrs, [:display_name, :password, :score, :username])
+    |> validate_required([:username])
+    |> unique_constraint(:username)
   end
 end
