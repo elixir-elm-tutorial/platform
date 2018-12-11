@@ -1,0 +1,15 @@
+<h1>Player Sign In</h1>
+
+<%= form_for @conn, Routes.player_session_path(@conn, :create), [as: :session], fn f -> %>
+  <%= label f, :username %>
+  <%= text_input f, :username %>
+  <%= error_tag f, :username %>
+
+  <%= label f, :password %>
+  <%= password_input f, :password %>
+  <%= error_tag f, :password %>
+
+  <div>
+    <%= submit "Sign In" %>
+  </div>
+<% end %>
