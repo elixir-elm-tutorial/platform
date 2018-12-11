@@ -1,17 +1,10 @@
 <h1>Show Player</h1>
 
 <ul>
-
-  <li>
-    <strong>Username:</strong>
-    <%= @player.username %>
-  </li>
-
-  <li>
-    <strong>Score:</strong>
-    <%= @player.score %>
-  </li>
-
+  <li><strong>ID: </strong><%= @player.id %></li>
+  <li><strong>Display Name: </strong><%= @player.display_name %></li>
+  <li><strong>Username: </strong><%= @player.username %></li>
+  <li><strong>Score: </strong><%= @player.score %></li>
 </ul>
 
 <span><%= link "Edit", to: Routes.player_path(@conn, :edit, @player) %></span>
