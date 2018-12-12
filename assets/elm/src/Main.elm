@@ -25,7 +25,6 @@ main =
 
 type alias Model =
     { gamesList : List Game
-    , displayGamesList : Bool
     }
 
 
@@ -37,17 +36,18 @@ type alias Game =
 
 initialModel : Model
 initialModel =
-    { gamesList =
-        [ { title = "Platform Game", description = "Platform game example." }
-        , { title = "Adventure Game", description = "Adventure game example." }
-        ]
-    , displayGamesList = True
+    { gamesList = []
     }
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( initialModel, Cmd.none )
+initialCommand : Cmd Msg
+initialCommand =
+    Cmd.none
+
+
+init : ( Model, Cmd Msg )
+init =
+    ( initialModel, initialCommand )
 
 
 
@@ -55,18 +55,14 @@ init _ =
 
 
 type Msg
-    = DisplayGamesList
-    | HideGamesList
+    = FetchGamesList
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        DisplayGamesList ->
-            ( { model | displayGamesList = True }, Cmd.none )
-
-        HideGamesList ->
-            ( { model | displayGamesList = False }, Cmd.none )
+        FetchGamesList ->
+            ( { model | gamesList = [] }, Cmd.none )
 
 
 
@@ -84,31 +80,11 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ h1 [ class "games-section" ] [ text "Games" ]
-        , button [ class "button", onClick DisplayGamesList ] [ text "Display Games List" ]
-        , button [ class "button", onClick HideGamesList ] [ text "Hide Games List" ]
-        , if model.displayGamesList then
-            gamesIndex model
+    if List.isEmpty model.gamesList then
+        div [] []
 
-          else
-            div [] []
-        ]
-
-
-gamesIndex : Model -> Html msg
-gamesIndex model =
-    div [ class "games-index" ] [ gamesList model.gamesList ]
-
-
-gamesList : List Game -> Html msg
-gamesList games =
-    ul [ class "games-list" ] (List.map gamesListItem games)
-
-
-gamesListItem : Game -> Html msg
-gamesListItem game =
-    li [ class "game-item" ]
-        [ strong [] [ text game.title ]
-        , p [] [ text game.description ]
-        ]
+    else
+        div []
+            [ h1 [ class "games-section" ] [ text "Games" ]
+            , gamesIndex model
+            ]
