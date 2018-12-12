@@ -1,4 +1,1 @@
-<div class="container">
-  <%= link("Create Player Account", to: "/players/new", class: "button") %>
-  <%= link("List All Players", to: "/players", class: "button") %>
-</div>
+<div id="elm-container"></div>
