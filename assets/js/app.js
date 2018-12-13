@@ -17,8 +17,14 @@ import "phoenix_html"
 // import socket from "./socket"
 
 // Elm
-import { Elm } from "../elm/src/Main.elm"
+import { Elm } from "../elm/src/Main.elm";
 
-Elm.Main.init({
-  node: document.getElementById("elm-container")
-})
+const elmContainer = document.querySelector("#elm-container");
+const platformer = document.querySelector("#platformer");
+
+if (elmContainer) {
+  Elm.Main.init({ node: elmContainer });
+}
+if (platformer) {
+  Elm.Games.Platformer.init({ node: platformer });
+}

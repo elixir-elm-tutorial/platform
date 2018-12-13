@@ -1,0 +1,1 @@
+<div id="<%= @game.title |> String.downcase() %>"></div>
