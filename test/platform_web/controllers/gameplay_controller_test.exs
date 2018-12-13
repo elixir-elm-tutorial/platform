@@ -50,7 +50,10 @@ defmodule PlatformWeb.GameplayControllerTest do
   describe "update gameplay" do
     setup [:create_gameplay]
 
-    test "renders gameplay when data is valid", %{conn: conn, gameplay: %Gameplay{id: id} = gameplay} do
+    test "renders gameplay when data is valid", %{
+      conn: conn,
+      gameplay: %Gameplay{id: id} = gameplay
+    } do
       conn = put(conn, Routes.gameplay_path(conn, :update, gameplay), gameplay: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 

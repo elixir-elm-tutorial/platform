@@ -64,7 +64,7 @@ defmodule PlatformWeb.PlayerController do
   end
 
   defp authorize(conn, _opts) do
-    if Mix.env == :test do
+    if Mix.env() == :test do
       conn
     else
       current_player_id = conn.assigns.current_user().id

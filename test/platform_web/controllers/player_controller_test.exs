@@ -80,6 +80,7 @@ defmodule PlatformWeb.PlayerControllerTest do
     test "deletes chosen player", %{conn: conn, player: player} do
       conn = delete(conn, Routes.player_path(conn, :delete, player))
       assert redirected_to(conn) == Routes.player_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.player_path(conn, :show, player))
       end

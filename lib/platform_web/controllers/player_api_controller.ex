@@ -35,6 +35,7 @@ defmodule PlatformWeb.PlayerApiController do
 
   def delete(conn, %{"id" => id}) do
     player = Accounts.get_player!(id)
+
     with {:ok, %Player{}} <- Accounts.delete_player(player) do
       send_resp(conn, :no_content, "")
     end
