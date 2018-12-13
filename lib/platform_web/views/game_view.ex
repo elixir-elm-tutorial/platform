@@ -15,6 +15,7 @@ defmodule PlatformWeb.GameView do
       id: game.id,
       description: game.description,
       featured: game.featured,
+      slug: game.slug,
       thumbnail: game.thumbnail,
       title: game.title
     }

@@ -1,1 +1,1 @@
-<div id="<%= @game.title |> String.downcase() %>"></div>
+<div id="<%= @game.slug %>"></div>

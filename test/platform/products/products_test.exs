@@ -9,16 +9,24 @@ defmodule Platform.ProductsTest do
     @valid_attrs %{
       description: "some description",
       featured: true,
+      slug: "some slug",
       thumbnail: "some thumbnail",
       title: "some title"
     }
     @update_attrs %{
       description: "some updated description",
       featured: false,
+      slug: "some updated slug",
       thumbnail: "some updated thumbnail",
       title: "some updated title"
     }
-    @invalid_attrs %{description: nil, featured: nil, thumbnail: nil, title: nil}
+    @invalid_attrs %{
+      description: nil,
+      featured: nil,
+      slug: nil,
+      thumbnail: nil,
+      title: nil
+    }
 
     def game_fixture(attrs \\ %{}) do
       {:ok, game} =
