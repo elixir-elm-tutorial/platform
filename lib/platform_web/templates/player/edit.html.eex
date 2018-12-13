@@ -21,7 +21,8 @@
 
   <div>
     <%= submit "Save" %>
+    <%= link "Delete Account", to: Routes.player_path(@conn, :delete, @player), method: :delete, data: [confirm: "Are you sure?"], class: "button" %>
+    <%= link "Back", to: Routes.player_path(@conn, :index), class: "button" %>
   </div>
 <% end %>
 
-<span><%= link "Back", to: Routes.player_path(@conn, :index) %></span>

@@ -168,9 +168,42 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div []
-        [ gamesIndex model
+        [ featured model
+        , gamesIndex model
         , playersIndex model
         ]
+
+
+
+-- FEATURED
+
+
+featured : Model -> Html msg
+featured model =
+    case featuredGame model.gamesList of
+        Just game ->
+            div [ class "row featured" ]
+                [ div [ class "container" ]
+                    [ div [ class "featured-img" ]
+                        [ img [ class "featured-thumbnail", src game.thumbnail ] [] ]
+                    , div [ class "featured-data" ]
+                        [ h2 [] [ text "Featured" ]
+                        , h3 [] [ text game.title ]
+                        , p [] [ text game.description ]
+                        , button [ class "button" ] [ text "Play Now!" ]
+                        ]
+                    ]
+                ]
+
+        Nothing ->
+            div [] []
+
+
+featuredGame : List Game -> Maybe Game
+featuredGame games =
+    games
+        |> List.filter .featured
+        |> List.head
 
 
 
@@ -183,7 +216,7 @@ gamesIndex model =
         div [] []
 
     else
-        div [ class "games-index" ]
+        div [ class "games-index container" ]
             [ h2 [] [ text "Games" ]
             , gamesList model.gamesList
             ]
@@ -196,9 +229,16 @@ gamesList games =
 
 gamesListItem : Game -> Html msg
 gamesListItem game =
-    li [ class "game-item" ]
-        [ strong [] [ text game.title ]
-        , p [] [ text game.description ]
+    a [ href "#" ]
+        [ li [ class "game-item" ]
+            [ div [ class "game-image" ]
+                [ img [ src game.thumbnail ] []
+                ]
+            , div [ class "game-info" ]
+                [ h3 [] [ text game.title ]
+                , p [] [ text game.description ]
+                ]
+            ]
         ]
 
 
@@ -212,7 +252,7 @@ playersIndex model =
         div [] []
 
     else
-        div [ class "players-index" ]
+        div [ class "players-index container" ]
             [ h2 [] [ text "Players" ]
             , model.playersList
                 |> playersSortedByScore
@@ -234,12 +274,17 @@ playersList players =
 
 playersListItem : Player -> Html msg
 playersListItem player =
+    let
+        playerLink name =
+            a [ href ("players/" ++ String.fromInt player.id) ]
+                [ strong [ class "player-name" ] [ text name ] ]
+    in
     li [ class "player-item" ]
-        [ case player.displayName of
+        [ p [ class "player-score" ] [ text (String.fromInt player.score) ]
+        , case player.displayName of
             Just displayName ->
-                strong [] [ text displayName ]
+                playerLink displayName
 
             Nothing ->
-                strong [] [ text player.username ]
-        , p [] [ text (String.fromInt player.score) ]
+                playerLink player.username
         ]

@@ -1,3 +1,70 @@
 /* This file is for your main application css. */
 
 @import "./phoenix.css";
+
+/* Header */
+
+header {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.logo {
+  font-weight: bold;
+}
+
+.nav-text {
+  display: inline-flex;
+  margin-right: 5px;
+}
+
+/* Featured */
+
+.featured {
+  height: 360px;
+  background-color: black;
+  color: white;
+}
+
+.featured-img {
+  margin-top: 50px;
+  margin-right: 50px;
+  float: left;
+}
+
+.featured-thumbnail {
+  height: 260px;
+}
+
+.featured-data {
+  margin-top: 50px;
+  overflow: hidden;
+}
+
+/* Games */
+
+.games-index {
+  margin-top: 2rem;
+}
+
+.game-item {
+  display: flex;
+}
+
+.game-info {
+  margin-left: 2em;
+}
+
+/* Players */
+
+.player-item {
+  display: flex;
+}
+
+.player-score {
+  margin-bottom: 0;
+}
+
+.player-name {
+  margin-left: 1em;
+}

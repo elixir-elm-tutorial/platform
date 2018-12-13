@@ -17,8 +17,6 @@
 
       <td>
         <%= link "Show", to: Routes.player_path(@conn, :show, player) %>
-        <%= link "Edit", to: Routes.player_path(@conn, :edit, player) %>
-        <%= link "Delete", to: Routes.player_path(@conn, :delete, player), method: :delete, data: [confirm: "Are you sure?"] %>
       </td>
     </tr>
 <% end %>
