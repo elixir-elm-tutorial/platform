@@ -37,6 +37,9 @@ type alias Model =
     , characterPositionY : Int
     , itemPositionX : Int
     , itemPositionY : Int
+    , itemsCollected : Int
+    , playerScore : Int
+    , timeRemaining : Int
     }
 
 
@@ -47,6 +50,9 @@ initialModel =
     , characterPositionY = 300
     , itemPositionX = 500
     , itemPositionY = 300
+    , itemsCollected = 0
+    , playerScore = 0
+    , timeRemaining = 0
     }
 
 
@@ -158,7 +164,14 @@ viewGame model =
         , viewGameGround
         , viewCharacter model
         , viewItem model
+        , viewGameScore model
+        , viewItemsCollected model
+        , viewGameTime model
         ]
+
+
+
+-- GAME WINDOW
 
 
 viewGameWindow : Svg Msg
@@ -194,6 +207,71 @@ viewGameGround =
         , fill "green"
         ]
         []
+
+
+
+-- DISPLAY GAME DATA
+
+
+viewGameText : Int -> Int -> String -> Svg Msg
+viewGameText positionX positionY str =
+    Svg.text_
+        [ x (String.fromInt positionX)
+        , y (String.fromInt positionY)
+        , fontFamily "Courier"
+        , fontWeight "bold"
+        , fontSize "16"
+        ]
+        [ Svg.text str ]
+
+
+viewGameScore : Model -> Svg Msg
+viewGameScore model =
+    let
+        currentScore =
+            model.playerScore
+                |> String.fromInt
+                |> String.padLeft 5 '0'
+    in
+    Svg.svg []
+        [ viewGameText 25 25 "SCORE"
+        , viewGameText 25 40 currentScore
+        ]
+
+
+viewItemsCollected : Model -> Svg Msg
+viewItemsCollected model =
+    let
+        currentItemCount =
+            model.itemsCollected
+                |> String.fromInt
+                |> String.padLeft 3 '0'
+    in
+    Svg.svg []
+        [ image
+            [ xlinkHref "/images/coin.svg"
+            , x "275"
+            , y "18"
+            , width "15"
+            , height "15"
+            ]
+            []
+        , viewGameText 300 30 ("x " ++ currentItemCount)
+        ]
+
+
+viewGameTime : Model -> Svg Msg
+viewGameTime model =
+    let
+        currentTime =
+            model.timeRemaining
+                |> String.fromInt
+                |> String.padLeft 4 '0'
+    in
+    Svg.svg []
+        [ viewGameText 525 25 "TIME"
+        , viewGameText 525 40 currentTime
+        ]
 
 
 
