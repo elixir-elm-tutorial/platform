@@ -7,6 +7,7 @@ import Json.Decode as Decode
 import Random
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
+import Time
 
 
 
@@ -52,7 +53,7 @@ initialModel =
     , itemPositionY = 300
     , itemsCollected = 0
     , playerScore = 0
-    , timeRemaining = 0
+    , timeRemaining = 10
     }
 
 
@@ -66,7 +67,8 @@ init _ =
 
 
 type Msg
-    = GameLoop Float
+    = CountdownTimer Time.Posix
+    | GameLoop Float
     | KeyDown String
     | NoOp
     | SetNewItemPositionX Int
@@ -75,9 +77,21 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        CountdownTimer time ->
+            if model.timeRemaining > 0 then
+                ( { model | timeRemaining = model.timeRemaining - 1 }, Cmd.none )
+
+            else
+                ( model, Cmd.none )
+
         GameLoop time ->
             if characterFoundItem model then
-                ( model, Random.generate SetNewItemPositionX (Random.int 50 500) )
+                ( { model
+                    | itemsCollected = model.itemsCollected + 1
+                    , playerScore = model.playerScore + 100
+                  }
+                , Random.generate SetNewItemPositionX (Random.int 50 500)
+                )
 
             else
                 ( model, Cmd.none )
@@ -134,6 +148,7 @@ subscriptions model =
     Sub.batch
         [ Browser.Events.onKeyDown (Decode.map KeyDown keyDecoder)
         , Browser.Events.onAnimationFrameDelta GameLoop
+        , Time.every 1000 CountdownTimer
         ]
 
 
