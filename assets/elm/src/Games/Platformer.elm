@@ -1,7 +1,10 @@
 module Games.Platformer exposing (main)
 
 import Browser
+import Browser.Events
 import Html exposing (Html, div)
+import Json.Decode as Decode
+import Random
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
@@ -23,8 +26,14 @@ main =
 -- MODEL
 
 
+type Direction
+    = Left
+    | Right
+
+
 type alias Model =
-    { characterPositionX : Int
+    { characterDirection : Direction
+    , characterPositionX : Int
     , characterPositionY : Int
     , itemPositionX : Int
     , itemPositionY : Int
@@ -33,7 +42,8 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-    { characterPositionX = 50
+    { characterDirection = Right
+    , characterPositionX = 50
     , characterPositionY = 300
     , itemPositionX = 500
     , itemPositionY = 300
@@ -50,14 +60,63 @@ init _ =
 
 
 type Msg
-    = NoOp
+    = GameLoop Float
+    | KeyDown String
+    | NoOp
+    | SetNewItemPositionX Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        GameLoop time ->
+            if characterFoundItem model then
+                ( model, Random.generate SetNewItemPositionX (Random.int 50 500) )
+
+            else
+                ( model, Cmd.none )
+
+        KeyDown key ->
+            case key of
+                "ArrowLeft" ->
+                    ( { model
+                        | characterDirection = Left
+                        , characterPositionX = model.characterPositionX - 15
+                      }
+                    , Cmd.none
+                    )
+
+                "ArrowRight" ->
+                    ( { model
+                        | characterDirection = Right
+                        , characterPositionX = model.characterPositionX + 15
+                      }
+                    , Cmd.none
+                    )
+
+                _ ->
+                    ( model, Cmd.none )
+
         NoOp ->
             ( model, Cmd.none )
+
+        SetNewItemPositionX newPositionX ->
+            ( { model | itemPositionX = newPositionX }, Cmd.none )
+
+
+characterFoundItem : Model -> Bool
+characterFoundItem model =
+    let
+        approximateItemLowerBound =
+            model.itemPositionX - 35
+
+        approximateItemUpperBound =
+            model.itemPositionX
+
+        approximateItemRange =
+            List.range approximateItemLowerBound approximateItemUpperBound
+    in
+    List.member model.characterPositionX approximateItemRange
 
 
 
@@ -66,7 +125,15 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Sub.batch
+        [ Browser.Events.onKeyDown (Decode.map KeyDown keyDecoder)
+        , Browser.Events.onAnimationFrameDelta GameLoop
+        ]
+
+
+keyDecoder : Decode.Decoder String
+keyDecoder =
+    Decode.field "key" Decode.string
 
 
 
@@ -77,6 +144,10 @@ view : Model -> Html Msg
 view model =
     div [ class "container" ]
         [ viewGame model ]
+
+
+
+-- GAME
 
 
 viewGame : Model -> Svg Msg
@@ -125,16 +196,33 @@ viewGameGround =
         []
 
 
+
+-- CHARACTER
+
+
 viewCharacter : Model -> Svg Msg
 viewCharacter model =
+    let
+        characterImage =
+            case model.characterDirection of
+                Left ->
+                    "/images/character-left.gif"
+
+                Right ->
+                    "/images/character-right.gif"
+    in
     image
-        [ xlinkHref "/images/character.gif"
+        [ xlinkHref characterImage
         , x (String.fromInt model.characterPositionX)
         , y (String.fromInt model.characterPositionY)
         , width "50"
         , height "50"
         ]
         []
+
+
+
+-- ITEM
 
 
 viewItem : Model -> Svg Msg
