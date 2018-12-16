@@ -51,6 +51,10 @@ header {
   display: flex;
 }
 
+.game-image {
+  width: 300px;
+}
+
 .game-info {
   margin-left: 2em;
 }
