@@ -14,7 +14,11 @@ import "phoenix_html"
 // Phoenix Socket
 import { Socket } from "phoenix"
 
-let socket = new Socket("/socket", {})
+let socketParams = (window.userToken == "") ? {} : { token: window.userToken };
+
+let socket = new Socket("/socket", {
+  params: socketParams
+})
 
 socket.connect()
 
@@ -42,9 +46,12 @@ if (platformer) {
   });
 
   channel.on("broadcast_score", payload => {
-    console.log(`Receiving ${payload.player_score} score data from Phoenix using the receivingScoreFromPhoenix port.`);
+    console.log(`Receiving payload data from Phoenix using the receivingScoreFromPhoenix port.`);
+
     app.ports.receiveScoreFromPhoenix.send({
-      player_score: payload.player_score
+      game_id: payload.game_id || 0,
+      player_id: payload.player_id || 0,
+      player_score: payload.player_score || 0
     });
   });
 }

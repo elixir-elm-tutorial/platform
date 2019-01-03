@@ -2,7 +2,7 @@ port module Games.Platformer exposing (main)
 
 import Browser
 import Browser.Events
-import Html exposing (Html, button, div, h2, li, ul)
+import Html exposing (Html, button, div, h2, li, span, strong, ul)
 import Html.Attributes
 import Html.Events
 import Json.Decode as Decode
@@ -43,7 +43,9 @@ type GameState
 
 
 type alias Gameplay =
-    { playerScore : Int
+    { gameId : Int
+    , playerId : Int
+    , playerScore : Int
     }
 
 
@@ -87,7 +89,9 @@ init _ =
 
 decodeGameplay : Decode.Decoder Gameplay
 decodeGameplay =
-    Decode.map Gameplay
+    Decode.map3 Gameplay
+        (Decode.field "game_id" Decode.int)
+        (Decode.field "player_id" Decode.int)
         (Decode.field "player_score" Decode.int)
 
 
@@ -524,5 +528,18 @@ viewGameplaysList gameplays =
 
 viewGameplayItem : Gameplay -> Html Msg
 viewGameplayItem gameplay =
+    let
+        displayPlayer =
+            if gameplay.playerId == 0 then
+                "Anonymous Player: "
+
+            else
+                "Player " ++ String.fromInt gameplay.playerId ++ ": "
+
+        displayScore =
+            String.fromInt gameplay.playerScore
+    in
     li [ Html.Attributes.class "gameplay-item" ]
-        [ text ("Player Score: " ++ String.fromInt gameplay.playerScore) ]
+        [ strong [] [ text displayPlayer ]
+        , span [] [ text displayScore ]
+        ]
