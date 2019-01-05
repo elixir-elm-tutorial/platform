@@ -50,13 +50,13 @@ defmodule PlatformWeb.GameControllerTest do
       conn = get(conn, Routes.game_path(conn, :show, id))
 
       assert %{
-                "id" => id,
-                "description" => "some description",
-                "featured" => true,
-                "slug" => "some slug",
-                "thumbnail" => "some thumbnail",
-                "title" => "some title"
-              } = json_response(conn, 200)["data"]
+               "id" => id,
+               "description" => "some description",
+               "featured" => true,
+               "slug" => "some slug",
+               "thumbnail" => "some thumbnail",
+               "title" => "some title"
+             } = json_response(conn, 200)["data"]
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -75,13 +75,13 @@ defmodule PlatformWeb.GameControllerTest do
       conn = get(conn, Routes.game_path(conn, :show, id))
 
       assert %{
-                "id" => id,
-                "description" => "some updated description",
-                "featured" => false,
-                "slug" => "some updated slug",
-                "thumbnail" => "some updated thumbnail",
-                "title" => "some updated title"
-              } = json_response(conn, 200)["data"]
+               "id" => id,
+               "description" => "some updated description",
+               "featured" => false,
+               "slug" => "some updated slug",
+               "thumbnail" => "some updated thumbnail",
+               "title" => "some updated title"
+             } = json_response(conn, 200)["data"]
     end
 
     test "renders errors when data is invalid", %{conn: conn, game: game} do
