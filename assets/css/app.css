@@ -72,3 +72,9 @@ header {
 .player-name {
   margin-left: 1em;
 }
+
+/* Buttons */
+
+.button {
+  margin-right: 1em;
+}

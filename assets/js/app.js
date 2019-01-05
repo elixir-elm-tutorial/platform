@@ -32,7 +32,10 @@ if (elmContainer) {
   Elm.Main.init({ node: elmContainer });
 }
 if (platformer) {
-  let app = Elm.Games.Platformer.init({ node: platformer });
+  let app = Elm.Games.Platformer.init({
+    node: platformer,
+    flags: { token: window.userToken }
+  });
 
   let channel = socket.channel("score:platformer", {})
 
@@ -43,6 +46,11 @@ if (platformer) {
   app.ports.broadcastScore.subscribe(function (scoreData) {
     console.log(`Broadcasting ${scoreData} score data from Elm using the broadcastScore port.`);
     channel.push("broadcast_score", { player_score: scoreData });
+  });
+
+  app.ports.saveScore.subscribe(function (scoreData) {
+    console.log(`Saving ${scoreData} score data from Elm using the saveScore port.`);
+    channel.push("save_score", { player_score: scoreData });
   });
 
   channel.on("broadcast_score", payload => {

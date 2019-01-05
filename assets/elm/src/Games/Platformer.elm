@@ -35,6 +35,11 @@ type Direction
     | Right
 
 
+type alias Flags =
+    { token : String
+    }
+
+
 type GameState
     = StartScreen
     | Playing
@@ -59,12 +64,13 @@ type alias Model =
     , itemPositionY : Int
     , itemsCollected : Int
     , playerScore : Int
+    , playerToken : String
     , timeRemaining : Int
     }
 
 
-initialModel : Model
-initialModel =
+initialModel : Flags -> Model
+initialModel flags =
     { characterDirection = Right
     , characterPositionX = 50
     , characterPositionY = 300
@@ -74,13 +80,14 @@ initialModel =
     , itemPositionY = 300
     , itemsCollected = 0
     , playerScore = 0
+    , playerToken = flags.token
     , timeRemaining = 10
     }
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( initialModel, Cmd.none )
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    ( initialModel flags, Cmd.none )
 
 
 
@@ -106,6 +113,7 @@ type Msg
     | KeyDown String
     | NoOp
     | ReceiveScoreFromPhoenix Encode.Value
+    | SaveScore Encode.Value
     | SetNewItemPositionX Int
 
 
@@ -198,6 +206,9 @@ update msg model =
                     -- Debug.log ("Error receiving score data: " ++ Debug.toString message)
                     ( model, Cmd.none )
 
+        SaveScore value ->
+            ( model, saveScore value )
+
         SetNewItemPositionX newPositionX ->
             ( { model | itemPositionX = newPositionX }, Cmd.none )
 
@@ -246,6 +257,9 @@ port broadcastScore : Encode.Value -> Cmd msg
 port receiveScoreFromPhoenix : (Encode.Value -> msg) -> Sub msg
 
 
+port saveScore : Encode.Value -> Cmd msg
+
+
 
 -- VIEW
 
@@ -255,6 +269,7 @@ view model =
     div [ class "container" ]
         [ viewGame model
         , viewBroadcastScoreButton model
+        , viewSaveScoreButton model
         , viewGameplaysIndex model
         ]
 
@@ -502,6 +517,26 @@ viewBroadcastScoreButton model =
         , Html.Attributes.class "button"
         ]
         [ text "Broadcast Score Over Socket" ]
+
+
+viewSaveScoreButton : Model -> Html Msg
+viewSaveScoreButton model =
+    let
+        saveEvent =
+            model.playerScore
+                |> Encode.int
+                |> SaveScore
+                |> Html.Events.onClick
+    in
+    if model.playerToken == "" then
+        div [] []
+
+    else
+        button
+            [ saveEvent
+            , Html.Attributes.class "button"
+            ]
+            [ text "Save Score to Database" ]
 
 
 

@@ -17,7 +17,7 @@ defmodule Platform.Products.Gameplay do
   @doc false
   def changeset(gameplay, attrs) do
     gameplay
-    |> cast(attrs, [:player_score])
+    |> cast(attrs, [:game_id, :player_id, :player_score])
     |> validate_required([:player_score])
   end
 end
