@@ -63,3 +63,22 @@ if (platformer) {
     });
   });
 }
+
+// Disable default space bar and arrow keys in favor of game interactions
+document.documentElement.addEventListener(
+  "keydown",
+  function (e) {
+    let spaceBarKeyCode = 32;
+    let upArrowKeyCode = 38;
+    let downArrowKeyCode = 40;
+
+    if (
+      (e.keycode || e.which) == spaceBarKeyCode ||
+      (e.keycode || e.which) == upArrowKeyCode ||
+      (e.keycode || e.which) == downArrowKeyCode
+    ) {
+      e.preventDefault();
+    }
+  },
+  false
+);
