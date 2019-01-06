@@ -61,16 +61,18 @@ header {
 
 /* Players */
 
-.player-item {
-  display: flex;
-}
-
 .player-score {
-  margin-bottom: 0;
+  margin-left: 1em;
 }
 
 .player-name {
   margin-left: 1em;
+}
+
+/* Gameplays */
+
+.gameplays, .gameplays-empty {
+  margin-left: 2em;
 }
 
 /* Buttons */

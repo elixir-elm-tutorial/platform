@@ -27,6 +27,7 @@ main =
 
 type alias Model =
     { gamesList : List Game
+    , gameplaysList : List Gameplay
     , playersList : List Player
     }
 
@@ -41,8 +42,16 @@ type alias Game =
     }
 
 
+type alias Gameplay =
+    { gameId : Int
+    , playerId : Int
+    , playerScore : Int
+    }
+
+
 type alias Player =
-    { displayName : Maybe String
+    { displayGameplays : Bool
+    , displayName : Maybe String
     , id : Int
     , score : Int
     , username : String
@@ -52,6 +61,7 @@ type alias Player =
 initialModel : Model
 initialModel =
     { gamesList = []
+    , gameplaysList = []
     , playersList = []
     }
 
@@ -60,6 +70,7 @@ initialCommand : Cmd Msg
 initialCommand =
     Cmd.batch
         [ fetchGamesList
+        , fetchGameplaysList
         , fetchPlayersList
         ]
 
@@ -78,6 +89,14 @@ fetchGamesList =
     Http.get
         { url = "/api/games"
         , expect = Http.expectJson FetchGamesList decodeGamesList
+        }
+
+
+fetchGameplaysList : Cmd Msg
+fetchGameplaysList =
+    Http.get
+        { url = "/api/gameplays"
+        , expect = Http.expectJson FetchGameplaysList decodeGameplaysList
         }
 
 
@@ -107,6 +126,21 @@ decodeGame =
         (Decode.field "title" Decode.string)
 
 
+decodeGameplaysList : Decode.Decoder (List Gameplay)
+decodeGameplaysList =
+    decodeGameplay
+        |> Decode.list
+        |> Decode.at [ "data" ]
+
+
+decodeGameplay : Decode.Decoder Gameplay
+decodeGameplay =
+    Decode.map3 Gameplay
+        (Decode.field "game_id" Decode.int)
+        (Decode.field "player_id" Decode.int)
+        (Decode.field "player_score" Decode.int)
+
+
 decodePlayersList : Decode.Decoder (List Player)
 decodePlayersList =
     decodePlayer
@@ -116,7 +150,8 @@ decodePlayersList =
 
 decodePlayer : Decode.Decoder Player
 decodePlayer =
-    Decode.map4 Player
+    Decode.map5 Player
+        (Decode.succeed False)
         (Decode.maybe (Decode.field "display_name" Decode.string))
         (Decode.field "id" Decode.int)
         (Decode.field "score" Decode.int)
@@ -129,7 +164,9 @@ decodePlayer =
 
 type Msg
     = FetchGamesList (Result Http.Error (List Game))
+    | FetchGameplaysList (Result Http.Error (List Gameplay))
     | FetchPlayersList (Result Http.Error (List Player))
+    | TogglePlayerGameplays Player
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -144,14 +181,44 @@ update msg model =
                     Debug.log "Error fetching games from API."
                         ( model, Cmd.none )
 
+        FetchGameplaysList result ->
+            case result of
+                Ok gameplays ->
+                    ( { model | gameplaysList = gameplays }, Cmd.none )
+
+                Err _ ->
+                    Debug.log "Error fetching gameplays from API."
+                        ( model, Cmd.none )
+
         FetchPlayersList result ->
             case result of
                 Ok players ->
-                    ( { model | playersList = players }, Cmd.none )
+                    let
+                        updatedPlayersList =
+                            players
+                                |> List.map
+                                    (\player -> { player | score = findTotalScoreForPlayer model player })
+                    in
+                    ( { model | playersList = updatedPlayersList }, Cmd.none )
 
-                Err _ ->
+                Err message ->
                     Debug.log "Error fetching players from API."
                         ( model, Cmd.none )
+
+        TogglePlayerGameplays player ->
+            let
+                updatedPlayersList =
+                    List.map
+                        (\p ->
+                            if p.id == player.id then
+                                { player | displayGameplays = not player.displayGameplays }
+
+                            else
+                                p
+                        )
+                        model.playersList
+            in
+            ( { model | playersList = updatedPlayersList }, Cmd.none )
 
 
 
@@ -252,45 +319,127 @@ gamesListItem game =
 -- PLAYERS
 
 
-playersIndex : Model -> Html msg
+playersIndex : Model -> Html Msg
 playersIndex model =
     if List.isEmpty model.playersList then
         div [] []
 
     else
         div [ class "players-index container" ]
-            [ h2 [] [ text "Players" ]
-            , model.playersList
-                |> playersSortedByScore
-                |> playersList
+            [ h2 [] [ text "Player Scores" ]
+            , playersList model
             ]
 
 
-playersSortedByScore : List Player -> List Player
-playersSortedByScore players =
+playersList : Model -> Html Msg
+playersList model =
+    model.playersList
+        |> sortPlayersByScore
+        |> List.map (playersListItem model)
+        |> ul [ class "players-list" ]
+
+
+playersListItem : Model -> Player -> Html Msg
+playersListItem model player =
+    li [ class "player-item" ]
+        [ playersListItemName player
+        , playersListItemScore model player
+        , if player.displayGameplays then
+            gameplaysList model player
+
+          else
+            div [] []
+        ]
+
+
+playersListItemName : Player -> Html Msg
+playersListItemName player =
+    let
+        displayName =
+            case player.displayName of
+                Just name ->
+                    name
+
+                Nothing ->
+                    player.username
+    in
+    strong []
+        [ a [ onClick (TogglePlayerGameplays player) ]
+            [ text displayName ]
+        ]
+
+
+playersListItemScore : Model -> Player -> Html Msg
+playersListItemScore model player =
+    let
+        playerScore =
+            findTotalScoreForPlayer model player
+    in
+    span [ class "player-score" ]
+        [ text (String.fromInt playerScore) ]
+
+
+
+-- GAMEPLAYS
+
+
+gameplaysList : Model -> Player -> Html msg
+gameplaysList model player =
+    let
+        gameplays =
+            findGameplaysForPlayer model player
+    in
+    if List.isEmpty gameplays then
+        div [ class "gameplays-empty" ]
+            [ text "No gameplays to display yet!" ]
+
+    else
+        div [ class "gameplays" ]
+            (List.map (gameplaysListItem model) gameplays)
+
+
+gameplaysListItem : Model -> Gameplay -> Html msg
+gameplaysListItem model gameplay =
+    let
+        gameTitle =
+            case findGameForGameplay model gameplay of
+                Just game ->
+                    game.title
+
+                Nothing ->
+                    String.fromInt gameplay.gameId
+    in
+    div []
+        [ strong [] [ text (gameTitle ++ ": ") ]
+        , span [] [ text (String.fromInt gameplay.playerScore) ]
+        ]
+
+
+
+-- HELPERS
+
+
+findGameplaysForPlayer : Model -> Player -> List Gameplay
+findGameplaysForPlayer model player =
+    List.filter (\gameplay -> gameplay.playerId == player.id) model.gameplaysList
+
+
+findGameForGameplay : Model -> Gameplay -> Maybe Game
+findGameForGameplay model gameplay =
+    model.gamesList
+        |> List.filter (\game -> game.id == gameplay.gameId)
+        |> List.head
+
+
+findTotalScoreForPlayer : Model -> Player -> Int
+findTotalScoreForPlayer model player =
+    findGameplaysForPlayer model player
+        |> List.map .playerScore
+        |> List.sum
+
+
+sortPlayersByScore : List Player -> List Player
+sortPlayersByScore players =
     players
         |> List.sortBy .score
         |> List.reverse
-
-
-playersList : List Player -> Html msg
-playersList players =
-    ul [ class "players-list" ] (List.map playersListItem players)
-
-
-playersListItem : Player -> Html msg
-playersListItem player =
-    let
-        playerLink name =
-            a [ href ("players/" ++ String.fromInt player.id) ]
-                [ strong [ class "player-name" ] [ text name ] ]
-    in
-    li [ class "player-item" ]
-        [ p [ class "player-score" ] [ text (String.fromInt player.score) ]
-        , case player.displayName of
-            Just displayName ->
-                playerLink displayName
-
-            Nothing ->
-                playerLink player.username
-        ]
