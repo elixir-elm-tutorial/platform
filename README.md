@@ -25,3 +25,4 @@ which is the demo application from the
 
 - Open a [GitHub Issue](https://github.com/elixir-elm-tutorial/platform/issues).
 - Email me at `bijanbwb@gmail.com`.
+
