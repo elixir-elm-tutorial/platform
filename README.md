@@ -1,5 +1,7 @@
 # Platform
 
+_This project has been archived, but the source code is still available here for reference._
+
 This repository contains the source code for
 [elixir-elm-tutorial.herokuapp.com](https://elixir-elm-tutorial.herokuapp.com),
 which is the demo application from the
@@ -20,9 +22,3 @@ which is the demo application from the
 5. `cd assets && npm install` to install Node dependencies.
 6. `mix phx.server` to start Phoenix server.
 7. `localhost:4000` to see application!
-
-## Need Help?
-
-- Open a [GitHub Issue](https://github.com/elixir-elm-tutorial/platform/issues).
-- Email me at `bijanbwb@gmail.com`.
-
